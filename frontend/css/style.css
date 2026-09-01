@@ -1,0 +1,259 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'DM Sans', sans-serif;
+    background: #F7F4EC;
+    overflow: hidden;
+}
+
+.splash-screen {
+    min-height: 100vh;
+    width: 100%;
+    position: relative;
+
+    background-image: url("../assets/images/community-background.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Soft overlay */
+
+.overlay {
+    position: absolute;
+    inset: 0;
+
+    background:
+        radial-gradient(
+            circle at 50% 50%,
+            rgba(255, 255, 255, 0.30),
+            transparent 45%
+        ),
+        linear-gradient(
+            90deg,
+            rgba(250, 248, 241, 0.35),
+            rgba(250, 248, 241, 0.05)
+        );
+}
+
+/* Decorative circles */
+
+.splash-screen::before {
+    content: "";
+    position: absolute;
+
+    width: 220px;
+    height: 220px;
+
+    border-radius: 50%;
+
+    background: rgba(79, 111, 82, 0.06);
+
+    top: -80px;
+    left: -70px;
+}
+
+.splash-screen::after {
+    content: "";
+    position: absolute;
+
+    width: 150px;
+    height: 150px;
+
+    border-radius: 50%;
+
+    border: 1px solid rgba(79, 111, 82, 0.12);
+
+    bottom: 40px;
+    left: 8%;
+}
+
+/* Main content */
+
+.welcome-content {
+    position: relative;
+    z-index: 2;
+
+    width: 430px;
+
+    padding: 45px 50px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    text-align: center;
+
+    background: rgba(255, 255, 255, 0.58);
+
+    border: 1px solid rgba(255, 255, 255, 0.7);
+
+    border-radius: 28px;
+
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+
+    box-shadow:
+        0 20px 60px rgba(50, 70, 55, 0.10),
+        inset 0 1px 0 rgba(255, 255, 255, 0.8);
+
+    animation: fadeUp 0.9s ease forwards;
+}
+
+/* Logo */
+
+.logo {
+    width: 155px;
+    height: auto;
+
+    margin-bottom: 18px;
+
+    filter: drop-shadow(
+        0 8px 12px rgba(50, 70, 55, 0.08)
+    );
+
+    animation: logoAppear 1s ease forwards;
+}
+
+/* Tagline */
+
+.tagline {
+    font-size: 21px;
+    font-weight: 500;
+
+    letter-spacing: 1px;
+
+    color: #55745A;
+
+    margin-bottom: 32px;
+}
+
+/* Button */
+
+#getStartedBtn {
+    border: none;
+
+    background: #4F6F52;
+    color: #ffffff;
+
+    padding: 15px 26px;
+
+    min-width: 180px;
+
+    border-radius: 14px;
+
+    font-family: inherit;
+    font-size: 16px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+
+    box-shadow:
+        0 10px 22px rgba(79, 111, 82, 0.20);
+
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease,
+        background 0.25s ease;
+}
+
+#getStartedBtn span {
+    font-size: 20px;
+
+    transition:
+        transform 0.25s ease;
+}
+
+#getStartedBtn:hover {
+    background: #426246;
+
+    transform: translateY(-3px);
+
+    box-shadow:
+        0 14px 28px rgba(79, 111, 82, 0.28);
+}
+
+#getStartedBtn:hover span {
+    transform: translateX(4px);
+}
+
+#getStartedBtn:active {
+    transform: translateY(0);
+}
+
+/* Animations */
+
+@keyframes fadeUp {
+
+    from {
+        opacity: 0;
+        transform: translateY(25px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes logoAppear {
+
+    from {
+        opacity: 0;
+        transform: scale(0.90);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Mobile */
+
+@media (max-width: 768px) {
+
+    .splash-screen {
+        background-position: center;
+    }
+
+    .overlay {
+        background:
+            rgba(250, 248, 241, 0.60);
+    }
+
+    .welcome-content {
+        width: calc(100% - 40px);
+
+        padding: 38px 25px;
+
+        border-radius: 24px;
+    }
+
+    .logo {
+        width: 135px;
+    }
+
+    .tagline {
+        font-size: 18px;
+    }
+
+    #getStartedBtn {
+        width: 180px;
+    }
+}
