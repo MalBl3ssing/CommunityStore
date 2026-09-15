@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Dashboard | Community Store</title>
+
+    <link
+        rel="icon"
+        type="image/png"
+        href="assets/images/community-store-favicon.png"
+    >
+
+    <link
+        rel="stylesheet"
+        href="css/home.css"
+    >
+</head>
+
+<body>
+
+    <div class="dashboard">
+
+        <!-- =========================
+             SIDEBAR
+        ========================== -->
+
+        <aside class="sidebar">
+
+            <!-- Logo -->
+            <div class="brand">
+
+                <img
+                    src="assets/images/community-store-logo.png"
+                    alt="Community Store"
+                >
+
+                <div>
+                    <h2>Community</h2>
+                    <span>Store</span>
+                </div>
+
+            </div>
+
+
+            <!-- Navigation -->
+            <nav class="main-nav">
+
+                <a href="dashboard.html" class="nav-item active">
+
+                    <span class="nav-icon">⌂</span>
+
+                    <span>Home</span>
+
+                </a>
+
+
+                <a href="#" class="nav-item">
+
+                    <span class="nav-icon">⌕</span>
+
+                    <span>Search</span>
+
+                </a>
+
+
+                <a href="#" class="nav-item">
+
+                    <span class="nav-icon">♡</span>
+
+                    <span>Saved</span>
+
+                </a>
+
+
+                <a href="#" class="nav-item">
+
+                    <span class="nav-icon">◌</span>
+
+                    <span>Chat</span>
+
+                    <span class="notification-dot"></span>
+
+                </a>
+
+
+                <a href="#" class="nav-item">
+
+                    <span class="nav-icon">▣</span>
+
+                    <span>Orders</span>
+
+                </a>
+
+            </nav>
+
+
+            <!-- Bottom Navigation -->
+            <div class="sidebar-bottom">
+
+                <a href="#" class="nav-item">
+
+                    <span class="nav-icon">?</span>
+
+                    <span>Help & Support</span>
+
+                </a>
+
+
+                <a href="#" class="nav-item">
+
+                    <span class="nav-icon">⚙</span>
+
+                    <span>Settings</span>
+
+                </a>
+
+
+                <a href="login.html" class="nav-item logout">
+
+                    <span class="nav-icon">↪</span>
+
+                    <span>Log out</span>
+
+                </a>
+
+            </div>
+
+        </aside>
+
+
+        <!-- =========================
+             MAIN CONTENT
+        ========================== -->
+
+        <main class="main-content">
+
+            <!-- Top Bar -->
+            <header class="top-bar">
+
+                <div class="mobile-brand">
+
+                    <img
+                        src="assets/images/community-store-logo.png"
+                        alt="Community Store"
+                    >
+
+                    <span>Community Store</span>
+
+                </div>
+
+
+                <!-- Search -->
+                <div class="search-box">
+
+                    <span>⌕</span>
+
+                    <input
+                        type="search"
+                        id="dashboardSearch"
+                        placeholder="Search products, categories..."
+                    >
+
+                </div>
+
+
+                <!-- Actions -->
+                <div class="top-actions">
+
+                    <button
+                        class="icon-button"
+                        id="notificationButton"
+                        aria-label="Notifications"
+                    >
+                        ♧
+
+                        <span class="notification-badge"></span>
+
+                    </button>
+
+
+                    <button
+                        class="profile-button"
+                        id="profileButton"
+                    >
+
+                        <div class="profile-avatar">
+                            ?
+                        </div>
+
+                        <div class="profile-info">
+
+                            <strong id="userName">
+                                My Profile
+                            </strong>
+
+                            <span id="userType">
+                                Account
+                            </span>
+
+                        </div>
+
+                        <span class="profile-arrow">
+                            ⌄
+                        </span>
+
+                    </button>
+
+                </div>
+
+            </header>
+
+
+            <!-- =========================
+                 CONTENT
+            ========================== -->
+
+            <section class="content">
+
+                <!-- Welcome -->
+                <section class="welcome-section">
+
+                    <div class="welcome-copy">
+
+                        <span class="eyebrow">
+                            COMMUNITY MARKETPLACE
+                        </span>
+
+                        <h1>
+                            Welcome back
+                            <span>👋</span>
+                        </h1>
+
+                        <p>
+                            Discover something you love,
+                            connect with your community,
+                            and find great deals.
+                        </p>
+
+                    </div>
+
+
+                    <button
+                        class="sell-button"
+                        id="sellButton"
+                    >
+
+                        <span>＋</span>
+
+                        Sell an Item
+
+                    </button>
+
+                </section>
+
+
+                <!-- =========================
+                     CATEGORIES
+                ========================== -->
+
+                <section class="section">
+
+                    <div class="section-heading">
+
+                        <div>
+
+                            <span class="section-label">
+                                EXPLORE
+                            </span>
+
+                            <h2>Browse categories</h2>
+
+                        </div>
+
+
+                        <a href="#" class="view-link">
+                            View all →
+                        </a>
+
+                    </div>
+
+
+                    <div class="category-grid">
+
+                        <button class="category-card">
+
+                            <div class="category-icon">
+                                📚
+                            </div>
+
+                            <span>Books</span>
+
+                        </button>
+
+
+                        <button class="category-card">
+
+                            <div class="category-icon">
+                                💻
+                            </div>
+
+                            <span>Electronics</span>
+
+                        </button>
+
+
+                        <button class="category-card">
+
+                            <div class="category-icon">
+                                👕
+                            </div>
+
+                            <span>Fashion</span>
+
+                        </button>
+
+
+                        <button class="category-card">
+
+                            <div class="category-icon">
+                                🎧
+                            </div>
+
+                            <span>Accessories</span>
+
+                        </button>
+
+
+                        <button class="category-card">
+
+                            <div class="category-icon">
+                                🏠
+                            </div>
+
+                            <span>Home & Living</span>
+
+                        </button>
+
+
+                        <button class="category-card">
+
+                            <div class="category-icon">
+                                ⚽
+                            </div>
+
+                            <span>Sports</span>
+
+                        </button>
+
+                    </div>
+
+                </section>
+
+
+                <!-- =========================
+                     FEATURED PRODUCTS
+                ========================== -->
+
+                <section class="section">
+
+                    <div class="section-heading">
+
+                        <div>
+
+                            <span class="section-label">
+                                FOR YOU
+                            </span>
+
+                            <h2>Featured items</h2>
+
+                        </div>
+
+
+                        <a href="#" class="view-link">
+                            See more →
+                        </a>
+
+                    </div>
+
+
+                    <div
+                        class="product-grid"
+                        id="featuredProducts"
+                    >
+
+                        <!--
+                            Products will be loaded
+                            from the backend later.
+                        -->
+
+                        <div class="empty-products">
+
+                            <div class="empty-icon">
+                                ✦
+                            </div>
+
+                            <h3>
+                                Discover something new
+                            </h3>
+
+                            <p>
+                                Featured items from your
+                                community will appear here.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- =========================
+                     RECENTLY ADDED
+                ========================== -->
+
+                <section class="section recent-section">
+
+                    <div class="section-heading">
+
+                        <div>
+
+                            <span class="section-label">
+                                FRESH FINDS
+                            </span>
+
+                            <h2>Recently added</h2>
+
+                        </div>
+
+
+                        <a href="#" class="view-link">
+                            See all →
+                        </a>
+
+                    </div>
+
+
+                    <div
+                        class="recent-products"
+                        id="recentProducts"
+                    >
+
+                        <div class="empty-recent">
+
+                            <span>✦</span>
+
+                            <p>
+                                New listings will appear here.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+            </section>
+
+        </main>
+
+    </div>
+
+
+    <!-- JavaScript -->
+    <script src="js/dashboard.js"></script>
+
+</body>
+
+</html>

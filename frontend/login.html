@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Login | Community Store</title>
+
+    <link
+        rel="icon"
+        type="image/png"
+        href="assets/images/community-store-favicon.png"
+    >
+
+    <link rel="stylesheet" href="css/login.css">
+</head>
+
+<body>
+
+    <main class="login-page">
+
+        <div class="background-overlay"></div>
+
+        <section class="login-card">
+
+            <!-- Logo -->
+            <img
+                src="assets/images/community-store-logo.png"
+                alt="Community Store Logo"
+                class="login-logo"
+            >
+
+            <!-- Welcome -->
+            <div class="welcome-text">
+                <h1>Welcome back</h1>
+                <p>Sign in to continue to Community Store</p>
+            </div>
+
+
+            <!-- Login Form -->
+            <form id="loginForm">
+
+                <!-- Email -->
+                <div class="input-group">
+
+                    <label for="email">
+                        Email address
+                    </label>
+
+                    <div class="input-wrapper">
+
+                        <span class="input-icon">✉</span>
+
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            placeholder="Enter your email"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <!-- Password -->
+                <div class="input-group">
+
+                    <label for="password">
+                        Password
+                    </label>
+
+                    <div class="input-wrapper">
+
+                        <span class="input-icon">🔒</span>
+
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            placeholder="Enter your password"
+                            required
+                        >
+
+                        <button
+                            type="button"
+                            class="password-toggle"
+                            id="passwordToggle"
+                            aria-label="Show password"
+                        >
+                            👁
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Forgot Password -->
+                <div class="forgot-container">
+
+                    <a href="forgot-password.html">
+                        Forgot password?
+                    </a>
+
+                </div>
+
+
+                <!-- Sign In -->
+                <button
+                    type="submit"
+                    class="sign-in-button"
+                >
+                    Sign In
+                    <span>→</span>
+                </button>
+
+            </form>
+
+
+            <!-- Divider -->
+            <div class="divider">
+
+                <span></span>
+
+                <p>or</p>
+
+                <span></span>
+
+            </div>
+
+
+            <!-- Social Login -->
+            <div class="social-login">
+
+                <button
+                    type="button"
+                    class="social-button"
+                    id="googleButton"
+                >
+                    <span class="google-icon">G</span>
+                    <span>Google</span>
+                </button>
+
+
+                <button
+                    type="button"
+                    class="social-button"
+                    id="appleButton"
+                >
+                    <span class="apple-icon"></span>
+                    <span>Apple</span>
+                </button>
+
+            </div>
+
+
+            <!-- Register -->
+            <p class="register-text">
+
+                Don't have an account?
+
+                <a href="register.html">
+                    Register
+                </a>
+
+            </p>
+
+        </section>
+
+    </main>
+
+
+    <script src="js/login.js"></script>
+
+</body>
+
+</html>
