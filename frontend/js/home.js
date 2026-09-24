@@ -1,150 +1,207 @@
 // =========================
-// DASHBOARD INITIALISATION
+// HOME PAGE
 // =========================
 
 document.addEventListener("DOMContentLoaded", function () {
 
-    console.log("Community Store dashboard loaded.");
+    // =========================
+    // PROFILE BUTTON
+    // =========================
 
-});
+    const profileButton =
+        document.getElementById("profileButton");
 
+    if (profileButton) {
 
-// =========================
-// SEARCH
-// =========================
+        profileButton.addEventListener(
+            "click",
+            function () {
 
-const searchInput =
-    document.getElementById("dashboardSearch");
+                window.location.href =
+                    "profile.html";
 
-
-searchInput.addEventListener("keydown", function (event) {
-
-    if (event.key === "Enter") {
-
-        const searchTerm =
-            searchInput.value.trim();
-
-        if (searchTerm !== "") {
-
-            console.log(
-                "Searching for:",
-                searchTerm
-            );
-
-            /*
-                Later:
-
-                The search term will be sent
-                to the backend and real products
-                will be returned.
-            */
-        }
-
-    }
-
-});
-
-
-// =========================
-// SELL ITEM
-// =========================
-
-const sellButton =
-    document.getElementById("sellButton");
-
-
-sellButton.addEventListener("click", function () {
-
-    /*
-        This page will be created later.
-    */
-
-    alert(
-        "The Sell Item page will be available here."
-    );
-
-});
-
-
-// =========================
-// NOTIFICATIONS
-// =========================
-
-const notificationButton =
-    document.getElementById(
-        "notificationButton"
-    );
-
-
-notificationButton.addEventListener(
-    "click",
-    function () {
-
-        alert(
-            "Your notifications will appear here."
+            }
         );
 
     }
-);
 
 
-// =========================
-// PROFILE
-// =========================
+    // =========================
+    // LOGOUT
+    // =========================
 
-const profileButton =
-    document.getElementById("profileButton");
+    const logoutButton =
+        document.getElementById("logoutButton");
 
+    if (logoutButton) {
 
-profileButton.addEventListener(
-    "click",
-    function () {
+        logoutButton.addEventListener(
+            "click",
+            function (event) {
 
-        /*
-            Later this will open
-            the user's profile page.
-        */
+                event.preventDefault();
 
-        window.location.href =
-            "profile.html";
+                window.location.href =
+                    "login.html";
+
+            }
+        );
 
     }
-);
 
 
-// =========================
-// CATEGORY BUTTONS
-// =========================
+    // =========================
+    // SELL AN ITEM
+    // =========================
 
-const categoryCards =
-    document.querySelectorAll(
-        ".category-card"
-    );
+    const sellButton =
+        document.getElementById("sellButton");
+
+    if (sellButton) {
+
+        sellButton.addEventListener(
+            "click",
+            function () {
+
+                alert(
+                    "The Sell an Item page will be connected soon."
+                );
+
+            }
+        );
+
+    }
 
 
-categoryCards.forEach(function (card) {
+    // =========================
+    // NOTIFICATIONS
+    // =========================
 
-    card.addEventListener(
-        "click",
-        function () {
+    const notificationButton =
+        document.getElementById("notificationButton");
 
-            const category =
-                card
-                    .querySelector("span")
-                    .textContent;
+    if (notificationButton) {
 
-            console.log(
-                "Selected category:",
-                category
-            );
+        notificationButton.addEventListener(
+            "click",
+            function () {
 
-            /*
-                Later this will send the
-                selected category to the
-                product/search page.
-            */
+                alert(
+                    "Your notifications will be connected soon."
+                );
 
-        }
-    );
+            }
+        );
+
+    }
+
+
+    // =========================
+    // SEARCH
+    // =========================
+
+    const dashboardSearch =
+        document.getElementById("dashboardSearch");
+
+    if (dashboardSearch) {
+
+        dashboardSearch.addEventListener(
+            "keydown",
+            function (event) {
+
+                if (event.key === "Enter") {
+
+                    const searchTerm =
+                        dashboardSearch.value.trim();
+
+                    if (searchTerm) {
+
+                        alert(
+                            `Searching for "${searchTerm}"...`
+                        );
+
+                    }
+
+                }
+
+            }
+        );
+
+    }
+
+
+    // =========================
+    // VIEW CATEGORIES
+    // =========================
+
+    const viewCategoriesButton =
+        document.getElementById(
+            "viewCategoriesButton"
+        );
+
+    if (viewCategoriesButton) {
+
+        viewCategoriesButton.addEventListener(
+            "click",
+            function () {
+
+                alert(
+                    "The categories page will be connected soon."
+                );
+
+            }
+        );
+
+    }
+
+
+    // =========================
+    // FEATURED ITEMS
+    // =========================
+
+    const featuredSeeMore =
+        document.getElementById(
+            "featuredSeeMore"
+        );
+
+    if (featuredSeeMore) {
+
+        featuredSeeMore.addEventListener(
+            "click",
+            function () {
+
+                alert(
+                    "Featured items will be connected soon."
+                );
+
+            }
+        );
+
+    }
+
+
+    // =========================
+    // RECENT ITEMS
+    // =========================
+
+    const recentSeeAll =
+        document.getElementById(
+            "recentSeeAll"
+        );
+
+    if (recentSeeAll) {
+
+        recentSeeAll.addEventListener(
+            "click",
+            function () {
+
+                alert(
+                    "Recently added items will be connected soon."
+                );
+
+            }
+        );
+
+    }
 
 });

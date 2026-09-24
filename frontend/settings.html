@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Settings | Community Store</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap"
+        rel="stylesheet"
+    >
+
+    <link rel="stylesheet" href="css/settings.css">
+</head>
+
+<body>
+
+<div class="app-layout">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+        <div class="brand">
+            <img
+                src="assets/images/community-store-logo.png"
+                alt="Community Store Logo"
+                class="brand-logo"
+            >
+
+            <div class="brand-text">
+                <span>Community</span>
+                <span>Store</span>
+            </div>
+        </div>
+
+        <nav class="nav-menu">
+
+            <a href="home.html" class="nav-item">
+                <span class="nav-icon">⌂</span>
+                <span class="nav-label">Home</span>
+            </a>
+
+            <a href="search.html" class="nav-item">
+                <span class="nav-icon">⌕</span>
+                <span class="nav-label">Search</span>
+            </a>
+
+            <a href="saved.html" class="nav-item">
+                <span class="nav-icon">♡</span>
+                <span class="nav-label">Saved</span>
+            </a>
+
+            <a href="chat.html" class="nav-item">
+                <span class="nav-icon">◌</span>
+                <span class="nav-label">Chat</span>
+                <span class="notification-dot"></span>
+            </a>
+
+            <a href="orders.html" class="nav-item">
+                <span class="nav-icon">▣</span>
+                <span class="nav-label">Orders</span>
+            </a>
+
+        </nav>
+
+        <div class="sidebar-bottom">
+
+            <a href="help.html" class="nav-item">
+                <span class="nav-icon">?</span>
+                <span class="nav-label">Help & Support</span>
+            </a>
+
+            <a href="settings.html" class="nav-item active">
+                <span class="nav-icon">⚙</span>
+                <span class="nav-label">Settings</span>
+            </a>
+
+            <a href="#" class="nav-item" id="logoutBtn">
+                <span class="nav-icon">↪</span>
+                <span class="nav-label">Logout</span>
+            </a>
+
+        </div>
+
+    </aside>
+
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+
+        <!-- TOPBAR -->
+        <header class="topbar">
+
+            <div class="search-box">
+
+                <span class="search-icon">⌕</span>
+
+                <input
+                    type="text"
+                    id="searchInput"
+                    placeholder="Search products, categories, or sellers..."
+                >
+
+            </div>
+
+
+            <div class="topbar-actions">
+
+                <button
+                    class="notification-button"
+                    id="notificationBtn"
+                    type="button"
+                >
+                    ♧
+                    <span class="notification-indicator"></span>
+                </button>
+
+
+                <div class="profile-area" id="profileArea">
+
+                    <div
+                        class="profile-avatar"
+                        id="userInitials"
+                    >
+                        SM
+                    </div>
+
+                    <div class="profile-info">
+
+                        <span
+                            class="profile-name"
+                            id="profileName"
+                        >
+                            Solomon Machaule
+                        </span>
+
+                        <span
+                            class="profile-type"
+                            id="profileType"
+                        >
+                            Student
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <!-- CONTENT -->
+        <div class="content">
+
+            <!-- WELCOME -->
+            <section class="welcome-section">
+
+                <span class="welcome-label">
+                    ACCOUNT SETTINGS
+                </span>
+
+                <h1>Settings</h1>
+
+                <p>
+                    Manage your account, preferences, and security settings.
+                </p>
+
+            </section>
+
+
+            <!-- ACCOUNT -->
+            <section class="settings-section">
+
+                <div class="section-heading">
+
+                    <div>
+
+                        <span class="section-label">
+                            ACCOUNT
+                        </span>
+
+                        <h2>
+                            Account information
+                        </h2>
+
+                    </div>
+
+                </div>
+
+
+                <div class="settings-box">
+
+                    <div class="setting-row">
+
+                        <div class="setting-info">
+
+                            <span class="setting-title">
+                                Full name
+                            </span>
+
+                            <span class="setting-description">
+                                The name associated with your Community Store account.
+                            </span>
+
+                        </div>
+
+                        <div
+                            class="setting-value"
+                            id="fullName"
+                        >
+                            Solomon Machaule
+                        </div>
+
+                    </div>
+
+
+                    <div class="setting-divider"></div>
+
+
+                    <div class="setting-row">
+
+                        <div class="setting-info">
+
+                            <span class="setting-title">
+                                Email address
+                            </span>
+
+                            <span class="setting-description">
+                                Your account email address.
+                            </span>
+
+                        </div>
+
+                        <div
+                            class="setting-value"
+                            id="emailAddress"
+                        >
+                            solomonmachaule26@gmail.com
+                        </div>
+
+                    </div>
+
+
+                    <div class="setting-divider"></div>
+
+
+                    <div class="setting-row">
+
+                        <div class="setting-info">
+
+                            <span class="setting-title">
+                                Account type
+                            </span>
+
+                            <span class="setting-description">
+                                Your current Community Store account type.
+                            </span>
+
+                        </div>
+
+                        <div
+                            class="setting-value"
+                            id="accountType"
+                        >
+                            Student
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- PREFERENCES -->
+            <section class="settings-section">
+
+                <div class="section-heading">
+
+                    <div>
+
+                        <span class="section-label">
+                            PREFERENCES
+                        </span>
+
+                        <h2>
+                            Marketplace preferences
+                        </h2>
+
+                    </div>
+
+                </div>
+
+
+                <div class="settings-box">
+
+                    <div class="setting-row">
+
+                        <div class="setting-info">
+
+                            <span class="setting-title">
+                                Notifications
+                            </span>
+
+                            <span class="setting-description">
+                                Receive updates about messages, orders, and marketplace activity.
+                            </span>
+
+                        </div>
+
+
+                        <label class="toggle">
+
+                            <input
+                                type="checkbox"
+                                id="notificationToggle"
+                                checked
+                            >
+
+                            <span class="toggle-slider"></span>
+
+                        </label>
+
+                    </div>
+
+
+                    <div class="setting-divider"></div>
+
+
+                    <div class="setting-row">
+
+                        <div class="setting-info">
+
+                            <span class="setting-title">
+                                Seller updates
+                            </span>
+
+                            <span class="setting-description">
+                                Get updates when sellers respond to your messages or orders.
+                            </span>
+
+                        </div>
+
+
+                        <label class="toggle">
+
+                            <input
+                                type="checkbox"
+                                id="sellerUpdatesToggle"
+                                checked
+                            >
+
+                            <span class="toggle-slider"></span>
+
+                        </label>
+
+                    </div>
+
+
+                    <div class="setting-divider"></div>
+
+
+                    <div class="setting-row">
+
+                        <div class="setting-info">
+
+                            <span class="setting-title">
+                                Order updates
+                            </span>
+
+                            <span class="setting-description">
+                                Receive notifications when your order status changes.
+                            </span>
+
+                        </div>
+
+
+                        <label class="toggle">
+
+                            <input
+                                type="checkbox"
+                                id="orderUpdatesToggle"
+                                checked
+                            >
+
+                            <span class="toggle-slider"></span>
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- PRIVACY & SECURITY -->
+            <section class="settings-section">
+
+                <div class="section-heading">
+
+                    <div>
+
+                        <span class="section-label">
+                            PRIVACY & SECURITY
+                        </span>
+
+                        <h2>
+                            Security
+                        </h2>
+
+                    </div>
+
+                </div>
+
+
+                <div class="settings-box">
+
+                    <div class="setting-row action-row">
+
+                        <div class="setting-info">
+
+                            <span class="setting-title">
+                                Password
+                            </span>
+
+                            <span class="setting-description">
+                                Change your account password.
+                            </span>
+
+                        </div>
+
+
+                        <button
+                            class="secondary-button"
+                            id="changePasswordBtn"
+                            type="button"
+                        >
+                            Change password
+                        </button>
+
+                    </div>
+
+
+                    <div class="setting-divider"></div>
+
+
+                    <div class="setting-row action-row">
+
+                        <div class="setting-info">
+
+                            <span class="setting-title">
+                                Account security
+                            </span>
+
+                            <span class="setting-description">
+                                Review your account security settings.
+                            </span>
+
+                        </div>
+
+
+                        <button
+                            class="secondary-button"
+                            id="securityBtn"
+                            type="button"
+                        >
+                            Review security
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- ACCOUNT ACTIONS -->
+            <section class="settings-section">
+
+                <div class="section-heading">
+
+                    <div>
+
+                        <span class="section-label">
+                            ACCOUNT ACTIONS
+                        </span>
+
+                        <h2>
+                            Account actions
+                        </h2>
+
+                    </div>
+
+                </div>
+
+
+                <div class="settings-box">
+
+                    <div class="setting-row action-row">
+
+                        <div class="setting-info">
+
+                            <span class="setting-title">
+                                Log out
+                            </span>
+
+                            <span class="setting-description">
+                                Sign out of your Community Store account.
+                            </span>
+
+                        </div>
+
+
+                        <button
+                            class="secondary-button logout-button"
+                            id="logoutSettingsBtn"
+                            type="button"
+                        >
+                            Log out
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+        </div>
+
+    </main>
+
+</div>
+
+
+<script src="js/settings.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Help & Support | Community Store</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap"
+        rel="stylesheet"
+    >
+
+    <link rel="stylesheet" href="css/help.css">
+</head>
+
+<body>
+
+<div class="app-layout">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+        <div class="brand">
+
+            <img
+                src="assets/images/community-store-logo.png"
+                alt="Community Store Logo"
+                class="brand-logo"
+            >
+
+            <div class="brand-text">
+                <span>Community</span>
+                <span>Store</span>
+            </div>
+
+        </div>
+
+
+        <nav class="nav-menu">
+
+            <a href="home.html" class="nav-item">
+                <span class="nav-icon">⌂</span>
+                <span class="nav-label">Home</span>
+            </a>
+
+            <a href="search.html" class="nav-item">
+                <span class="nav-icon">⌕</span>
+                <span class="nav-label">Search</span>
+            </a>
+
+            <a href="saved.html" class="nav-item">
+                <span class="nav-icon">♡</span>
+                <span class="nav-label">Saved</span>
+            </a>
+
+            <a href="chat.html" class="nav-item">
+                <span class="nav-icon">◌</span>
+                <span class="nav-label">Chat</span>
+                <span class="notification-dot"></span>
+            </a>
+
+            <a href="orders.html" class="nav-item">
+                <span class="nav-icon">▣</span>
+                <span class="nav-label">Orders</span>
+            </a>
+
+        </nav>
+
+
+        <div class="sidebar-bottom">
+
+            <a href="help.html" class="nav-item active">
+                <span class="nav-icon">?</span>
+                <span class="nav-label">Help</span>
+            </a>
+
+            <a href="settings.html" class="nav-item">
+                <span class="nav-icon">⚙</span>
+                <span class="nav-label">Settings</span>
+            </a>
+
+            <a href="#" class="nav-item" id="logoutBtn">
+                <span class="nav-icon">↪</span>
+                <span class="nav-label">Logout</span>
+            </a>
+
+        </div>
+
+    </aside>
+
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+
+        <!-- TOPBAR -->
+        <header class="topbar">
+
+            <div class="search-box">
+
+                <span class="search-icon">⌕</span>
+
+                <input
+                    type="text"
+                    id="searchInput"
+                    placeholder="Search products, categories, or sellers..."
+                >
+
+            </div>
+
+
+            <div class="topbar-actions">
+
+                <button
+                    class="notification-button"
+                    id="notificationBtn"
+                    type="button"
+                >
+                    ♧
+
+                    <span class="notification-indicator"></span>
+                </button>
+
+
+                <div class="profile-area" id="profileArea">
+
+                    <div
+                        class="profile-avatar"
+                        id="userInitials"
+                    >
+                        SM
+                    </div>
+
+                    <div class="profile-info">
+
+                        <span
+                            class="profile-name"
+                            id="profileName"
+                        >
+                            Solomon Machaule
+                        </span>
+
+                        <span
+                            class="profile-type"
+                            id="profileType"
+                        >
+                            Student
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <!-- CONTENT -->
+        <div class="content">
+
+            <!-- WELCOME -->
+            <section class="welcome-section">
+
+                <span class="welcome-label">
+                    HELP & SUPPORT
+                </span>
+
+                <h1>How can we help?</h1>
+
+                <p>
+                    Find answers, learn how Community Store works, or get help with an issue.
+                </p>
+
+            </section>
+
+
+            <!-- FAQ -->
+            <section class="help-section">
+
+                <div class="section-heading">
+
+                    <div>
+
+                        <span class="section-label">
+                            FREQUENTLY ASKED QUESTIONS
+                        </span>
+
+                        <h2>
+                            Common questions
+                        </h2>
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    class="faq-list"
+                    id="faqList"
+                ></div>
+
+            </section>
+
+
+            <!-- GETTING STARTED -->
+            <section class="help-section">
+
+                <div class="section-heading">
+
+                    <div>
+
+                        <span class="section-label">
+                            GETTING STARTED
+                        </span>
+
+                        <h2>
+                            Using Community Store
+                        </h2>
+
+                    </div>
+
+                </div>
+
+
+                <div class="help-box">
+
+                    <div class="help-row">
+
+                        <div class="help-number">
+                            01
+                        </div>
+
+                        <div class="help-info">
+
+                            <span class="help-title">
+                                Find products
+                            </span>
+
+                            <span class="help-description">
+                                Search the marketplace to find products from other community members.
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="help-divider"></div>
+
+
+                    <div class="help-row">
+
+                        <div class="help-number">
+                            02
+                        </div>
+
+                        <div class="help-info">
+
+                            <span class="help-title">
+                                Contact sellers
+                            </span>
+
+                            <span class="help-description">
+                                Use Community Store chat to communicate with sellers before making a purchase.
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="help-divider"></div>
+
+
+                    <div class="help-row">
+
+                        <div class="help-number">
+                            03
+                        </div>
+
+                        <div class="help-info">
+
+                            <span class="help-title">
+                                Place an order
+                            </span>
+
+                            <span class="help-description">
+                                Complete your purchase and keep track of the order from your Orders page.
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- CONTACT SUPPORT -->
+            <section class="help-section">
+
+                <div class="section-heading">
+
+                    <div>
+
+                        <span class="section-label">
+                            SUPPORT
+                        </span>
+
+                        <h2>
+                            Need more help?
+                        </h2>
+
+                    </div>
+
+                </div>
+
+
+                <div class="support-box">
+
+                    <div class="support-content">
+
+                        <div class="support-icon">
+                            ?
+                        </div>
+
+                        <div>
+
+                            <h3>
+                                Contact support
+                            </h3>
+
+                            <p>
+                                Can't find what you're looking for?
+                                Send us a support request and we'll help you out.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <button
+                        type="button"
+                        class="primary-button"
+                        id="contactSupportBtn"
+                    >
+                        Contact support
+                    </button>
+
+                </div>
+
+            </section>
+
+
+            <!-- REPORT PROBLEM -->
+            <section class="help-section">
+
+                <div class="section-heading">
+
+                    <div>
+
+                        <span class="section-label">
+                            FEEDBACK
+                        </span>
+
+                        <h2>
+                            Report a problem
+                        </h2>
+
+                    </div>
+
+                </div>
+
+
+                <div class="support-box">
+
+                    <div class="support-content">
+
+                        <div class="support-icon">
+                            !
+                        </div>
+
+                        <div>
+
+                            <h3>
+                                Something isn't working?
+                            </h3>
+
+                            <p>
+                                Let us know about a problem with the marketplace,
+                                an order, a seller, or your account.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <button
+                        type="button"
+                        class="secondary-button"
+                        id="reportProblemBtn"
+                    >
+                        Report problem
+                    </button>
+
+                </div>
+
+            </section>
+
+        </div>
+
+    </main>
+
+</div>
+
+
+<script src="js/help.js"></script>
+
+</body>
+</html>

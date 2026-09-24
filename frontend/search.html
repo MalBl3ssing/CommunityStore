@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Search | Community Store</title>
+
+    <link
+        rel="icon"
+        type="image/png"
+        href="assets/images/community-store-favicon.png"
+    >
+
+    <link rel="stylesheet" href="css/search.css">
+
+</head>
+
+<body>
+
+    <div class="dashboard">
+
+        <!-- =========================
+             SIDEBAR
+        ========================== -->
+
+        <aside class="sidebar">
+
+            <!-- Brand -->
+
+            <div class="brand">
+
+                <img
+                    src="assets/images/community-store-logo.png"
+                    alt="Community Store Logo"
+                >
+
+                <div class="brand-text">
+
+                    <span>Community</span>
+                    <span>Store</span>
+
+                </div>
+
+            </div>
+
+
+            <!-- Main Navigation -->
+
+            <nav class="main-nav">
+
+                <!-- Home -->
+
+                <a
+                    href="home.html"
+                    class="nav-item"
+                >
+
+                    <span class="nav-icon">⌂</span>
+                    <span>Home</span>
+
+                </a>
+
+
+                <!-- Search -->
+
+                <a
+                    href="search.html"
+                    class="nav-item active"
+                >
+
+                    <span class="nav-icon">⌕</span>
+                    <span>Search</span>
+
+                </a>
+
+
+                <!-- Saved -->
+
+                <a
+                    href="#"
+                    class="nav-item"
+                >
+
+                    <span class="nav-icon">♡</span>
+                    <span>Saved</span>
+
+                </a>
+
+
+                <!-- Chat -->
+
+                <a
+                    href="#"
+                    class="nav-item"
+                >
+
+                    <span class="nav-icon">◌</span>
+                    <span>Chat</span>
+
+                    <span class="notification-dot"></span>
+
+                </a>
+
+
+                <!-- Orders -->
+
+                <a
+                    href="#"
+                    class="nav-item"
+                >
+
+                    <span class="nav-icon">▣</span>
+                    <span>Orders</span>
+
+                </a>
+
+            </nav>
+
+
+            <!-- Sidebar Bottom -->
+
+            <div class="sidebar-bottom">
+
+                <!-- Help -->
+
+                <a
+                    href="#"
+                    class="nav-item"
+                >
+
+                    <span class="nav-icon">?</span>
+                    <span>Help & Support</span>
+
+                </a>
+
+
+                <!-- Settings -->
+
+                <a
+                    href="#"
+                    class="nav-item"
+                >
+
+                    <span class="nav-icon">⚙</span>
+                    <span>Settings</span>
+
+                </a>
+
+
+                <!-- Logout -->
+
+                <a
+                    href="login.html"
+                    class="nav-item logout"
+                    id="logoutButton"
+                >
+
+                    <span class="nav-icon">↪</span>
+                    <span>Log out</span>
+
+                </a>
+
+            </div>
+
+        </aside>
+
+
+        <!-- =========================
+             MAIN CONTENT
+        ========================== -->
+
+        <main class="main-content">
+
+
+            <!-- =========================
+                 TOP BAR
+            ========================== -->
+
+            <header class="top-bar">
+
+                <!-- Search -->
+
+                <div class="search-box">
+
+                    <span class="search-icon">
+                        ⌕
+                    </span>
+
+                    <input
+                        type="text"
+                        id="searchInput"
+                        placeholder="Search products, categories..."
+                        autocomplete="off"
+                    >
+
+                </div>
+
+
+                <!-- Top Actions -->
+
+                <div class="top-actions">
+
+                    <!-- Notifications -->
+
+                    <button
+                        class="icon-button notification-button"
+                        id="notificationButton"
+                        aria-label="Notifications"
+                    >
+
+                        <span class="notification-icon">
+                            ♧
+                        </span>
+
+                        <span class="notification-badge"></span>
+
+                    </button>
+
+
+                    <!-- Profile -->
+
+                    <button
+                        class="profile-button"
+                        id="profileButton"
+                        aria-label="Profile"
+                    >
+
+                        <div class="profile-avatar">
+
+                            <span>👤</span>
+
+                        </div>
+
+
+                        <div class="profile-info">
+
+                            <strong id="userName">
+                                My Profile
+                            </strong>
+
+                            <span id="userType">
+                                Account
+                            </span>
+
+                        </div>
+
+
+                        <span class="profile-arrow">
+                            ⌄
+                        </span>
+
+                    </button>
+
+                </div>
+
+            </header>
+
+
+            <!-- =========================
+                 SEARCH CONTENT
+            ========================== -->
+
+            <div class="content">
+
+
+                <!-- =========================
+                     PAGE HEADER
+                ========================== -->
+
+                <section class="page-header">
+
+                    <div>
+
+                        <span class="section-label">
+                            COMMUNITY MARKETPLACE
+                        </span>
+
+                        <h1>
+                            Find something you love
+                        </h1>
+
+                        <p>
+                            Search through items listed by your community.
+                        </p>
+
+                    </div>
+
+                </section>
+
+
+                <!-- =========================
+                     SEARCH CONTROLS
+                ========================== -->
+
+                <section class="search-controls">
+
+                    <!-- Search Field -->
+
+                    <div class="main-search">
+
+                        <span class="main-search-icon">
+                            ⌕
+                        </span>
+
+                        <input
+                            type="text"
+                            id="productSearchInput"
+                            placeholder="Search for products..."
+                            autocomplete="off"
+                        >
+
+                        <button
+                            type="button"
+                            class="clear-search"
+                            id="clearSearchButton"
+                            aria-label="Clear search"
+                        >
+                            ×
+                        </button>
+
+                    </div>
+
+
+                    <!-- Category -->
+
+                    <div class="filter-group">
+
+                        <label for="categoryFilter">
+                            Category
+                        </label>
+
+                        <select id="categoryFilter">
+
+                            <option value="all">
+                                All categories
+                            </option>
+
+                            <option value="books">
+                                Books
+                            </option>
+
+                            <option value="electronics">
+                                Electronics
+                            </option>
+
+                            <option value="fashion">
+                                Fashion
+                            </option>
+
+                            <option value="accessories">
+                                Accessories
+                            </option>
+
+                            <option value="home-living">
+                                Home & Living
+                            </option>
+
+                            <option value="sports">
+                                Sports
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- Sort -->
+
+                    <div class="filter-group">
+
+                        <label for="sortFilter">
+                            Sort by
+                        </label>
+
+                        <select id="sortFilter">
+
+                            <option value="newest">
+                                Newest
+                            </option>
+
+                            <option value="oldest">
+                                Oldest
+                            </option>
+
+                            <option value="price-low">
+                                Price: Low to High
+                            </option>
+
+                            <option value="price-high">
+                                Price: High to Low
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                </section>
+
+
+                <!-- =========================
+                     RESULTS HEADER
+                ========================== -->
+
+                <section class="results-header">
+
+                    <div>
+
+                        <span class="section-label">
+                            MARKETPLACE
+                        </span>
+
+                        <h2>
+                            Browse items
+                        </h2>
+
+                    </div>
+
+
+                    <span
+                        class="results-count"
+                        id="resultsCount"
+                    >
+                        0 items
+                    </span>
+
+                </section>
+
+
+                <!-- =========================
+                     PRODUCT RESULTS
+                ========================== -->
+
+                <section
+                    class="product-grid"
+                    id="productGrid"
+                >
+
+                    <!-- Products will be rendered here -->
+
+                </section>
+
+
+                <!-- =========================
+                     LOADING STATE
+                ========================== -->
+
+                <section
+                    class="state-card"
+                    id="loadingState"
+                    hidden
+                >
+
+                    <div class="state-icon loading-icon">
+                        ◌
+                    </div>
+
+                    <h3>
+                        Finding items...
+                    </h3>
+
+                    <p>
+                        Please wait while we load the marketplace.
+                    </p>
+
+                </section>
+
+
+                <!-- =========================
+                     EMPTY STATE
+                ========================== -->
+
+                <section
+                    class="state-card"
+                    id="emptyState"
+                    hidden
+                >
+
+                    <div class="state-icon">
+                        ⌕
+                    </div>
+
+                    <h3>
+                        No items found
+                    </h3>
+
+                    <p>
+                        Try another search or choose a different category.
+                    </p>
+
+                    <button
+                        type="button"
+                        class="reset-button"
+                        id="resetSearchButton"
+                    >
+                        Clear filters
+                    </button>
+
+                </section>
+
+            </div>
+
+        </main>
+
+    </div>
+
+
+    <!-- Search JavaScript -->
+
+    <script src="js/search.js"></script>
+
+</body>
+
+</html>

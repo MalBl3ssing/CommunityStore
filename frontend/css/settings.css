@@ -1,0 +1,767 @@
+:root {
+    --deep-green: #4F6F52;
+    --dark-green: #3F5F43;
+    --soft-green: #EAF0E8;
+    --cream: #F7F4EC;
+    --white: #FFFFFF;
+    --text-dark: #304F59;
+    --text-medium: #667A78;
+    --text-light: #91A09B;
+    --border: #E2E6E0;
+    --sidebar-width: 235px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "DM Sans", sans-serif;
+    background: var(--cream);
+    color: var(--text-dark);
+}
+
+button,
+input {
+    font-family: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+
+/* =========================
+   APP LAYOUT
+========================= */
+
+.app-layout {
+    min-height: 100vh;
+}
+
+
+/* =========================
+   SIDEBAR
+========================= */
+
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+
+    width: var(--sidebar-width);
+    height: 100vh;
+
+    padding: 28px 18px;
+
+    background: rgba(255, 255, 255, 0.94);
+    border-right: 1px solid var(--border);
+
+    display: flex;
+    flex-direction: column;
+
+    z-index: 100;
+}
+
+
+/* BRAND */
+
+.brand {
+    display: flex;
+    align-items: center;
+
+    gap: 11px;
+
+    padding: 0 9px;
+
+    margin-bottom: 36px;
+}
+
+.brand-logo {
+    width: 45px;
+    height: 45px;
+
+    border-radius: 12px;
+
+    object-fit: contain;
+}
+
+.brand-text {
+    display: flex;
+    flex-direction: column;
+
+    line-height: 1.05;
+}
+
+.brand-text span:first-child {
+    font-size: 14px;
+    font-weight: 700;
+
+    color: var(--text-dark);
+}
+
+.brand-text span:last-child {
+    font-size: 14px;
+    font-weight: 700;
+
+    color: var(--deep-green);
+}
+
+
+/* NAVIGATION */
+
+.nav-menu {
+    display: flex;
+    flex-direction: column;
+
+    gap: 6px;
+}
+
+.nav-item {
+    position: relative;
+
+    min-height: 45px;
+
+    padding: 0 13px;
+
+    border-radius: 12px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 13px;
+
+    text-decoration: none;
+
+    color: var(--text-medium);
+
+    font-size: 13px;
+    font-weight: 500;
+
+    transition: 0.2s ease;
+}
+
+.nav-item:hover {
+    background: var(--soft-green);
+    color: var(--dark-green);
+}
+
+.nav-item.active {
+    background: var(--soft-green);
+    color: var(--dark-green);
+    font-weight: 600;
+}
+
+.nav-icon {
+    width: 20px;
+
+    text-align: center;
+
+    font-size: 18px;
+    line-height: 1;
+}
+
+.nav-label {
+    white-space: nowrap;
+}
+
+.notification-dot {
+    width: 7px;
+    height: 7px;
+
+    margin-left: auto;
+
+    border-radius: 50%;
+
+    background: var(--deep-green);
+}
+
+
+/* SIDEBAR BOTTOM */
+
+.sidebar-bottom {
+    margin-top: auto;
+
+    padding-top: 18px;
+
+    border-top: 1px solid var(--border);
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 6px;
+}
+
+
+/* =========================
+   MAIN CONTENT
+========================= */
+
+.main-content {
+    margin-left: var(--sidebar-width);
+
+    min-height: 100vh;
+}
+
+
+/* =========================
+   TOPBAR
+========================= */
+
+.topbar {
+    position: sticky;
+    top: 0;
+
+    height: 82px;
+
+    padding: 0 42px;
+
+    background: rgba(247, 244, 236, 0.92);
+
+    backdrop-filter: blur(12px);
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 25px;
+
+    z-index: 50;
+}
+
+
+/* SEARCH */
+
+.search-box {
+    width: 100%;
+    max-width: 510px;
+
+    height: 43px;
+
+    padding: 0 15px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+
+    background: var(--white);
+
+    border: 1px solid var(--border);
+
+    border-radius: 13px;
+}
+
+.search-icon {
+    font-size: 21px;
+    color: var(--text-light);
+}
+
+.search-box input {
+    width: 100%;
+
+    border: none;
+    outline: none;
+
+    background: transparent;
+
+    color: var(--text-dark);
+
+    font-size: 13px;
+}
+
+.search-box input::placeholder {
+    color: var(--text-light);
+}
+
+
+/* TOPBAR ACTIONS */
+
+.topbar-actions {
+    display: flex;
+    align-items: center;
+
+    gap: 20px;
+}
+
+
+/* NOTIFICATIONS */
+
+.notification-button {
+    position: relative;
+
+    width: 35px;
+    height: 35px;
+
+    border: none;
+
+    background: transparent;
+
+    color: var(--text-medium);
+
+    font-size: 22px;
+}
+
+.notification-indicator {
+    position: absolute;
+
+    top: 5px;
+    right: 5px;
+
+    width: 6px;
+    height: 6px;
+
+    border-radius: 50%;
+
+    background: var(--deep-green);
+}
+
+
+/* PROFILE */
+
+.profile-area {
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+
+    cursor: pointer;
+}
+
+.profile-avatar {
+    width: 38px;
+    height: 38px;
+
+    border-radius: 50%;
+
+    background: var(--soft-green);
+
+    color: var(--dark-green);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.profile-info {
+    display: flex;
+    flex-direction: column;
+
+    gap: 2px;
+}
+
+.profile-name {
+    font-size: 13px;
+    font-weight: 600;
+
+    color: var(--text-dark);
+}
+
+.profile-type {
+    font-size: 11px;
+
+    color: var(--text-light);
+}
+
+
+/* =========================
+   CONTENT
+========================= */
+
+.content {
+    padding: 18px 42px 60px;
+}
+
+
+/* =========================
+   WELCOME
+========================= */
+
+.welcome-section {
+    margin-bottom: 42px;
+
+    padding: 34px 36px;
+
+    background: var(--white);
+
+    border: 1px solid var(--border);
+
+    border-radius: 18px;
+}
+
+.welcome-label {
+    display: block;
+
+    margin-bottom: 8px;
+
+    color: var(--deep-green);
+
+    font-size: 11px;
+    font-weight: 700;
+
+    letter-spacing: 0.9px;
+}
+
+.welcome-section h1 {
+    margin-bottom: 7px;
+
+    font-size: 30px;
+    line-height: 1.2;
+
+    font-weight: 700;
+
+    color: var(--text-dark);
+}
+
+.welcome-section p {
+    color: var(--text-medium);
+
+    font-size: 14px;
+
+    line-height: 1.6;
+}
+
+
+/* =========================
+   SETTINGS SECTIONS
+========================= */
+
+.settings-section {
+    margin-bottom: 42px;
+}
+
+.section-heading {
+    margin-bottom: 18px;
+}
+
+.section-label {
+    display: block;
+
+    margin-bottom: 5px;
+
+    color: var(--deep-green);
+
+    font-size: 10px;
+    font-weight: 700;
+
+    letter-spacing: 0.9px;
+}
+
+.section-heading h2 {
+    font-size: 19px;
+
+    font-weight: 600;
+
+    color: var(--text-dark);
+}
+
+
+/* =========================
+   SETTINGS BOX
+========================= */
+
+.settings-box {
+    padding: 4px 30px;
+
+    background: var(--white);
+
+    border: 1px solid var(--border);
+
+    border-radius: 18px;
+}
+
+.setting-row {
+    min-height: 84px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 25px;
+}
+
+.setting-info {
+    display: flex;
+    flex-direction: column;
+
+    gap: 5px;
+
+    min-width: 0;
+}
+
+.setting-title {
+    color: var(--text-dark);
+
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.setting-description {
+    color: var(--text-medium);
+
+    font-size: 12px;
+
+    line-height: 1.5;
+}
+
+.setting-value {
+    color: var(--text-medium);
+
+    font-size: 13px;
+
+    text-align: right;
+
+    word-break: break-word;
+}
+
+.setting-divider {
+    height: 1px;
+
+    background: var(--border);
+}
+
+
+/* =========================
+   BUTTONS
+========================= */
+
+.secondary-button {
+    min-width: 125px;
+    height: 38px;
+
+    padding: 0 15px;
+
+    border: 1px solid var(--border);
+
+    border-radius: 10px;
+
+    background: var(--white);
+
+    color: var(--text-dark);
+
+    font-size: 12px;
+    font-weight: 600;
+
+    transition: 0.2s ease;
+}
+
+.secondary-button:hover {
+    border-color: var(--deep-green);
+
+    background: var(--soft-green);
+
+    color: var(--dark-green);
+}
+
+
+/* =========================
+   TOGGLE
+========================= */
+
+.toggle {
+    position: relative;
+
+    width: 44px;
+    height: 24px;
+
+    flex-shrink: 0;
+}
+
+.toggle input {
+    opacity: 0;
+
+    width: 0;
+    height: 0;
+}
+
+.toggle-slider {
+    position: absolute;
+
+    inset: 0;
+
+    border-radius: 30px;
+
+    background: #D8DDD8;
+
+    cursor: pointer;
+
+    transition: 0.2s ease;
+}
+
+.toggle-slider::before {
+    content: "";
+
+    position: absolute;
+
+    width: 18px;
+    height: 18px;
+
+    left: 3px;
+    top: 3px;
+
+    border-radius: 50%;
+
+    background: var(--white);
+
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+
+    transition: 0.2s ease;
+}
+
+.toggle input:checked + .toggle-slider {
+    background: var(--deep-green);
+}
+
+.toggle input:checked + .toggle-slider::before {
+    transform: translateX(20px);
+}
+
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 1100px) {
+
+    .content {
+        padding-left: 30px;
+        padding-right: 30px;
+    }
+
+    .topbar {
+        padding-left: 30px;
+        padding-right: 30px;
+    }
+}
+
+
+@media (max-width: 800px) {
+
+    :root {
+        --sidebar-width: 78px;
+    }
+
+    .sidebar {
+        padding: 28px 10px;
+    }
+
+    .brand {
+        justify-content: center;
+
+        padding: 0;
+    }
+
+    .brand-text,
+    .nav-label,
+    .profile-info {
+        display: none;
+    }
+
+    .brand-logo {
+        width: 45px;
+        height: 45px;
+    }
+
+    .nav-item {
+        justify-content: center;
+
+        padding: 0;
+    }
+
+    .notification-dot {
+        position: absolute;
+
+        top: 10px;
+        right: 13px;
+
+        margin: 0;
+    }
+
+    .sidebar-bottom {
+        border-top: none;
+
+        padding-top: 0;
+    }
+
+    .content {
+        padding: 18px 22px 50px;
+    }
+
+    .topbar {
+        padding: 0 22px;
+    }
+
+    .setting-row {
+        gap: 18px;
+    }
+}
+
+
+@media (max-width: 520px) {
+
+    .topbar {
+        height: 72px;
+
+        padding: 0 16px;
+    }
+
+    .topbar-actions {
+        gap: 8px;
+    }
+
+    .search-box {
+        max-width: none;
+    }
+
+    .profile-area {
+        display: none;
+    }
+
+    .content {
+        padding: 16px 16px 40px;
+    }
+
+    .welcome-section {
+        padding: 26px 24px;
+    }
+
+    .welcome-section h1 {
+        font-size: 26px;
+    }
+
+    .settings-box {
+        padding: 4px 20px;
+    }
+
+    .setting-row {
+        min-height: 88px;
+    }
+
+    .setting-description {
+        font-size: 11px;
+    }
+
+    .setting-value {
+        max-width: 45%;
+
+        font-size: 12px;
+    }
+
+    .action-row {
+        align-items: flex-start;
+
+        flex-direction: column;
+        justify-content: center;
+
+        padding: 15px 0;
+    }
+
+    .action-row .secondary-button {
+        width: 100%;
+    }
+}

@@ -3,7 +3,6 @@
 // =========================
 
 function togglePassword(fieldId, button) {
-
     const field = document.getElementById(fieldId);
 
     if (field.type === "password") {
@@ -23,7 +22,6 @@ function togglePassword(fieldId, button) {
 const registerForm = document.getElementById("registerForm");
 
 registerForm.addEventListener("submit", function (event) {
-
     event.preventDefault();
 
     const fullName =
@@ -45,34 +43,67 @@ registerForm.addEventListener("submit", function (event) {
         document.getElementById("terms").checked;
 
 
-    // Check user type
+    // =========================
+    // VALIDATION
+    // =========================
+
+    if (!fullName) {
+        alert("Please enter your full name.");
+        return;
+    }
+
     if (!userType) {
-
         alert("Please select your user type.");
-
         return;
     }
 
+    if (!email) {
+        alert("Please enter your email address.");
+        return;
+    }
 
-    // Check passwords
+    if (!password) {
+        alert("Please create a password.");
+        return;
+    }
+
     if (password !== confirmPassword) {
-
         alert("Passwords do not match.");
-
         return;
     }
 
-
-    // Check terms
     if (!terms) {
-
         alert("Please agree to the Terms & Conditions.");
-
         return;
     }
 
 
-    // Temporary success message
+    // =========================
+    // CREATE USER
+    // =========================
+
+    const user = {
+        fullName: fullName,
+        userType: userType,
+        email: email,
+        password: password
+    };
+
+
+    // =========================
+    // SAVE USER
+    // =========================
+
+    localStorage.setItem(
+        "communityStoreUser",
+        JSON.stringify(user)
+    );
+
+
+    // =========================
+    // SUCCESS
+    // =========================
+
     alert(
         "Welcome to Community Store, " +
         fullName +
@@ -80,6 +111,9 @@ registerForm.addEventListener("submit", function (event) {
     );
 
 
-    // For now, send the user to login
+    // =========================
+    // GO TO LOGIN
+    // =========================
+
     window.location.href = "login.html";
 });

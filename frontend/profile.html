@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Profile | Community Store</title>
+
+    <link
+        rel="icon"
+        type="image/png"
+        href="assets/images/community-store-favicon.png"
+    >
+
+    <link rel="stylesheet" href="css/profile.css">
+
+</head>
+
+<body>
+
+    <div class="dashboard">
+
+
+        <!-- =========================
+             SIDEBAR
+        ========================== -->
+
+        <aside class="sidebar">
+
+
+            <!-- Brand -->
+
+            <div class="brand">
+
+                <img
+                    src="assets/images/community-store-logo.png"
+                    alt="Community Store Logo"
+                >
+
+                <div class="brand-text">
+
+                    <span>Community</span>
+
+                    <span>Store</span>
+
+                </div>
+
+            </div>
+
+
+            <!-- Main Navigation -->
+
+            <nav class="main-nav">
+
+
+                <!-- Home -->
+
+                <a
+                    href="home.html"
+                    class="nav-item"
+                >
+
+                    <span class="nav-icon">⌂</span>
+
+                    <span>Home</span>
+
+                </a>
+
+
+                <!-- Search -->
+
+                <a
+                    href="search.html"
+                    class="nav-item"
+                >
+
+                    <span class="nav-icon">⌕</span>
+
+                    <span>Search</span>
+
+                </a>
+
+
+                <!-- Saved -->
+
+                <a
+                    href="saved.html"
+                    class="nav-item"
+                >
+
+                    <span class="nav-icon">♡</span>
+
+                    <span>Saved</span>
+
+                </a>
+
+
+                <!-- Chat -->
+
+                <a
+                    href="chat.html"
+                    class="nav-item"
+                >
+
+                    <span class="nav-icon">◌</span>
+
+                    <span>Chat</span>
+
+                    <span class="notification-dot"></span>
+
+                </a>
+
+
+                <!-- Orders -->
+
+                <a
+                    href="orders.html"
+                    class="nav-item"
+                >
+
+                    <span class="nav-icon">▣</span>
+
+                    <span>Orders</span>
+
+                </a>
+
+            </nav>
+
+
+            <!-- Sidebar Bottom -->
+
+            <div class="sidebar-bottom">
+
+
+                <!-- Help -->
+
+                <a
+                    href="help.html"
+                    class="nav-item"
+                >
+
+                    <span class="nav-icon">?</span>
+
+                    <span>Help & Support</span>
+
+                </a>
+
+
+                <!-- Settings -->
+
+                <a
+                    href="settings.html"
+                    class="nav-item"
+                >
+
+                    <span class="nav-icon">⚙</span>
+
+                    <span>Settings</span>
+
+                </a>
+
+
+                <!-- Logout -->
+
+                <a
+                    href="login.html"
+                    class="nav-item logout"
+                    id="logoutButton"
+                >
+
+                    <span class="nav-icon">↪</span>
+
+                    <span>Log out</span>
+
+                </a>
+
+            </div>
+
+        </aside>
+
+
+        <!-- =========================
+             MAIN CONTENT
+        ========================== -->
+
+        <main class="main-content">
+
+
+            <!-- =========================
+                 TOP BAR
+            ========================== -->
+
+            <header class="top-bar">
+
+
+                <!-- Search -->
+
+                <div class="search-box">
+
+                    <span class="search-icon">⌕</span>
+
+                    <input
+                        type="text"
+                        id="profileSearch"
+                        placeholder="Search products, categories..."
+                    >
+
+                </div>
+
+
+                <!-- Top Actions -->
+
+                <div class="top-actions">
+
+
+                    <!-- Notifications -->
+
+                    <button
+                        class="icon-button"
+                        id="notificationButton"
+                        aria-label="Notifications"
+                    >
+
+                        ♧
+
+                        <span class="notification-badge">
+                            2
+                        </span>
+
+                    </button>
+
+
+                    <!-- Profile -->
+
+                    <button
+                        class="profile-button"
+                        id="profileButton"
+                        aria-label="Profile"
+                    >
+
+                        <div class="profile-avatar">
+
+                            <span>👤</span>
+
+                        </div>
+
+
+                        <div class="profile-info">
+
+                            <strong id="userName">
+                                My Profile
+                            </strong>
+
+                            <span id="userType">
+                                Account
+                            </span>
+
+                        </div>
+
+
+                        <span class="profile-arrow">
+                            ⌄
+                        </span>
+
+                    </button>
+
+                </div>
+
+            </header>
+
+
+            <!-- =========================
+                 PAGE CONTENT
+            ========================== -->
+
+            <div class="content">
+
+
+                <!-- =========================
+                     PROFILE INTRO
+                ========================== -->
+
+                <section class="profile-intro">
+
+                    <div class="intro-content">
+
+                        <span class="section-label">
+                            ACCOUNT
+                        </span>
+
+                        <h1>
+                            My Profile
+                        </h1>
+
+                        <p>
+                            Manage your account, listings and saved items.
+                        </p>
+
+                    </div>
+
+
+                    <button
+                        class="primary-button"
+                        id="editProfileButton"
+                    >
+
+                        Edit Profile
+
+                        <span>✎</span>
+
+                    </button>
+
+                </section>
+
+
+                <!-- =========================
+                     PROFILE OVERVIEW
+                ========================== -->
+
+                <section class="profile-overview">
+
+
+                    <div class="profile-user">
+
+                        <div class="large-profile-avatar">
+
+                            <span>👤</span>
+
+                        </div>
+
+
+                        <div class="profile-details">
+
+                            <h2 id="profileName">
+                                Your Name
+                            </h2>
+
+                            <p
+                                class="profile-user-type"
+                                id="profileUserType"
+                            >
+                                User Type
+                            </p>
+
+                            <span id="profileEmail">
+                                your.email@example.com
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Profile Statistics -->
+
+                    <div class="profile-stats">
+
+
+                        <!-- Listings -->
+
+                        <div class="stat-card">
+
+                            <span class="stat-icon">
+                                ◈
+                            </span>
+
+                            <div>
+
+                                <strong id="listingCount">
+                                    0
+                                </strong>
+
+                                <span>
+                                    Listings
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- Saved Items -->
+
+                        <div class="stat-card">
+
+                            <span class="stat-icon">
+                                ♡
+                            </span>
+
+                            <div>
+
+                                <strong id="savedCount">
+                                    0
+                                </strong>
+
+                                <span>
+                                    Saved Items
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- Orders -->
+
+                        <div class="stat-card">
+
+                            <span class="stat-icon">
+                                ▣
+                            </span>
+
+                            <div>
+
+                                <strong id="orderCount">
+                                    0
+                                </strong>
+
+                                <span>
+                                    Orders
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- =========================
+                     ACCOUNT INFORMATION
+                ========================== -->
+
+                <section class="profile-section">
+
+
+                    <div class="section-heading">
+
+                        <div>
+
+                            <span class="section-label">
+                                ACCOUNT
+                            </span>
+
+                            <h2>
+                                Account Information
+                            </h2>
+
+                            <p>
+                                Your personal account details
+                            </p>
+
+                        </div>
+
+
+                        <button
+                            class="text-button"
+                            id="accountEditButton"
+                        >
+                            Edit
+                        </button>
+
+                    </div>
+
+
+                    <div class="account-card">
+
+
+                        <!-- Full Name -->
+
+                        <div class="account-row">
+
+                            <div class="account-label">
+
+                                <span class="account-icon">
+                                    👤
+                                </span>
+
+                                <span>
+                                    Full Name
+                                </span>
+
+                            </div>
+
+
+                            <span
+                                class="account-value"
+                                id="accountName"
+                            >
+                                Not provided
+                            </span>
+
+                        </div>
+
+
+                        <!-- Email -->
+
+                        <div class="account-row">
+
+                            <div class="account-label">
+
+                                <span class="account-icon">
+                                    ✉
+                                </span>
+
+                                <span>
+                                    Email Address
+                                </span>
+
+                            </div>
+
+
+                            <span
+                                class="account-value"
+                                id="accountEmail"
+                            >
+                                Not provided
+                            </span>
+
+                        </div>
+
+
+                        <!-- User Type -->
+
+                        <div class="account-row">
+
+                            <div class="account-label">
+
+                                <span class="account-icon">
+                                    ◉
+                                </span>
+
+                                <span>
+                                    User Type
+                                </span>
+
+                            </div>
+
+
+                            <span
+                                class="account-value"
+                                id="accountUserType"
+                            >
+                                Not provided
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- =========================
+                     MY LISTINGS
+                ========================== -->
+
+                <section class="profile-section">
+
+
+                    <div class="section-heading">
+
+                        <div>
+
+                            <span class="section-label">
+                                MARKETPLACE
+                            </span>
+
+                            <h2>
+                                My Listings
+                            </h2>
+
+                            <p>
+                                Items you have posted to the community
+                            </p>
+
+                        </div>
+
+
+                        <button
+                            class="text-button"
+                            id="viewListingsButton"
+                        >
+                            View All
+                        </button>
+
+                    </div>
+
+
+                    <div class="empty-state">
+
+                        <div class="empty-icon">
+                            ◈
+                        </div>
+
+                        <h3>
+                            No listings yet
+                        </h3>
+
+                        <p>
+                            Items you list for sale will appear here.
+                        </p>
+
+                        <button
+                            class="primary-button"
+                            id="createListingButton"
+                        >
+
+                            Sell an Item
+
+                            <span>→</span>
+
+                        </button>
+
+                    </div>
+
+                </section>
+
+
+                <!-- =========================
+                     SAVED ITEMS
+                ========================== -->
+
+                <section class="profile-section">
+
+
+                    <div class="section-heading">
+
+                        <div>
+
+                            <span class="section-label">
+                                SAVED
+                            </span>
+
+                            <h2>
+                                Saved Items
+                            </h2>
+
+                            <p>
+                                Items you've saved for later
+                            </p>
+
+                        </div>
+
+
+                        <button
+                            class="text-button"
+                            id="viewSavedButton"
+                        >
+                            View All
+                        </button>
+
+                    </div>
+
+
+                    <div class="empty-state">
+
+                        <div class="empty-icon">
+                            ♡
+                        </div>
+
+                        <h3>
+                            No saved items
+                        </h3>
+
+                        <p>
+                            Items you save from the marketplace
+                            will appear here.
+                        </p>
+
+                        <button
+                            class="secondary-button"
+                            id="browseButton"
+                        >
+
+                            Browse Marketplace
+
+                            <span>→</span>
+
+                        </button>
+
+                    </div>
+
+                </section>
+
+
+                <!-- =========================
+                     QUICK ACTIONS
+                ========================== -->
+
+                <section class="profile-section">
+
+
+                    <div class="section-heading">
+
+                        <div>
+
+                            <span class="section-label">
+                                SHORTCUTS
+                            </span>
+
+                            <h2>
+                                Quick Actions
+                            </h2>
+
+                            <p>
+                                Manage your Community Store account
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="quick-actions">
+
+
+                        <!-- Settings -->
+
+                        <button
+                            class="action-card"
+                            id="settingsButton"
+                        >
+
+                            <div class="action-icon">
+                                ⚙
+                            </div>
+
+                            <div class="action-content">
+
+                                <h3>
+                                    Account Settings
+                                </h3>
+
+                                <p>
+                                    Manage your preferences and account
+                                </p>
+
+                            </div>
+
+                            <span class="action-arrow">
+                                →
+                            </span>
+
+                        </button>
+
+
+                        <!-- Messages -->
+
+                        <button
+                            class="action-card"
+                            id="chatButton"
+                        >
+
+                            <div class="action-icon">
+                                💬
+                            </div>
+
+                            <div class="action-content">
+
+                                <h3>
+                                    Messages
+                                </h3>
+
+                                <p>
+                                    View your conversations
+                                </p>
+
+                            </div>
+
+                            <span class="action-arrow">
+                                →
+                            </span>
+
+                        </button>
+
+
+                        <!-- Help -->
+
+                        <button
+                            class="action-card"
+                            id="helpButton"
+                        >
+
+                            <div class="action-icon">
+                                ?
+                            </div>
+
+                            <div class="action-content">
+
+                                <h3>
+                                    Help & Support
+                                </h3>
+
+                                <p>
+                                    Get help with Community Store
+                                </p>
+
+                            </div>
+
+                            <span class="action-arrow">
+                                →
+                            </span>
+
+                        </button>
+
+                    </div>
+
+                </section>
+
+            </div>
+
+        </main>
+
+    </div>
+
+
+    <!-- Profile JavaScript -->
+
+    <script src="js/profile.js"></script>
+
+</body>
+
+</html>
