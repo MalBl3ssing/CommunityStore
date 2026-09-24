@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Saved | Community Store</title>
+
+    <link
+        rel="icon"
+        type="image/png"
+        href="assets/images/community-store-favicon.png"
+    >
+
+    <link rel="stylesheet" href="css/saved.css">
+
+</head>
+
+<body>
+
+    <div class="dashboard">
+
+        <!-- =========================
+             SIDEBAR
+        ========================== -->
+
+        <aside class="sidebar">
+
+            <div class="brand">
+
+                <img
+                    src="assets/images/community-store-logo.png"
+                    alt="Community Store Logo"
+                >
+
+                <div class="brand-text">
+                    <span>Community</span>
+                    <span>Store</span>
+                </div>
+
+            </div>
+
+
+            <nav class="main-nav">
+
+                <a
+                    href="home.html"
+                    class="nav-item"
+                >
+                    <span class="nav-icon">⌂</span>
+                    <span>Home</span>
+                </a>
+
+
+                <a
+                    href="search.html"
+                    class="nav-item"
+                >
+                    <span class="nav-icon">⌕</span>
+                    <span>Search</span>
+                </a>
+
+
+                <a
+                    href="saved.html"
+                    class="nav-item active"
+                >
+                    <span class="nav-icon">♡</span>
+                    <span>Saved</span>
+                </a>
+
+
+                <a
+                    href="chat.html"
+                    class="nav-item"
+                >
+                    <span class="nav-icon">◌</span>
+                    <span>Chat</span>
+                    <span class="notification-dot"></span>
+                </a>
+
+
+                <a
+                    href="orders.html"
+                    class="nav-item"
+                >
+                    <span class="nav-icon">▣</span>
+                    <span>Orders</span>
+                </a>
+
+            </nav>
+
+
+            <div class="sidebar-bottom">
+
+                <a
+                    href="help.html"
+                    class="nav-item"
+                >
+                    <span class="nav-icon">?</span>
+                    <span>Help & Support</span>
+                </a>
+
+
+                <a
+                    href="settings.html"
+                    class="nav-item"
+                >
+                    <span class="nav-icon">⚙</span>
+                    <span>Settings</span>
+                </a>
+
+
+                <a
+                    href="login.html"
+                    class="nav-item logout"
+                    id="logoutButton"
+                >
+                    <span class="nav-icon">↪</span>
+                    <span>Log out</span>
+                </a>
+
+            </div>
+
+        </aside>
+
+
+        <!-- =========================
+             MAIN CONTENT
+        ========================== -->
+
+        <main class="main-content">
+
+            <header class="top-bar">
+
+                <div class="search-box">
+
+                    <span class="search-icon">
+                        ⌕
+                    </span>
+
+                    <input
+                        type="text"
+                        id="savedSearch"
+                        placeholder="Search products, categories..."
+                    >
+
+                </div>
+
+
+                <div class="top-actions">
+
+                    <button
+                        type="button"
+                        class="icon-button notification-button"
+                        id="notificationButton"
+                        aria-label="Notifications"
+                    >
+
+                        <span class="notification-icon">
+                            ♧
+                        </span>
+
+                        <span class="notification-badge"></span>
+
+                    </button>
+
+
+                    <button
+                        type="button"
+                        class="profile-button"
+                        id="profileButton"
+                        aria-label="Profile"
+                    >
+
+                        <div class="profile-avatar">
+                            <span>👤</span>
+                        </div>
+
+
+                        <div class="profile-info">
+
+                            <strong id="userName">
+                                My Profile
+                            </strong>
+
+                            <span id="userType">
+                                Account
+                            </span>
+
+                        </div>
+
+
+                        <span class="profile-arrow">
+                            ⌄
+                        </span>
+
+                    </button>
+
+                </div>
+
+            </header>
+
+
+            <div class="content">
+
+
+                <!-- =========================
+                     SAVED HEADER
+                ========================== -->
+
+                <section class="saved-header">
+
+                    <div class="saved-heading">
+
+                        <span class="section-label">
+                            YOUR COLLECTION
+                        </span>
+
+                        <h1>
+                            Saved Items
+                        </h1>
+
+                        <p>
+                            Items you've saved from the community marketplace.
+                        </p>
+
+                    </div>
+
+
+                    <a
+                        href="search.html"
+                        class="browse-button"
+                    >
+                        <span>
+                            Browse Items
+                        </span>
+
+                        <span>
+                            →
+                        </span>
+                    </a>
+
+                </section>
+
+
+                <!-- =========================
+                     SAVED ITEMS
+                ========================== -->
+
+                <section class="saved-section">
+
+                    <div class="saved-section-heading">
+
+                        <div>
+
+                            <span class="section-label">
+                                YOUR SAVES
+                            </span>
+
+                            <h2>
+                                Saved items
+                            </h2>
+
+                        </div>
+
+
+                        <span
+                            class="saved-count"
+                            id="savedCount"
+                        >
+                            0 items
+                        </span>
+
+                    </div>
+
+
+                    <div
+                        class="saved-grid"
+                        id="savedGrid"
+                    >
+
+                        <div
+                            class="loading-state"
+                            id="loadingState"
+                        >
+                            Loading saved items...
+                        </div>
+
+                    </div>
+
+
+                    <div
+                        class="empty-state"
+                        id="emptyState"
+                        style="display: none;"
+                    >
+
+                        <div class="empty-icon">
+                            ♡
+                        </div>
+
+                        <h3>
+                            No saved items yet
+                        </h3>
+
+                        <p>
+                            Items you save from the marketplace
+                            will appear here.
+                        </p>
+
+                    </div>
+
+                </section>
+
+            </div>
+
+        </main>
+
+    </div>
+
+
+    <script src="js/saved.js"></script>
+
+</body>
+
+</html>

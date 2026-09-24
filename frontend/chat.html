@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Chat | Community Store</title>
+
+    <link
+        rel="icon"
+        type="image/png"
+        href="assets/images/community-store-favicon.png"
+    >
+
+    <link rel="stylesheet" href="css/chat.css">
+</head>
+
+<body>
+
+    <div class="dashboard">
+
+        <!-- =========================
+             SIDEBAR
+        ========================== -->
+        <aside class="sidebar">
+
+            <!-- Brand -->
+            <div class="brand">
+                <img
+                    src="assets/images/community-store-logo.png"
+                    alt="Community Store Logo"
+                >
+
+                <div class="brand-text">
+                    <span>Community</span>
+                    <span>Store</span>
+                </div>
+            </div>
+
+
+            <!-- Main Navigation -->
+            <nav class="main-nav">
+
+                <!-- Home -->
+                <a
+                    href="home.html"
+                    class="nav-item"
+                >
+                    <span class="nav-icon">⌂</span>
+                    <span>Home</span>
+                </a>
+
+                <!-- Search -->
+                <a
+                    href="search.html"
+                    class="nav-item"
+                >
+                    <span class="nav-icon">⌕</span>
+                    <span>Search</span>
+                </a>
+
+                <!-- Saved -->
+                <a
+                    href="saved.html"
+                    class="nav-item"
+                >
+                    <span class="nav-icon">♡</span>
+                    <span>Saved</span>
+                </a>
+
+                <!-- Chat -->
+                <a
+                    href="chat.html"
+                    class="nav-item active"
+                >
+                    <span class="nav-icon">◌</span>
+                    <span>Chat</span>
+                    <span class="notification-dot"></span>
+                </a>
+
+                <!-- Orders -->
+                <a
+                    href="orders.html"
+                    class="nav-item"
+                >
+                    <span class="nav-icon">▣</span>
+                    <span>Orders</span>
+                </a>
+
+            </nav>
+
+
+            <!-- Sidebar Bottom -->
+            <div class="sidebar-bottom">
+
+                <!-- Help -->
+                <a
+                    href="help.html"
+                    class="nav-item"
+                >
+                    <span class="nav-icon">?</span>
+                    <span>Help & Support</span>
+                </a>
+
+                <!-- Settings -->
+                <a
+                    href="settings.html"
+                    class="nav-item"
+                >
+                    <span class="nav-icon">⚙</span>
+                    <span>Settings</span>
+                </a>
+
+                <!-- Logout -->
+                <a
+                    href="login.html"
+                    class="nav-item logout"
+                    id="logoutButton"
+                >
+                    <span class="nav-icon">↪</span>
+                    <span>Log out</span>
+                </a>
+
+            </div>
+
+        </aside>
+
+
+        <!-- =========================
+             MAIN CONTENT
+        ========================== -->
+        <main class="main-content">
+
+            <!-- =========================
+                 TOP BAR
+            ========================== -->
+            <header class="top-bar">
+
+                <!-- Search -->
+                <div class="search-box">
+
+                    <span class="search-icon">
+                        ⌕
+                    </span>
+
+                    <input
+                        type="text"
+                        id="dashboardSearch"
+                        placeholder="Search products, categories..."
+                    >
+
+                </div>
+
+
+                <!-- Top Actions -->
+                <div class="top-actions">
+
+                    <!-- Notifications -->
+                    <button
+                        class="icon-button notification-button"
+                        id="notificationButton"
+                        aria-label="Notifications"
+                    >
+                        <span class="notification-icon">
+                            ♧
+                        </span>
+
+                        <span class="notification-badge"></span>
+                    </button>
+
+
+                    <!-- Profile -->
+                    <button
+                        class="profile-button"
+                        id="profileButton"
+                        aria-label="Profile"
+                    >
+
+                        <div class="profile-avatar">
+                            <span id="userInitials">--</span>
+                        </div>
+
+                        <div class="profile-info">
+
+                            <strong id="userName">
+                                My Profile
+                            </strong>
+
+                            <span id="userType">
+                                Account
+                            </span>
+
+                        </div>
+
+                        <span class="profile-arrow">
+                            ⌄
+                        </span>
+
+                    </button>
+
+                </div>
+
+            </header>
+
+
+            <!-- =========================
+                 CONTENT
+            ========================== -->
+            <div class="content">
+
+                <!-- =========================
+                     CHAT HEADER
+                ========================== -->
+                <section class="chat-header-section">
+
+                    <div class="chat-header-content">
+
+                        <span class="section-label">
+                            COMMUNITY MESSAGES
+                        </span>
+
+                        <h1>
+                            Your conversations
+                        </h1>
+
+                        <p>
+                            Connect with buyers and sellers in your community.
+                        </p>
+
+                    </div>
+
+                </section>
+
+
+                <!-- =========================
+                     CHAT AREA
+                ========================== -->
+                <section class="chat-section">
+
+                    <!-- =====================
+                         CONVERSATIONS
+                    ====================== -->
+                    <aside class="conversation-panel">
+
+                        <div class="conversation-heading">
+
+                            <div>
+                                <span class="section-label">
+                                    MESSAGES
+                                </span>
+
+                                <h2>
+                                    Conversations
+                                </h2>
+                            </div>
+
+                        </div>
+
+
+                        <!-- Conversation Search -->
+                        <div class="conversation-search">
+
+                            <span class="conversation-search-icon">
+                                ⌕
+                            </span>
+
+                            <input
+                                type="text"
+                                id="conversationSearch"
+                                placeholder="Search conversations..."
+                            >
+
+                        </div>
+
+
+                        <!-- Conversation List -->
+                        <div
+                            class="conversation-list"
+                            id="conversationList"
+                        >
+
+                            <!-- Populated by JavaScript -->
+
+                            <div class="conversation-empty">
+
+                                <div class="empty-icon">
+                                    ◌
+                                </div>
+
+                                <h3>
+                                    No conversations yet
+                                </h3>
+
+                                <p>
+                                    Your conversations with buyers and sellers will appear here.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                    </aside>
+
+
+                    <!-- =====================
+                         CHAT WINDOW
+                    ====================== -->
+                    <div
+                        class="chat-window"
+                        id="chatWindow"
+                    >
+
+                        <!-- Empty Chat State -->
+                        <div
+                            class="chat-empty-state"
+                            id="chatEmptyState"
+                        >
+
+                            <div class="chat-empty-icon">
+                                ◌
+                            </div>
+
+                            <span class="section-label">
+                                COMMUNITY CHAT
+                            </span>
+
+                            <h2>
+                                Start a conversation
+                            </h2>
+
+                            <p>
+                                Select a conversation to view your messages.
+                            </p>
+
+                        </div>
+
+
+                        <!-- Active Conversation -->
+                        <div
+                            class="active-chat"
+                            id="activeChat"
+                            hidden
+                        >
+
+                            <!-- Chat Header -->
+                            <header class="active-chat-header">
+
+                                <div class="chat-user">
+
+                                    <div
+                                        class="chat-avatar"
+                                        id="chatAvatar"
+                                    >
+                                        <span id="chatUserInitials">
+                                            --
+                                        </span>
+                                    </div>
+
+                                    <div class="chat-user-info">
+
+                                        <strong id="chatUserName">
+                                            User
+                                        </strong>
+
+                                        <span id="chatUserStatus">
+                                            Offline
+                                        </span>
+
+                                    </div>
+
+                                </div>
+
+                            </header>
+
+
+                            <!-- Messages -->
+                            <div
+                                class="messages-container"
+                                id="messagesContainer"
+                            >
+                                <!-- Messages populated by JavaScript -->
+                            </div>
+
+
+                            <!-- Message Input -->
+                            <form
+                                class="message-form"
+                                id="messageForm"
+                            >
+
+                                <textarea
+                                    id="messageInput"
+                                    rows="1"
+                                    placeholder="Write a message..."
+                                    maxlength="2000"
+                                ></textarea>
+
+                                <button
+                                    type="submit"
+                                    class="send-button"
+                                    id="sendMessageButton"
+                                    aria-label="Send message"
+                                >
+                                    <span>→</span>
+                                </button>
+
+                            </form>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+            </div>
+
+        </main>
+
+    </div>
+
+
+    <script src="js/chat.js"></script>
+
+</body>
+</html>

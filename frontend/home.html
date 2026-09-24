@@ -1,11 +1,13 @@
 <!DOCTYPE html>
+
 <html lang="en">
 
 <head>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Dashboard | Community Store</title>
+    <title>Home | Community Store</title>
 
     <link
         rel="icon"
@@ -13,15 +15,14 @@
         href="assets/images/community-store-favicon.png"
     >
 
-    <link
-        rel="stylesheet"
-        href="css/home.css"
-    >
+    <link rel="stylesheet" href="css/home.css">
+
 </head>
 
 <body>
 
     <div class="dashboard">
+
 
         <!-- =========================
              SIDEBAR
@@ -29,56 +30,78 @@
 
         <aside class="sidebar">
 
-            <!-- Logo -->
+
+            <!-- Brand -->
+
             <div class="brand">
 
                 <img
                     src="assets/images/community-store-logo.png"
-                    alt="Community Store"
+                    alt="Community Store Logo"
                 >
 
-                <div>
-                    <h2>Community</h2>
+                <div class="brand-text">
+
+                    <span>Community</span>
                     <span>Store</span>
+
                 </div>
 
             </div>
 
 
-            <!-- Navigation -->
+            <!-- Main Navigation -->
+
             <nav class="main-nav">
 
-                <a href="dashboard.html" class="nav-item active">
+
+                <!-- Home -->
+
+                <a
+                    href="home.html"
+                    class="nav-item active"
+                >
 
                     <span class="nav-icon">⌂</span>
-
                     <span>Home</span>
 
                 </a>
 
 
-                <a href="#" class="nav-item">
+                <!-- Search -->
+
+                <a
+                    href="search.html"
+                    class="nav-item"
+                >
 
                     <span class="nav-icon">⌕</span>
-
                     <span>Search</span>
 
                 </a>
 
 
-                <a href="#" class="nav-item">
+                <!-- Saved -->
+
+                <a
+                    href="saved.html"
+                    class="nav-item"
+                >
 
                     <span class="nav-icon">♡</span>
-
                     <span>Saved</span>
 
                 </a>
 
 
-                <a href="#" class="nav-item">
+                <!-- Chat -->
+
+                <a
+                    href="chat.html"
+                    class="nav-item"
+                >
 
                     <span class="nav-icon">◌</span>
-
                     <span>Chat</span>
 
                     <span class="notification-dot"></span>
@@ -86,10 +109,14 @@
                 </a>
 
 
-                <a href="#" class="nav-item">
+                <!-- Orders -->
+
+                <a
+                    href="orders.html"
+                    class="nav-item"
+                >
 
                     <span class="nav-icon">▣</span>
-
                     <span>Orders</span>
 
                 </a>
@@ -97,31 +124,46 @@
             </nav>
 
 
-            <!-- Bottom Navigation -->
+            <!-- Sidebar Bottom -->
+
             <div class="sidebar-bottom">
 
-                <a href="#" class="nav-item">
+
+                <!-- Help -->
+
+                <a
+                    href="help.html"
+                    class="nav-item"
+                >
 
                     <span class="nav-icon">?</span>
-
                     <span>Help & Support</span>
 
                 </a>
 
 
-                <a href="#" class="nav-item">
+                <!-- Settings -->
+
+                <a
+                    href="settings.html"
+                    class="nav-item"
+                >
 
                     <span class="nav-icon">⚙</span>
-
                     <span>Settings</span>
 
                 </a>
 
 
-                <a href="login.html" class="nav-item logout">
+                <!-- Logout -->
+
+                <a
+                    href="login.html"
+                    class="nav-item logout"
+                    id="logoutButton"
+                >
 
                     <span class="nav-icon">↪</span>
-
                     <span>Log out</span>
 
                 </a>
@@ -137,28 +179,24 @@
 
         <main class="main-content">
 
-            <!-- Top Bar -->
+
+            <!-- =========================
+                 TOP BAR
+            ========================== -->
+
             <header class="top-bar">
-
-                <div class="mobile-brand">
-
-                    <img
-                        src="assets/images/community-store-logo.png"
-                        alt="Community Store"
-                    >
-
-                    <span>Community Store</span>
-
-                </div>
 
 
                 <!-- Search -->
+
                 <div class="search-box">
 
-                    <span>⌕</span>
+                    <span class="search-icon">
+                        ⌕
+                    </span>
 
                     <input
-                        type="search"
+                        type="text"
                         id="dashboardSearch"
                         placeholder="Search products, categories..."
                     >
@@ -166,29 +204,42 @@
                 </div>
 
 
-                <!-- Actions -->
+                <!-- Top Actions -->
+
                 <div class="top-actions">
 
+
+                    <!-- Notifications -->
+
                     <button
-                        class="icon-button"
+                        class="icon-button notification-button"
                         id="notificationButton"
                         aria-label="Notifications"
                     >
-                        ♧
+
+                        <span class="notification-icon">
+                            ♧
+                        </span>
 
                         <span class="notification-badge"></span>
 
                     </button>
 
 
+                    <!-- Profile -->
+
                     <button
                         class="profile-button"
                         id="profileButton"
+                        aria-label="Profile"
                     >
 
                         <div class="profile-avatar">
-                            ?
+
+                            <span>👤</span>
+
                         </div>
+
 
                         <div class="profile-info">
 
@@ -201,6 +252,7 @@
                             </span>
 
                         </div>
+
 
                         <span class="profile-arrow">
                             ⌄
@@ -217,20 +269,23 @@
                  CONTENT
             ========================== -->
 
-            <section class="content">
+            <div class="content">
 
-                <!-- Welcome -->
+
+                <!-- =========================
+                     WELCOME
+                ========================== -->
+
                 <section class="welcome-section">
 
-                    <div class="welcome-copy">
+                    <div class="welcome-content">
 
-                        <span class="eyebrow">
+                        <span class="section-label">
                             COMMUNITY MARKETPLACE
                         </span>
 
-                        <h1>
-                            Welcome back
-                            <span>👋</span>
+                        <h1 id="welcomeMessage">
+                            Welcome back 👋
                         </h1>
 
                         <p>
@@ -243,13 +298,17 @@
 
 
                     <button
-                        class="sell-button"
+                        class="primary-button sell-button"
                         id="sellButton"
                     >
 
-                        <span>＋</span>
+                        <span class="sell-icon">
+                            ＋
+                        </span>
 
-                        Sell an Item
+                        <span>
+                            Sell an Item
+                        </span>
 
                     </button>
 
@@ -262,6 +321,7 @@
 
                 <section class="section">
 
+
                     <div class="section-heading">
 
                         <div>
@@ -270,82 +330,138 @@
                                 EXPLORE
                             </span>
 
-                            <h2>Browse categories</h2>
+                            <h2>
+                                Browse categories
+                            </h2>
 
                         </div>
 
 
-                        <a href="#" class="view-link">
-                            View all →
-                        </a>
+                        <button
+                            class="text-button"
+                            id="viewCategoriesButton"
+                        >
+
+                            <span>
+                                View all
+                            </span>
+
+                            <span class="text-button-arrow">
+                                →
+                            </span>
+
+                        </button>
 
                     </div>
 
 
                     <div class="category-grid">
 
-                        <button class="category-card">
 
-                            <div class="category-icon">
+                        <!-- Books -->
+
+                        <button
+                            class="category-card"
+                            data-category="books"
+                        >
+
+                            <span class="category-icon">
                                 📚
-                            </div>
+                            </span>
 
-                            <span>Books</span>
+                            <span>
+                                Books
+                            </span>
 
                         </button>
 
 
-                        <button class="category-card">
+                        <!-- Electronics -->
 
-                            <div class="category-icon">
+                        <button
+                            class="category-card"
+                            data-category="electronics"
+                        >
+
+                            <span class="category-icon">
                                 💻
-                            </div>
+                            </span>
 
-                            <span>Electronics</span>
+                            <span>
+                                Electronics
+                            </span>
 
                         </button>
 
 
-                        <button class="category-card">
+                        <!-- Fashion -->
 
-                            <div class="category-icon">
+                        <button
+                            class="category-card"
+                            data-category="fashion"
+                        >
+
+                            <span class="category-icon">
                                 👕
-                            </div>
+                            </span>
 
-                            <span>Fashion</span>
+                            <span>
+                                Fashion
+                            </span>
 
                         </button>
 
 
-                        <button class="category-card">
+                        <!-- Accessories -->
 
-                            <div class="category-icon">
+                        <button
+                            class="category-card"
+                            data-category="accessories"
+                        >
+
+                            <span class="category-icon">
                                 🎧
-                            </div>
+                            </span>
 
-                            <span>Accessories</span>
+                            <span>
+                                Accessories
+                            </span>
 
                         </button>
 
 
-                        <button class="category-card">
+                        <!-- Home & Living -->
 
-                            <div class="category-icon">
+                        <button
+                            class="category-card"
+                            data-category="home-living"
+                        >
+
+                            <span class="category-icon">
                                 🏠
-                            </div>
+                            </span>
 
-                            <span>Home & Living</span>
+                            <span>
+                                Home & Living
+                            </span>
 
                         </button>
 
 
-                        <button class="category-card">
+                        <!-- Sports -->
 
-                            <div class="category-icon">
+                        <button
+                            class="category-card"
+                            data-category="sports"
+                        >
+
+                            <span class="category-icon">
                                 ⚽
-                            </div>
+                            </span>
 
-                            <span>Sports</span>
+                            <span>
+                                Sports
+                            </span>
 
                         </button>
 
@@ -360,6 +476,7 @@
 
                 <section class="section">
 
+
                     <div class="section-heading">
 
                         <div>
@@ -368,14 +485,27 @@
                                 FOR YOU
                             </span>
 
-                            <h2>Featured items</h2>
+                            <h2>
+                                Featured items
+                            </h2>
 
                         </div>
 
 
-                        <a href="#" class="view-link">
-                            See more →
-                        </a>
+                        <button
+                            class="text-button"
+                            id="featuredSeeMore"
+                        >
+
+                            <span>
+                                See more
+                            </span>
+
+                            <span class="text-button-arrow">
+                                →
+                            </span>
+
+                        </button>
 
                     </div>
 
@@ -385,24 +515,18 @@
                         id="featuredProducts"
                     >
 
-                        <!--
-                            Products will be loaded
-                            from the backend later.
-                        -->
-
-                        <div class="empty-products">
+                        <div class="empty-state">
 
                             <div class="empty-icon">
-                                ✦
+                                ◈
                             </div>
 
                             <h3>
-                                Discover something new
+                                No featured items yet
                             </h3>
 
                             <p>
-                                Featured items from your
-                                community will appear here.
+                                Featured products will appear here.
                             </p>
 
                         </div>
@@ -416,7 +540,8 @@
                      RECENTLY ADDED
                 ========================== -->
 
-                <section class="section recent-section">
+                <section class="section">
+
 
                     <div class="section-heading">
 
@@ -426,14 +551,27 @@
                                 FRESH FINDS
                             </span>
 
-                            <h2>Recently added</h2>
+                            <h2>
+                                Recently added
+                            </h2>
 
                         </div>
 
 
-                        <a href="#" class="view-link">
-                            See all →
-                        </a>
+                        <button
+                            class="text-button"
+                            id="recentSeeAll"
+                        >
+
+                            <span>
+                                See all
+                            </span>
+
+                            <span class="text-button-arrow">
+                                →
+                            </span>
+
+                        </button>
 
                     </div>
 
@@ -443,12 +581,19 @@
                         id="recentProducts"
                     >
 
-                        <div class="empty-recent">
+                        <div class="empty-state">
 
-                            <span>✦</span>
+                            <div class="empty-icon">
+                                ◈
+                            </div>
+
+                            <h3>
+                                No recent items yet
+                            </h3>
 
                             <p>
-                                New listings will appear here.
+                                New marketplace listings
+                                will appear here.
                             </p>
 
                         </div>
@@ -457,15 +602,16 @@
 
                 </section>
 
-            </section>
+            </div>
 
         </main>
 
     </div>
 
 
-    <!-- JavaScript -->
-    <script src="js/dashboard.js"></script>
+    <!-- Home JavaScript -->
+
+    <script src="js/home.js"></script>
 
 </body>
 
