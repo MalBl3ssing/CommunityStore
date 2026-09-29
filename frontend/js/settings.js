@@ -1,19 +1,19 @@
-const API_BASE_URL = "/api";
-const USE_MOCK_DATA = true;
+/* =========================
+   SUPABASE
+========================= */
+
+const SUPABASE_URL = "https://olnqufovakusfjlaablt.supabase.co";
+const SUPABASE_KEY = "sb_publishable_B-iTGT_tnwSpMSEQR1h-2Q_lAqhLkXA";
+
+const supabaseClient = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+);
 
 
-/* MOCK USER */
-
-const MOCK_USER = {
-    userId: 1,
-    firstName: "Solomon",
-    lastName: "Machaule",
-    email: "solomonmachaule26@gmail.com",
-    accountType: "Student"
-};
-
-
-/* ELEMENTS */
+/* =========================
+   ELEMENTS
+========================= */
 
 const profileName = document.getElementById("profileName");
 const profileType = document.getElementById("profileType");
@@ -38,139 +38,310 @@ const sellerUpdatesToggle = document.getElementById("sellerUpdatesToggle");
 const orderUpdatesToggle = document.getElementById("orderUpdatesToggle");
 
 
-/* INITIALISE */
+/* =========================
+   INITIALISE
+========================= */
 
-document.addEventListener("DOMContentLoaded", () => {
-    loadSettings();
+document.addEventListener("DOMContentLoaded", async () => {
+    await loadUser();
     setupEvents();
 });
 
 
-/* LOAD USER */
+/* =========================
+   LOAD LOGGED-IN USER
+========================= */
 
-async function loadSettings() {
+async function loadUser() {
 
-    let user;
+    try {
 
-    if (USE_MOCK_DATA) {
-        user = MOCK_USER;
-    } else {
-        user = await fetchCurrentUser();
+        const {
+            data: { user },
+            error: authError
+        } = await supabaseClient.auth.getUser();
+
+        if (authError) {
+            console.error("Authentication error:", authError);
+            return;
+        }
+
+        if (!user) {
+            window.location.href = "login.html";
+            return;
+        }
+
+
+        /* =========================
+           LOAD PROFILE
+        ========================= */
+
+        const {
+            data: profile,
+            error: profileError
+        } = await supabaseClient
+            .from("profiles")
+            .select("full_name, user_type")
+            .eq("id", user.id)
+            .maybeSingle();
+
+        if (profileError) {
+            console.error("Profile error:", profileError);
+        }
+
+
+        /* =========================
+           NAME
+        ========================= */
+
+        let name = "";
+
+        if (profile?.full_name) {
+            name = profile.full_name.trim();
+        }
+
+        if (!name) {
+            name =
+                user.user_metadata?.full_name ||
+                user.user_metadata?.name ||
+                "";
+        }
+
+        if (!name && user.email) {
+            name = getNameFromEmail(user.email);
+        }
+
+        if (!name) {
+            name = "User";
+        }
+
+
+        /* =========================
+           USER TYPE
+        ========================= */
+
+        let type = "";
+
+        if (profile?.user_type) {
+            type = profile.user_type.trim();
+        }
+
+        if (!type) {
+            type =
+                user.user_metadata?.user_type ||
+                user.user_metadata?.account_type ||
+                user.user_metadata?.role ||
+                "";
+        }
+
+        if (!type) {
+            type = "User";
+        }
+
+
+        /* =========================
+           EMAIL
+        ========================= */
+
+        const email = user.email || "Not available";
+
+
+        /* =========================
+           INITIALS
+        ========================= */
+
+        const initials = getInitials(name);
+
+
+        /* =========================
+           UPDATE TOP RIGHT
+        ========================= */
+
+        if (profileName) {
+            profileName.textContent = name;
+        }
+
+        if (profileType) {
+            profileType.textContent = type;
+        }
+
+        if (userInitials) {
+            userInitials.textContent = initials;
+        }
+
+
+        /* =========================
+           UPDATE ACCOUNT INFORMATION
+        ========================= */
+
+        if (fullName) {
+            fullName.textContent = name;
+        }
+
+        if (emailAddress) {
+            emailAddress.textContent = email;
+        }
+
+        if (accountType) {
+            accountType.textContent = type;
+        }
+
+
+        console.log("Settings page user:", {
+            id: user.id,
+            fullName: name,
+            userType: type,
+            email: email
+        });
+
+    } catch (error) {
+
+        console.error("Error loading user:", error);
     }
-
-    if (!user) {
-        return;
-    }
-
-    const name = `${user.firstName} ${user.lastName}`;
-
-    profileName.textContent = name;
-    profileType.textContent = user.accountType || "User";
-
-    fullName.textContent = name;
-    emailAddress.textContent = user.email || "Not available";
-    accountType.textContent = user.accountType || "User";
-
-    userInitials.textContent = getInitials(
-        user.firstName,
-        user.lastName
-    );
 }
 
 
-/* INITIALS */
+/* =========================
+   INITIALS
+========================= */
 
-function getInitials(firstName, lastName) {
+function getInitials(name) {
 
-    const first = firstName
-        ? firstName.charAt(0).toUpperCase()
-        : "";
+    if (!name) {
+        return "U";
+    }
 
-    const last = lastName
-        ? lastName.charAt(0).toUpperCase()
-        : "";
+    const parts = name
+        .trim()
+        .split(/\s+/)
+        .filter(Boolean);
 
-    return `${first}${last}`;
+    if (parts.length === 1) {
+        return parts[0]
+            .substring(0, 2)
+            .toUpperCase();
+    }
+
+    return (
+        parts[0].charAt(0) +
+        parts[parts.length - 1].charAt(0)
+    ).toUpperCase();
 }
 
 
-/* EVENTS */
+/* =========================
+   EMAIL → NAME FALLBACK
+========================= */
+
+function getNameFromEmail(email) {
+
+    const username = email
+        .split("@")[0]
+        .replace(/[._-]+/g, " ")
+        .trim();
+
+    return username
+        .split(/\s+/)
+        .map(word =>
+            word.charAt(0).toUpperCase() +
+            word.slice(1)
+        )
+        .join(" ");
+}
+
+
+/* =========================
+   EVENTS
+========================= */
 
 function setupEvents() {
 
-    searchInput.addEventListener("keydown", (event) => {
+    if (searchInput) {
+        searchInput.addEventListener("keydown", (event) => {
 
-        if (event.key === "Enter") {
+            if (event.key === "Enter") {
 
-            const query = searchInput.value.trim();
+                const query = searchInput.value.trim();
 
-            if (query) {
-                window.location.href =
-                    `search.html?q=${encodeURIComponent(query)}`;
+                if (query) {
+                    window.location.href =
+                        `search.html?q=${encodeURIComponent(query)}`;
+                }
             }
-        }
-    });
+        });
+    }
 
 
-    profileArea.addEventListener("click", () => {
-        window.location.href = "profile.html";
-    });
+    if (profileArea) {
+        profileArea.addEventListener("click", () => {
+            window.location.href = "profile.html";
+        });
+    }
 
 
-    notificationBtn.addEventListener("click", () => {
-        console.log("Notifications clicked.");
-    });
+    if (notificationBtn) {
+        notificationBtn.addEventListener("click", () => {
+            console.log("Notifications clicked.");
+        });
+    }
 
 
-    logoutBtn.addEventListener("click", (event) => {
-        event.preventDefault();
-        handleLogout();
-    });
+    if (logoutBtn) {
+        logoutBtn.addEventListener("click", (event) => {
+            event.preventDefault();
+            handleLogout();
+        });
+    }
 
 
-    logoutSettingsBtn.addEventListener("click", () => {
-        handleLogout();
-    });
+    if (logoutSettingsBtn) {
+        logoutSettingsBtn.addEventListener("click", () => {
+            handleLogout();
+        });
+    }
 
 
-    changePasswordBtn.addEventListener("click", () => {
-        alert("Password management will be connected to the backend.");
-    });
+    if (changePasswordBtn) {
+        changePasswordBtn.addEventListener("click", () => {
+            alert("Password management will be connected to the backend.");
+        });
+    }
 
 
-    securityBtn.addEventListener("click", () => {
-        alert("Security settings will be connected to the backend.");
-    });
+    if (securityBtn) {
+        securityBtn.addEventListener("click", () => {
+            alert("Security settings will be connected to the backend.");
+        });
+    }
 
 
-    notificationToggle.addEventListener("change", () => {
-        console.log(
-            "Notifications:",
-            notificationToggle.checked
-        );
-    });
+    if (notificationToggle) {
+        notificationToggle.addEventListener("change", () => {
+            console.log("Notifications:", notificationToggle.checked);
+        });
+    }
 
 
-    sellerUpdatesToggle.addEventListener("change", () => {
-        console.log(
-            "Seller updates:",
-            sellerUpdatesToggle.checked
-        );
-    });
+    if (sellerUpdatesToggle) {
+        sellerUpdatesToggle.addEventListener("change", () => {
+            console.log("Seller updates:", sellerUpdatesToggle.checked);
+        });
+    }
 
 
-    orderUpdatesToggle.addEventListener("change", () => {
-        console.log(
-            "Order updates:",
-            orderUpdatesToggle.checked
-        );
-    });
+    if (orderUpdatesToggle) {
+        orderUpdatesToggle.addEventListener("change", () => {
+            console.log("Order updates:", orderUpdatesToggle.checked);
+        });
+    }
 }
 
 
-/* LOGOUT */
+/* =========================
+   LOGOUT
+========================= */
 
-function handleLogout() {
+async function handleLogout() {
 
     const confirmed = confirm(
         "Are you sure you want to log out?"
@@ -180,44 +351,13 @@ function handleLogout() {
         return;
     }
 
-    /*
-     * Backend integration placeholder.
-     *
-     * Future endpoint:
-     * POST /api/auth/logout
-     */
+    const { error } =
+        await supabaseClient.auth.signOut();
 
-    console.log("Logout requested.");
+    if (error) {
+        console.error("Logout error:", error);
+        return;
+    }
 
     window.location.href = "login.html";
-}
-
-
-/* BACKEND PLACEHOLDER */
-
-async function fetchCurrentUser() {
-
-    try {
-
-        const response = await fetch(
-            `${API_BASE_URL}/users/me`
-        );
-
-        if (!response.ok) {
-            throw new Error(
-                "Unable to load user information."
-            );
-        }
-
-        return await response.json();
-
-    } catch (error) {
-
-        console.error(
-            "Error loading user:",
-            error
-        );
-
-        return null;
-    }
 }

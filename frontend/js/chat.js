@@ -1,1018 +1,1527 @@
-/* =========================
-   COMMUNITY STORE CHAT
-========================= */
+document.addEventListener("DOMContentLoaded", async () => {
 
+    /* =========================
+       SUPABASE
+    ========================= */
 
-/* =========================
-   CONFIGURATION
-========================= */
+    const SUPABASE_URL = "https://olnqufovakusfjlaablt.supabase.co";
 
-const API_BASE_URL = "/api";
+    const SUPABASE_KEY =
+        "sb_publishable_B-iTGT_tnwSpMSEQR1h-2Q_lAqhLkXA";
 
-const USE_MOCK_DATA = true;
-
-
-/* =========================
-   STATE
-========================= */
-
-let currentUser = null;
-let conversations = [];
-let currentConversationId = null;
-
-
-/* =========================
-   MOCK USER
-   Temporary until backend
-   authentication is connected.
-========================= */
-
-const mockCurrentUser = {
-    userId: 1,
-    firstName: "Solomon",
-    lastName: "Machaule",
-    accountType: "Student"
-};
-
-
-/* =========================
-   MOCK CONVERSATIONS
-   Temporary frontend data.
-========================= */
-
-const mockConversations = [
-    {
-        conversationId: 1,
-
-        participant: {
-            userId: 2,
-            firstName: "Thando",
-            lastName: "Mokoena",
-            online: true
-        },
-
-        lastMessage: {
-            messageId: 101,
-            senderId: 2,
-            content: "Hi, is the laptop still available?",
-            sentAt: "2026-09-24T18:20:00"
-        },
-
-        unreadCount: 2
-    },
-
-    {
-        conversationId: 2,
-
-        participant: {
-            userId: 3,
-            firstName: "Lerato",
-            lastName: "Ndlovu",
-            online: false
-        },
-
-        lastMessage: {
-            messageId: 102,
-            senderId: 1,
-            content: "Thank you, I'll let you know.",
-            sentAt: "2026-09-23T15:40:00"
-        },
-
-        unreadCount: 0
-    },
-
-    {
-        conversationId: 3,
-
-        participant: {
-            userId: 4,
-            firstName: "Michael",
-            lastName: "Dlamini",
-            online: true
-        },
-
-        lastMessage: {
-            messageId: 103,
-            senderId: 4,
-            content: "Can we meet tomorrow?",
-            sentAt: "2026-09-22T12:10:00"
-        },
-
-        unreadCount: 1
-    }
-];
-
-
-/* =========================
-   MOCK MESSAGES
-========================= */
-
-const mockMessages = {
-
-    1: [
-        {
-            messageId: 1,
-            conversationId: 1,
-            senderId: 2,
-            receiverId: 1,
-            content: "Hi! Is the laptop still available?",
-            sentAt: "2026-09-24T18:15:00",
-            read: false
-        },
-
-        {
-            messageId: 2,
-            conversationId: 1,
-            senderId: 1,
-            receiverId: 2,
-            content: "Yes, it is still available.",
-            sentAt: "2026-09-24T18:17:00",
-            read: true
-        },
-
-        {
-            messageId: 3,
-            conversationId: 1,
-            senderId: 2,
-            receiverId: 1,
-            content: "Great. Is the price negotiable?",
-            sentAt: "2026-09-24T18:20:00",
-            read: false
-        }
-    ],
-
-    2: [
-        {
-            messageId: 4,
-            conversationId: 2,
-            senderId: 3,
-            receiverId: 1,
-            content: "Thanks for the information.",
-            sentAt: "2026-09-23T15:35:00",
-            read: true
-        },
-
-        {
-            messageId: 5,
-            conversationId: 2,
-            senderId: 1,
-            receiverId: 3,
-            content: "Thank you, I'll let you know.",
-            sentAt: "2026-09-23T15:40:00",
-            read: true
-        }
-    ],
-
-    3: [
-        {
-            messageId: 6,
-            conversationId: 3,
-            senderId: 4,
-            receiverId: 1,
-            content: "Can we meet tomorrow?",
-            sentAt: "2026-09-22T12:10:00",
-            read: false
-        }
-    ]
-};
-
-
-/* =========================
-   DOM ELEMENTS
-========================= */
-
-const conversationList =
-    document.getElementById("conversationList");
-
-const conversationSearch =
-    document.getElementById("conversationSearch");
-
-const chatEmptyState =
-    document.getElementById("chatEmptyState");
-
-const activeChat =
-    document.getElementById("activeChat");
-
-const chatUserName =
-    document.getElementById("chatUserName");
-
-const chatUserStatus =
-    document.getElementById("chatUserStatus");
-
-const chatUserInitials =
-    document.getElementById("chatUserInitials");
-
-const messagesContainer =
-    document.getElementById("messagesContainer");
-
-const messageForm =
-    document.getElementById("messageForm");
-
-const messageInput =
-    document.getElementById("messageInput");
-
-const sendMessageButton =
-    document.getElementById("sendMessageButton");
-
-const userInitials =
-    document.getElementById("userInitials");
-
-const userName =
-    document.getElementById("userName");
-
-const userType =
-    document.getElementById("userType");
-
-const profileButton =
-    document.getElementById("profileButton");
-
-const notificationButton =
-    document.getElementById("notificationButton");
-
-const logoutButton =
-    document.getElementById("logoutButton");
-
-
-/* =========================
-   INITIALISE CHAT
-========================= */
-
-document.addEventListener("DOMContentLoaded", initialiseChat);
-
-
-async function initialiseChat() {
-
-    setupEventListeners();
-
-    try {
-
-        if (USE_MOCK_DATA) {
-
-            currentUser = mockCurrentUser;
-
-            conversations = [...mockConversations];
-
-        } else {
-
-            currentUser = await getCurrentUser();
-
-            conversations = await getConversations();
-
-        }
-
-        updateCurrentUser();
-
-        renderConversations();
-
-    } catch (error) {
-
-        console.error(
-            "Unable to initialise chat:",
-            error
-        );
-
-        showConversationError();
-    }
-}
-
-
-/* =========================
-   CURRENT USER
-========================= */
-
-function updateCurrentUser() {
-
-    if (!currentUser) {
-        return;
-    }
-
-    const initials = getInitials(
-        currentUser.firstName,
-        currentUser.lastName
+    const supabase = window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
     );
 
-    userInitials.textContent = initials;
 
-    userName.textContent =
-        `${currentUser.firstName} ${currentUser.lastName}`;
+    /* =========================
+       STATE
+    ========================= */
 
-    userType.textContent =
-        currentUser.accountType || "Account";
-}
+    let currentUser = null;
+    let currentProfile = null;
+
+    let conversations = [];
+    let currentConversationId = null;
+    let currentOtherUser = null;
+
+    let realtimeChannel = null;
 
 
-/* =========================
-   RENDER CONVERSATIONS
-========================= */
+    /* =========================
+       DOM ELEMENTS
+    ========================= */
 
-function renderConversations(
-    filteredConversations = conversations
-) {
+    const conversationList =
+        document.getElementById("conversationList");
 
-    if (!conversationList) {
-        return;
+    const conversationSearch =
+        document.getElementById("conversationSearch");
+
+    const chatEmptyState =
+        document.getElementById("chatEmptyState");
+
+    const activeChat =
+        document.getElementById("activeChat");
+
+    const chatUserName =
+        document.getElementById("chatUserName");
+
+    const chatUserStatus =
+        document.getElementById("chatUserStatus");
+
+    const chatUserInitials =
+        document.getElementById("chatUserInitials");
+
+    const messagesContainer =
+        document.getElementById("messagesContainer");
+
+    const messageForm =
+        document.getElementById("messageForm");
+
+    const messageInput =
+        document.getElementById("messageInput");
+
+    const sendMessageButton =
+        document.getElementById("sendMessageButton");
+
+    const userInitials =
+        document.getElementById("userInitials");
+
+    const userName =
+        document.getElementById("userName");
+
+    const userType =
+        document.getElementById("userType");
+
+    const profileButton =
+        document.getElementById("profileButton");
+
+    const notificationButton =
+        document.getElementById("notificationButton");
+
+    const logoutButton =
+        document.getElementById("logoutButton");
+
+
+    /* =========================
+       NAME HELPERS
+    ========================= */
+
+    function getNameInitials(name) {
+
+        if (!name) {
+            return "--";
+        }
+
+        const parts = name
+            .trim()
+            .split(/\s+/)
+            .filter(Boolean);
+
+        if (parts.length === 1) {
+            return parts[0]
+                .substring(0, 2)
+                .toUpperCase();
+        }
+
+        return (
+            parts[0].charAt(0) +
+            parts[parts.length - 1].charAt(0)
+        ).toUpperCase();
     }
 
-    conversationList.innerHTML = "";
 
-    if (!filteredConversations.length) {
+    /* =========================
+       LOAD CURRENT USER
+    ========================= */
 
-        conversationList.innerHTML = `
-            <div class="conversation-empty">
+    async function loadCurrentUser() {
 
-                <div class="empty-icon">
-                    ◌
-                </div>
+        const {
+            data,
+            error
+        } = await supabase.auth.getUser();
 
-                <h3>
-                    No conversations found
-                </h3>
+        if (error) {
 
-                <p>
-                    Conversations with buyers and sellers will appear here.
-                </p>
+            console.error(
+                "AUTH USER ERROR:",
+                error
+            );
 
-            </div>
-        `;
+            throw error;
+        }
 
-        return;
+        if (!data.user) {
+
+            window.location.href = "login.html";
+            return;
+        }
+
+        currentUser = data.user;
+
+
+        console.log(
+            "LOGGED IN USER:",
+            currentUser
+        );
+
+        console.log(
+            "AUTH USER ID:",
+            currentUser.id
+        );
+
+
+        /* =========================
+           LOAD PROFILE
+        ========================= */
+
+        const {
+            data: profile,
+            error: profileError
+        } = await supabase
+            .from("profiles")
+            .select("id, full_name, user_type")
+            .eq("id", currentUser.id)
+            .maybeSingle();
+
+
+        console.log(
+            "PROFILE FROM DATABASE:",
+            profile
+        );
+
+        console.log(
+            "PROFILE ERROR:",
+            profileError
+        );
+
+
+        if (profileError) {
+            throw profileError;
+        }
+
+        currentProfile = profile;
     }
 
-    filteredConversations.forEach(
-        conversation => {
 
-            const element =
-                createConversationElement(
-                    conversation
+    /* =========================
+       UPDATE CURRENT USER UI
+    ========================= */
+
+    function updateCurrentUser() {
+
+        const fullName =
+            currentProfile?.full_name?.trim() ||
+            currentUser?.user_metadata?.full_name?.trim() ||
+            currentUser?.user_metadata?.name?.trim() ||
+            currentUser?.email ||
+            "My Profile";
+
+
+        const initials =
+            getNameInitials(fullName);
+
+
+        if (userInitials) {
+            userInitials.textContent = initials;
+        }
+
+
+        if (userName) {
+            userName.textContent = fullName;
+        }
+
+
+        if (userType) {
+
+            userType.textContent =
+                currentProfile?.user_type ||
+                currentUser?.user_metadata?.user_type ||
+                "Account";
+        }
+
+
+        console.log(
+            "NAME DISPLAYED IN PROFILE:",
+            fullName
+        );
+    }
+
+
+    /* =========================
+       GET PROFILE BY USER ID
+    ========================= */
+
+    async function getUserProfile(userId) {
+
+        if (!userId) {
+            return null;
+        }
+
+
+        const {
+            data,
+            error
+        } = await supabase
+            .from("profiles")
+            .select("id, full_name, user_type")
+            .eq("id", userId)
+            .maybeSingle();
+
+
+        if (error) {
+
+            console.error(
+                "GET USER PROFILE ERROR:",
+                error
+            );
+
+            return null;
+        }
+
+
+        return data;
+    }
+
+
+    /* =========================
+       GET CONVERSATION DETAILS
+    ========================= */
+
+    async function getConversationDetails(
+        conversationId
+    ) {
+
+        const {
+            data,
+            error
+        } = await supabase
+            .from("conversations")
+            .select("*")
+            .eq("id", conversationId)
+            .maybeSingle();
+
+
+        if (error) {
+
+            console.error(
+                "CONVERSATION DETAILS ERROR:",
+                error
+            );
+
+            return null;
+        }
+
+
+        return data;
+    }
+
+
+    /* =========================
+       GET CONVERSATION PARTICIPANTS
+    ========================= */
+
+    async function getConversationParticipants(
+        conversationId
+    ) {
+
+        const {
+            data,
+            error
+        } = await supabase
+            .from("conversation_participants")
+            .select(
+                "id, conversation_id, user_id, created_at"
+            )
+            .eq(
+                "conversation_id",
+                conversationId
+            );
+
+
+        if (error) {
+
+            console.error(
+                "GET PARTICIPANTS ERROR:",
+                error
+            );
+
+            return [];
+        }
+
+
+        return data || [];
+    }
+
+
+    /* =========================
+       GET OTHER USER FROM
+       CONVERSATION
+    ========================= */
+
+    async function getOtherUserFromConversation(
+        conversationId
+    ) {
+
+        const participants =
+            await getConversationParticipants(
+                conversationId
+            );
+
+
+        const otherParticipant =
+            participants.find(
+                participant =>
+                    participant.user_id !==
+                    currentUser.id
+            );
+
+
+        if (!otherParticipant) {
+            return null;
+        }
+
+
+        const profile =
+            await getUserProfile(
+                otherParticipant.user_id
+            );
+
+
+        if (!profile) {
+            return null;
+        }
+
+
+        return {
+            ...profile,
+            id: otherParticipant.user_id
+        };
+    }
+
+
+    /* =========================
+       GET OR CREATE CONVERSATION
+    ========================= */
+
+    async function getOrCreateConversation(
+        otherUserId
+    ) {
+
+        if (!currentUser || !otherUserId) {
+
+            console.error(
+                "CONVERSATION ERROR: Missing user ID."
+            );
+
+            return null;
+        }
+
+
+        if (currentUser.id === otherUserId) {
+
+            console.error(
+                "CONVERSATION ERROR: Cannot message yourself."
+            );
+
+            return null;
+        }
+
+
+        console.log(
+            "CHECKING CONVERSATION BETWEEN:",
+            currentUser.id,
+            "AND",
+            otherUserId
+        );
+
+
+        /* =========================
+           FIND CURRENT USER'S
+           CONVERSATIONS
+        ========================= */
+
+        const {
+            data: currentParticipants,
+            error: currentParticipantsError
+        } = await supabase
+            .from("conversation_participants")
+            .select("conversation_id")
+            .eq(
+                "user_id",
+                currentUser.id
+            );
+
+
+        if (currentParticipantsError) {
+
+            console.error(
+                "FIND CURRENT PARTICIPANTS ERROR:",
+                currentParticipantsError
+            );
+
+            return null;
+        }
+
+
+        const conversationIds =
+            (currentParticipants || [])
+                .map(
+                    participant =>
+                        participant.conversation_id
+                )
+                .filter(Boolean);
+
+
+        /* =========================
+           LOOK FOR EXISTING CHAT
+        ========================= */
+
+        for (
+            const conversationId
+            of conversationIds
+        ) {
+
+            const {
+                data: otherParticipant,
+                error: otherParticipantError
+            } = await supabase
+                .from("conversation_participants")
+                .select("id, conversation_id, user_id")
+                .eq(
+                    "conversation_id",
+                    conversationId
+                )
+                .eq(
+                    "user_id",
+                    otherUserId
+                )
+                .maybeSingle();
+
+
+            if (otherParticipantError) {
+
+                console.error(
+                    "CHECK OTHER PARTICIPANT ERROR:",
+                    otherParticipantError
                 );
 
-            conversationList.appendChild(element);
-        }
-    );
-}
-
-
-/* =========================
-   CREATE CONVERSATION ITEM
-========================= */
-
-function createConversationElement(
-    conversation
-) {
-
-    const participant =
-        conversation.participant;
-
-    const element =
-        document.createElement("button");
-
-    element.type = "button";
-
-    element.className =
-        "conversation-item";
-
-    if (
-        conversation.conversationId ===
-        currentConversationId
-    ) {
-        element.classList.add("active");
-    }
-
-    const initials =
-        getInitials(
-            participant.firstName,
-            participant.lastName
-        );
-
-    const lastMessage =
-        conversation.lastMessage;
-
-    const preview =
-        lastMessage
-            ? lastMessage.content
-            : "No messages yet.";
-
-    const time =
-        lastMessage
-            ? formatMessageTime(
-                lastMessage.sentAt
-            )
-            : "";
-
-    element.innerHTML = `
-
-        <div class="conversation-avatar">
-
-            ${initials}
-
-            ${
-                participant.online
-                    ? '<span class="online-dot"></span>'
-                    : ""
+                continue;
             }
 
-        </div>
 
+            if (otherParticipant) {
 
-        <div class="conversation-details">
-
-            <div class="conversation-top">
-
-                <span class="conversation-name">
-                    ${escapeHTML(
-                        participant.firstName
-                    )}
-                    ${escapeHTML(
-                        participant.lastName
-                    )}
-                </span>
-
-                <span class="conversation-time">
-                    ${time}
-                </span>
-
-            </div>
-
-
-            <span class="conversation-preview">
-                ${escapeHTML(preview)}
-            </span>
-
-        </div>
-
-
-        ${
-            conversation.unreadCount > 0
-                ? `
-                    <span class="unread-count">
-                        ${conversation.unreadCount}
-                    </span>
-                `
-                : ""
-        }
-
-    `;
-
-    element.addEventListener(
-        "click",
-        () => openConversation(
-            conversation.conversationId
-        )
-    );
-
-    return element;
-}
-
-
-/* =========================
-   OPEN CONVERSATION
-========================= */
-
-async function openConversation(
-    conversationId
-) {
-
-    currentConversationId =
-        conversationId;
-
-    const conversation =
-        conversations.find(
-            item =>
-                item.conversationId ===
-                conversationId
-        );
-
-    if (!conversation) {
-        return;
-    }
-
-    try {
-
-        let messages;
-
-        if (USE_MOCK_DATA) {
-
-            messages =
-                mockMessages[conversationId] || [];
-
-        } else {
-
-            messages =
-                await getMessages(
+                console.log(
+                    "EXISTING CONVERSATION FOUND:",
                     conversationId
                 );
+
+
+                const conversation =
+                    await getConversationDetails(
+                        conversationId
+                    );
+
+
+                if (conversation) {
+                    return conversation;
+                }
+            }
         }
 
-        showActiveConversation(
-            conversation,
-            messages
+
+        /* =========================
+           CREATE NEW CONVERSATION
+        ========================= */
+
+        console.log(
+            "NO EXISTING CONVERSATION. CREATING ONE..."
         );
 
-        await markConversationAsRead(
-            conversationId
+
+        const {
+            data: created,
+            error: createError
+        } = await supabase
+            .from("conversations")
+            .insert({})
+            .select("*")
+            .single();
+
+
+        if (createError) {
+
+            console.error(
+                "CREATE CONVERSATION ERROR:",
+                createError
+            );
+
+            return null;
+        }
+
+
+        console.log(
+            "CONVERSATION CREATED:",
+            created
         );
+
+
+        /* =========================
+           ADD BOTH PARTICIPANTS
+        ========================= */
+
+        const {
+            error: participantInsertError
+        } = await supabase
+            .from("conversation_participants")
+            .insert([
+                {
+                    conversation_id:
+                        created.id,
+
+                    user_id:
+                        currentUser.id
+                },
+                {
+                    conversation_id:
+                        created.id,
+
+                    user_id:
+                        otherUserId
+                }
+            ]);
+
+
+        if (participantInsertError) {
+
+            console.error(
+                "ADD PARTICIPANTS ERROR:",
+                participantInsertError
+            );
+
+            return null;
+        }
+
+
+        console.log(
+            "BOTH PARTICIPANTS ADDED:",
+            {
+                conversationId:
+                    created.id,
+
+                currentUser:
+                    currentUser.id,
+
+                otherUser:
+                    otherUserId
+            }
+        );
+
+
+        return created;
+    }
+
+
+    /* =========================
+       LOAD CONVERSATIONS
+    ========================= */
+
+    async function loadConversations() {
+
+        if (!currentUser) {
+            return;
+        }
+
+
+        const {
+            data: participantRows,
+            error: participantError
+        } = await supabase
+            .from("conversation_participants")
+            .select("conversation_id")
+            .eq(
+                "user_id",
+                currentUser.id
+            );
+
+
+        if (participantError) {
+
+            console.error(
+                "LOAD PARTICIPANTS ERROR:",
+                participantError
+            );
+
+            return;
+        }
+
+
+        const conversationIds =
+            (participantRows || [])
+                .map(
+                    participant =>
+                        participant.conversation_id
+                )
+                .filter(Boolean);
+
+
+        if (!conversationIds.length) {
+
+            conversations = [];
+
+            renderConversations();
+
+            return;
+        }
+
+
+        const {
+            data,
+            error
+        } = await supabase
+            .from("conversations")
+            .select("*")
+            .in(
+                "id",
+                conversationIds
+            )
+            .order(
+                "created_at",
+                {
+                    ascending: false
+                }
+            );
+
+
+        if (error) {
+
+            console.error(
+                "LOAD CONVERSATIONS ERROR:",
+                error
+            );
+
+            return;
+        }
+
+
+        conversations = data || [];
+
+
+        /* =========================
+           GET OTHER USERS
+        ========================= */
+
+        for (
+            const conversation
+            of conversations
+        ) {
+
+            const otherUser =
+                await getOtherUserFromConversation(
+                    conversation.id
+                );
+
+
+            conversation.otherUser =
+                otherUser;
+        }
+
 
         renderConversations();
-
-    } catch (error) {
-
-        console.error(
-            "Unable to open conversation:",
-            error
-        );
-    }
-}
-
-
-/* =========================
-   SHOW ACTIVE CONVERSATION
-========================= */
-
-function showActiveConversation(
-    conversation,
-    messages
-) {
-
-    const participant =
-        conversation.participant;
-
-    chatEmptyState.hidden = true;
-
-    activeChat.hidden = false;
-
-    chatUserName.textContent =
-        `${participant.firstName} ${participant.lastName}`;
-
-    chatUserStatus.textContent =
-        participant.online
-            ? "Online"
-            : "Offline";
-
-    chatUserInitials.textContent =
-        getInitials(
-            participant.firstName,
-            participant.lastName
-        );
-
-    renderMessages(messages);
-
-    messageInput.focus();
-}
-
-
-/* =========================
-   RENDER MESSAGES
-========================= */
-
-function renderMessages(messages) {
-
-    messagesContainer.innerHTML = "";
-
-    if (!messages.length) {
-
-        messagesContainer.innerHTML = `
-            <div class="conversation-empty">
-
-                <div class="empty-icon">
-                    ◌
-                </div>
-
-                <h3>
-                    No messages yet
-                </h3>
-
-                <p>
-                    Start the conversation below.
-                </p>
-
-            </div>
-        `;
-
-        return;
     }
 
-    messages.forEach(
-        message => {
 
-            const element =
-                createMessageElement(
-                    message
-                );
+    /* =========================
+       RENDER CONVERSATIONS
+    ========================= */
 
-            messagesContainer.appendChild(
-                element
-            );
-        }
-    );
-
-    scrollToLatestMessage();
-}
-
-
-/* =========================
-   CREATE MESSAGE
-========================= */
-
-function createMessageElement(
-    message
-) {
-
-    const element =
-        document.createElement("div");
-
-    const isSent =
-        message.senderId ===
-        currentUser.userId;
-
-    element.className =
-        `message ${
-            isSent
-                ? "sent"
-                : "received"
-        }`;
-
-    element.innerHTML = `
-
-        <div class="message-bubble">
-
-            ${escapeHTML(
-                message.content
-            )}
-
-            <span class="message-time">
-                ${formatMessageTime(
-                    message.sentAt
-                )}
-            </span>
-
-        </div>
-
-    `;
-
-    return element;
-}
-
-
-/* =========================
-   SEND MESSAGE
-========================= */
-
-async function handleSendMessage(
-    event
-) {
-
-    event.preventDefault();
-
-    const content =
-        messageInput.value.trim();
-
-    if (
-        !content ||
-        !currentConversationId
+    function renderConversations(
+        filteredConversations = conversations
     ) {
-        return;
-    }
 
-    sendMessageButton.disabled = true;
-
-    try {
-
-        let message;
-
-        if (USE_MOCK_DATA) {
-
-            message = {
-
-                messageId:
-                    Date.now(),
-
-                conversationId:
-                    currentConversationId,
-
-                senderId:
-                    currentUser.userId,
-
-                receiverId:
-                    getConversationParticipantId(
-                        currentConversationId
-                    ),
-
-                content,
-
-                sentAt:
-                    new Date().toISOString(),
-
-                read: true
-            };
-
-            if (
-                !mockMessages[
-                    currentConversationId
-                ]
-            ) {
-
-                mockMessages[
-                    currentConversationId
-                ] = [];
-
-            }
-
-            mockMessages[
-                currentConversationId
-            ].push(message);
-
-        } else {
-
-            message =
-                await sendMessage(
-                    currentConversationId,
-                    content
-                );
+        if (!conversationList) {
+            return;
         }
 
-        messageInput.value = "";
 
-        resizeMessageInput();
+        conversationList.innerHTML = "";
+
+
+        if (!filteredConversations.length) {
+
+            conversationList.innerHTML = `
+                <div class="conversation-empty">
+
+                    <div class="empty-icon">
+                        ◌
+                    </div>
+
+                    <h3>
+                        No conversations yet
+                    </h3>
+
+                    <p>
+                        Your conversations with buyers and sellers will appear here.
+                    </p>
+
+                </div>
+            `;
+
+            return;
+        }
+
+
+        filteredConversations.forEach(
+            conversation => {
+
+                const otherUser =
+                    conversation.otherUser;
+
+
+                const name =
+                    otherUser?.full_name ||
+                    "Community member";
+
+
+                const initials =
+                    getNameInitials(name);
+
+
+                const item =
+                    document.createElement("button");
+
+
+                item.type = "button";
+
+                item.className =
+                    "conversation-item";
+
+
+                if (
+                    conversation.id ===
+                    currentConversationId
+                ) {
+
+                    item.classList.add("active");
+                }
+
+
+                item.innerHTML = `
+                    <div class="conversation-avatar">
+                        ${initials}
+                    </div>
+
+                    <div class="conversation-details">
+
+                        <strong>
+                            ${escapeHtml(name)}
+                        </strong>
+
+                        <span>
+                            Tap to open conversation
+                        </span>
+
+                    </div>
+                `;
+
+
+                item.addEventListener(
+                    "click",
+                    () => {
+
+                        openConversation(
+                            conversation.id
+                        );
+                    }
+                );
+
+
+                conversationList.appendChild(
+                    item
+                );
+            }
+        );
+    }
+
+
+    /* =========================
+       OPEN CONVERSATION
+    ========================= */
+
+    async function openConversation(
+        conversationId,
+        knownOtherUser = null
+    ) {
+
+        if (!conversationId) {
+            return;
+        }
+
 
         const conversation =
             conversations.find(
                 item =>
-                    item.conversationId ===
-                    currentConversationId
+                    item.id === conversationId
             );
 
-        if (conversation) {
 
-            conversation.lastMessage = {
+        if (!conversation) {
 
-                messageId:
-                    message.messageId,
+            console.error(
+                "Conversation not found:",
+                conversationId
+            );
 
-                senderId:
-                    currentUser.userId,
-
-                content:
-                    message.content,
-
-                sentAt:
-                    message.sentAt
-            };
+            return;
         }
 
-        if (USE_MOCK_DATA) {
 
-            renderMessages(
-                mockMessages[
-                    currentConversationId
-                ]
+        currentConversationId =
+            conversationId;
+
+
+        /* =========================
+           RESOLVE OTHER USER
+        ========================= */
+
+        let otherUser =
+            knownOtherUser ||
+            conversation.otherUser;
+
+
+        if (!otherUser) {
+
+            otherUser =
+                await getOtherUserFromConversation(
+                    conversationId
+                );
+        }
+
+
+        currentOtherUser =
+            otherUser;
+
+
+        const name =
+            otherUser?.full_name ||
+            "Community member";
+
+
+        const initials =
+            getNameInitials(name);
+
+
+        console.log(
+            "OPENING CONVERSATION WITH:",
+            {
+                userId:
+                    otherUser?.id,
+
+                name
+            }
+        );
+
+
+        if (chatUserName) {
+            chatUserName.textContent =
+                name;
+        }
+
+
+        if (chatUserInitials) {
+            chatUserInitials.textContent =
+                initials;
+        }
+
+
+        if (chatUserStatus) {
+            chatUserStatus.textContent =
+                "Community member";
+        }
+
+
+        if (chatEmptyState) {
+            chatEmptyState.hidden = true;
+        }
+
+
+        if (activeChat) {
+            activeChat.hidden = false;
+        }
+
+
+        await loadMessages(
+            conversationId
+        );
+
+
+        renderConversations();
+
+
+        subscribeToMessages(
+            conversationId
+        );
+
+
+        if (messageInput) {
+            messageInput.focus();
+        }
+    }
+
+
+    /* =========================
+       OPEN CONVERSATION FROM URL
+    ========================= */
+
+    async function openConversationFromOrder() {
+
+        const params =
+            new URLSearchParams(
+                window.location.search
+            );
+
+
+        const sellerId =
+            params.get("sellerId");
+
+
+        const conversationId =
+            params.get("conversationId");
+
+
+        console.log(
+            "CHAT URL PARAMETERS:",
+            {
+                sellerId,
+                conversationId
+            }
+        );
+
+
+        /* =========================
+           DIRECT CONVERSATION ID
+        ========================= */
+
+        if (conversationId) {
+
+            if (
+                conversations.some(
+                    item =>
+                        item.id ===
+                        conversationId
+                )
+            ) {
+
+                await openConversation(
+                    conversationId
+                );
+
+                return;
+            }
+
+
+            const details =
+                await getConversationDetails(
+                    conversationId
+                );
+
+
+            if (details) {
+
+                await loadConversations();
+
+
+                await openConversation(
+                    conversationId
+                );
+            }
+
+
+            return;
+        }
+
+
+        /* =========================
+           SELLER ID
+        ========================= */
+
+        if (!sellerId) {
+
+            console.log(
+                "NO SELLER ID IN URL."
+            );
+
+            return;
+        }
+
+
+        if (
+            !currentUser ||
+            sellerId === currentUser.id
+        ) {
+
+            console.log(
+                "SELLER ID IS MISSING OR IS THE CURRENT USER."
+            );
+
+            return;
+        }
+
+
+        console.log(
+            "OPENING CHAT WITH SELLER:",
+            sellerId
+        );
+
+
+        /* =========================
+           LOAD SELLER PROFILE
+        ========================= */
+
+        const sellerProfile =
+            await getUserProfile(
+                sellerId
+            );
+
+
+        console.log(
+            "SELLER PROFILE:",
+            sellerProfile
+        );
+
+
+        /* =========================
+           GET OR CREATE CHAT
+        ========================= */
+
+        const conversation =
+            await getOrCreateConversation(
+                sellerId
+            );
+
+
+        if (!conversation) {
+
+            console.error(
+                "Could not create/find conversation."
+            );
+
+            return;
+        }
+
+
+        await loadConversations();
+
+
+        const matchingConversation =
+            conversations.find(
+                item =>
+                    item.id ===
+                    conversation.id
+            );
+
+
+        if (matchingConversation) {
+
+            matchingConversation.otherUser =
+                sellerProfile;
+
+
+            await openConversation(
+                matchingConversation.id,
+                sellerProfile
             );
 
         } else {
 
-            const messages =
-                await getMessages(
-                    currentConversationId
-                );
-
-            renderMessages(messages);
-        }
-
-        renderConversations();
-
-    } catch (error) {
-
-        console.error(
-            "Unable to send message:",
-            error
-        );
-
-        alert(
-            "Unable to send your message. Please try again."
-        );
-
-    } finally {
-
-        sendMessageButton.disabled = false;
-
-        messageInput.focus();
-    }
-}
-
-
-/* =========================
-   MARK AS READ
-========================= */
-
-async function markConversationAsRead(
-    conversationId
-) {
-
-    const conversation =
-        conversations.find(
-            item =>
-                item.conversationId ===
-                conversationId
-        );
-
-    if (conversation) {
-        conversation.unreadCount = 0;
-    }
-
-    if (!USE_MOCK_DATA) {
-
-        try {
-
-            await fetch(
-                `${API_BASE_URL}/conversations/${conversationId}/read`,
-                {
-                    method: "PATCH",
-                    headers: {
-                        "Content-Type":
-                            "application/json"
-                    }
-                }
-            );
-
-        } catch (error) {
-
             console.error(
-                "Unable to mark messages as read:",
-                error
+                "Conversation was created/found but could not be loaded.",
+                conversation
             );
         }
     }
-}
 
 
-/* =========================
-   SEARCH CONVERSATIONS
-========================= */
+    /* =========================
+       LOAD MESSAGES
+    ========================= */
 
-function searchConversations() {
-
-    const query =
-        conversationSearch.value
-            .trim()
-            .toLowerCase();
-
-    if (!query) {
-
-        renderConversations();
-
-        return;
-    }
-
-    const filtered =
-        conversations.filter(
-            conversation => {
-
-                const participant =
-                    conversation.participant;
-
-                const name =
-                    `${participant.firstName}
-                    ${participant.lastName}`
-                    .toLowerCase();
-
-                const message =
-                    conversation.lastMessage
-                        ?.content
-                        ?.toLowerCase() || "";
-
-                return (
-                    name.includes(query) ||
-                    message.includes(query)
-                );
-            }
-        );
-
-    renderConversations(filtered);
-}
-
-
-/* =========================
-   PROFILE
-========================= */
-
-function openProfile() {
-
-    window.location.href =
-        "profile.html";
-}
-
-
-/* =========================
-   GLOBAL SEARCH
-========================= */
-
-function handleDashboardSearch(
-    event
-) {
-
-    const query =
-        event.target.value.trim();
-
-    if (
-        event.key === "Enter" &&
-        query
+    async function loadMessages(
+        conversationId
     ) {
 
-        window.location.href =
-            `search.html?q=${encodeURIComponent(query)}`;
-    }
-}
+        if (!messagesContainer) {
+            return;
+        }
 
 
-/* =========================
-   LOGOUT
-========================= */
-
-function handleLogout(event) {
-
-    /*
-     * Backend authentication/logout
-     * can be connected here later.
-     */
-
-    const confirmed =
-        confirm(
-            "Are you sure you want to log out?"
-        );
-
-    if (!confirmed) {
-        event.preventDefault();
-    }
-}
-
-
-/* =========================
-   EVENT LISTENERS
-========================= */
-
-function setupEventListeners() {
-
-    if (messageForm) {
-
-        messageForm.addEventListener(
-            "submit",
-            handleSendMessage
-        );
-    }
-
-
-    if (messageInput) {
-
-        messageInput.addEventListener(
-            "input",
-            resizeMessageInput
-        );
-
-        messageInput.addEventListener(
-            "keydown",
-            event => {
-
-                if (
-                    event.key === "Enter" &&
-                    !event.shiftKey
-                ) {
-
-                    event.preventDefault();
-
-                    messageForm.requestSubmit();
+        const {
+            data,
+            error
+        } = await supabase
+            .from("messages")
+            .select("*")
+            .eq(
+                "conversation_id",
+                conversationId
+            )
+            .order(
+                "created_at",
+                {
+                    ascending: true
                 }
+            );
+
+
+        if (error) {
+
+            console.error(
+                "LOAD MESSAGES ERROR:",
+                error
+            );
+
+            messagesContainer.innerHTML = `
+                <div class="conversation-empty">
+
+                    <h3>
+                        Unable to load messages
+                    </h3>
+
+                    <p>
+                        Please try again.
+                    </p>
+
+                </div>
+            `;
+
+            return;
+        }
+
+
+        renderMessages(
+            data || []
+        );
+    }
+
+
+    /* =========================
+       RENDER MESSAGES
+    ========================= */
+
+    function renderMessages(
+        messages
+    ) {
+
+        if (!messagesContainer) {
+            return;
+        }
+
+
+        messagesContainer.innerHTML = "";
+
+
+        if (!messages.length) {
+
+            messagesContainer.innerHTML = `
+                <div class="conversation-empty">
+
+                    <div class="empty-icon">
+                        ◌
+                    </div>
+
+                    <h3>
+                        Start the conversation
+                    </h3>
+
+                    <p>
+                        Send a message to get started.
+                    </p>
+
+                </div>
+            `;
+
+            return;
+        }
+
+
+        messages.forEach(message => {
+
+            const messageElement =
+                document.createElement("div");
+
+
+            messageElement.className =
+                "message";
+
+
+            /* =========================
+               IMPORTANT:
+               CURRENT USER = SENT
+               OTHER USER = RECEIVED
+            ========================= */
+
+            if (
+                message.sender_id ===
+                currentUser.id
+            ) {
+
+                messageElement.classList.add(
+                    "message-sent"
+                );
+
+            } else {
+
+                messageElement.classList.add(
+                    "message-received"
+                );
+            }
+
+
+            const bubble =
+                document.createElement("div");
+
+
+            bubble.className =
+                "message-bubble";
+
+
+            bubble.textContent =
+                message.content;
+
+
+            messageElement.appendChild(
+                bubble
+            );
+
+
+            messagesContainer.appendChild(
+                messageElement
+            );
+        });
+
+
+        messagesContainer.scrollTop =
+            messagesContainer.scrollHeight;
+    }
+
+
+    /* =========================
+       SEND MESSAGE
+    ========================= */
+
+    async function sendMessage() {
+
+        if (
+            !currentUser ||
+            !currentConversationId ||
+            !messageInput
+        ) {
+            return;
+        }
+
+
+        const content =
+            messageInput.value.trim();
+
+
+        if (!content) {
+            return;
+        }
+
+
+        if (sendMessageButton) {
+            sendMessageButton.disabled = true;
+        }
+
+
+        console.log(
+            "SENDING MESSAGE:",
+            {
+                conversationId:
+                    currentConversationId,
+
+                senderId:
+                    currentUser.id,
+
+                content
             }
         );
+
+
+        const {
+            data,
+            error
+        } = await supabase
+            .from("messages")
+            .insert({
+                conversation_id:
+                    currentConversationId,
+
+                sender_id:
+                    currentUser.id,
+
+                content:
+                    content
+            })
+            .select("*")
+            .single();
+
+
+        if (error) {
+
+            console.error(
+                "SEND MESSAGE ERROR:",
+                error
+            );
+
+            if (sendMessageButton) {
+                sendMessageButton.disabled = false;
+            }
+
+            return;
+        }
+
+
+        console.log(
+            "MESSAGE SENT:",
+            data
+        );
+
+
+        messageInput.value = "";
+
+
+        if (sendMessageButton) {
+            sendMessageButton.disabled = false;
+        }
+
+
+        await loadMessages(
+            currentConversationId
+        );
     }
 
+
+    /* =========================
+       REALTIME MESSAGES
+    ========================= */
+
+    function subscribeToMessages(
+        conversationId
+    ) {
+
+        if (realtimeChannel) {
+
+            supabase.removeChannel(
+                realtimeChannel
+            );
+        }
+
+
+        realtimeChannel =
+            supabase
+                .channel(
+                    `messages-${conversationId}`
+                )
+                .on(
+                    "postgres_changes",
+                    {
+                        event: "INSERT",
+                        schema: "public",
+                        table: "messages",
+                        filter:
+                            `conversation_id=eq.${conversationId}`
+                    },
+                    () => {
+
+                        loadMessages(
+                            conversationId
+                        );
+                    }
+                )
+                .subscribe();
+    }
+
+
+    /* =========================
+       SEARCH CONVERSATIONS
+    ========================= */
 
     if (conversationSearch) {
 
         conversationSearch.addEventListener(
             "input",
-            searchConversations
+            () => {
+
+                const searchTerm =
+                    conversationSearch.value
+                        .trim()
+                        .toLowerCase();
+
+
+                if (!searchTerm) {
+
+                    renderConversations();
+
+                    return;
+                }
+
+
+                const filtered =
+                    conversations.filter(
+                        conversation => {
+
+                            const name =
+                                conversation
+                                    .otherUser
+                                    ?.full_name ||
+                                "";
+
+                            return name
+                                .toLowerCase()
+                                .includes(
+                                    searchTerm
+                                );
+                        }
+                    );
+
+
+                renderConversations(
+                    filtered
+                );
+            }
         );
     }
 
+
+    /* =========================
+       MESSAGE FORM
+    ========================= */
+
+    if (messageForm) {
+
+        messageForm.addEventListener(
+            "submit",
+            async event => {
+
+                event.preventDefault();
+
+                await sendMessage();
+            }
+        );
+    }
+
+
+    /* =========================
+       PROFILE BUTTON
+    ========================= */
 
     if (profileButton) {
 
         profileButton.addEventListener(
             "click",
-            openProfile
+            () => {
+
+                window.location.href =
+                    "profile.html";
+            }
         );
     }
 
+
+    /* =========================
+       NOTIFICATIONS
+    ========================= */
 
     if (notificationButton) {
 
         notificationButton.addEventListener(
             "click",
             () => {
-
-                /*
-                 * Notifications can be connected
-                 * to the backend later.
-                 */
 
                 console.log(
                     "Notifications clicked."
@@ -1022,332 +1531,122 @@ function setupEventListeners() {
     }
 
 
+    /* =========================
+       LOGOUT
+    ========================= */
+
     if (logoutButton) {
 
         logoutButton.addEventListener(
             "click",
-            handleLogout
-        );
-    }
+            async event => {
+
+                event.preventDefault();
 
 
-    const dashboardSearch =
-        document.getElementById(
-            "dashboardSearch"
-        );
-
-    if (dashboardSearch) {
-
-        dashboardSearch.addEventListener(
-            "keydown",
-            handleDashboardSearch
-        );
-    }
-}
+                const {
+                    error
+                } = await supabase.auth.signOut();
 
 
-/* =========================
-   TEXTAREA RESIZE
-========================= */
+                if (error) {
 
-function resizeMessageInput() {
+                    console.error(
+                        "LOGOUT ERROR:",
+                        error
+                    );
 
-    if (!messageInput) {
-        return;
-    }
-
-    messageInput.style.height =
-        "auto";
-
-    messageInput.style.height =
-        `${Math.min(
-            messageInput.scrollHeight,
-            110
-        )}px`;
-}
+                    return;
+                }
 
 
-/* =========================
-   GET PARTICIPANT ID
-========================= */
-
-function getConversationParticipantId(
-    conversationId
-) {
-
-    const conversation =
-        conversations.find(
-            item =>
-                item.conversationId ===
-                conversationId
-        );
-
-    return conversation
-        ?.participant
-        ?.userId || null;
-}
-
-
-/* =========================
-   INITIALS
-========================= */
-
-function getInitials(
-    firstName = "",
-    lastName = ""
-) {
-
-    const first =
-        firstName
-            .trim()
-            .charAt(0)
-            .toUpperCase();
-
-    const last =
-        lastName
-            .trim()
-            .charAt(0)
-            .toUpperCase();
-
-    return `${first}${last}` || "U";
-}
-
-
-/* =========================
-   FORMAT MESSAGE TIME
-========================= */
-
-function formatMessageTime(
-    dateValue
-) {
-
-    if (!dateValue) {
-        return "";
-    }
-
-    const date =
-        new Date(dateValue);
-
-    if (Number.isNaN(date.getTime())) {
-        return "";
-    }
-
-    const now =
-        new Date();
-
-    const sameDay =
-        date.toDateString() ===
-        now.toDateString();
-
-    if (sameDay) {
-
-        return date.toLocaleTimeString(
-            [],
-            {
-                hour: "2-digit",
-                minute: "2-digit"
+                window.location.href =
+                    "login.html";
             }
         );
     }
 
-    return date.toLocaleDateString(
-        [],
-        {
-            day: "2-digit",
-            month: "short"
+
+    /* =========================
+       ESCAPE HTML
+    ========================= */
+
+    function escapeHtml(value) {
+
+        if (
+            value === null ||
+            value === undefined
+        ) {
+            return "";
         }
-    );
-}
 
 
-/* =========================
-   SCROLL TO LATEST
-========================= */
-
-function scrollToLatestMessage() {
-
-    if (!messagesContainer) {
-        return;
+        return String(value)
+            .replace(
+                /&/g,
+                "&amp;"
+            )
+            .replace(
+                /</g,
+                "&lt;"
+            )
+            .replace(
+                />/g,
+                "&gt;"
+            )
+            .replace(
+                /"/g,
+                "&quot;"
+            )
+            .replace(
+                /'/g,
+                "&#039;"
+            );
     }
 
-    messagesContainer.scrollTop =
-        messagesContainer.scrollHeight;
-}
+
+    /* =========================
+       INITIALIZE
+    ========================= */
+
+    try {
+
+        await loadCurrentUser();
+
+        updateCurrentUser();
 
 
-/* =========================
-   ESCAPE HTML
-========================= */
+        try {
 
-function escapeHTML(value) {
+            await loadConversations();
 
-    const div =
-        document.createElement("div");
+        } catch (error) {
 
-    div.textContent =
-        value ?? "";
-
-    return div.innerHTML;
-}
+            console.error(
+                "CONVERSATION LOAD FAILED:",
+                error
+            );
+        }
 
 
-/* =========================
-   ERROR STATE
-========================= */
+        try {
 
-function showConversationError() {
+            await openConversationFromOrder();
 
-    if (!conversationList) {
-        return;
-    }
+        } catch (error) {
 
-    conversationList.innerHTML = `
+            console.error(
+                "OPEN CONVERSATION FAILED:",
+                error
+            );
+        }
 
-        <div class="conversation-empty">
+    } catch (error) {
 
-            <div class="empty-icon">
-                !
-            </div>
-
-            <h3>
-                Something went wrong
-            </h3>
-
-            <p>
-                We couldn't load your conversations.
-                Please try again later.
-            </p>
-
-        </div>
-
-    `;
-}
-
-
-/* =========================
-   BACKEND API
-   These functions are ready
-   for Spring Boot.
-========================= */
-
-
-/*
- * GET /api/users/me
- */
-async function getCurrentUser() {
-
-    const response =
-        await fetch(
-            `${API_BASE_URL}/users/me`,
-            {
-                method: "GET",
-                headers: {
-                    "Content-Type":
-                        "application/json"
-                }
-            }
-        );
-
-    if (!response.ok) {
-
-        throw new Error(
-            "Failed to load current user."
+        console.error(
+            "CHAT INITIALIZATION ERROR:",
+            error
         );
     }
 
-    return response.json();
-}
-
-
-/*
- * GET /api/conversations
- */
-async function getConversations() {
-
-    const response =
-        await fetch(
-            `${API_BASE_URL}/conversations`,
-            {
-                method: "GET",
-                headers: {
-                    "Content-Type":
-                        "application/json"
-                }
-            }
-        );
-
-    if (!response.ok) {
-
-        throw new Error(
-            "Failed to load conversations."
-        );
-    }
-
-    return response.json();
-}
-
-
-/*
- * GET /api/conversations/{id}/messages
- */
-async function getMessages(
-    conversationId
-) {
-
-    const response =
-        await fetch(
-            `${API_BASE_URL}/conversations/${conversationId}/messages`,
-            {
-                method: "GET",
-                headers: {
-                    "Content-Type":
-                        "application/json"
-                }
-            }
-        );
-
-    if (!response.ok) {
-
-        throw new Error(
-            "Failed to load messages."
-        );
-    }
-
-    return response.json();
-}
-
-
-/*
- * POST /api/conversations/{id}/messages
- */
-async function sendMessage(
-    conversationId,
-    content
-) {
-
-    const response =
-        await fetch(
-            `${API_BASE_URL}/conversations/${conversationId}/messages`,
-            {
-                method: "POST",
-
-                headers: {
-                    "Content-Type":
-                        "application/json"
-                },
-
-                body: JSON.stringify({
-                    content: content
-                })
-            }
-        );
-
-    if (!response.ok) {
-
-        throw new Error(
-            "Failed to send message."
-        );
-    }
-
-    return response.json();
-}
+});

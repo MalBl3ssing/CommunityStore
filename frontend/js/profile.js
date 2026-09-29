@@ -1,22 +1,148 @@
-// =========================
-// PROFILE PAGE
-// =========================
-
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", async function () {
 
     // =========================
-    // GET REGISTERED USER
+    // SUPABASE
     // =========================
 
-    const savedUser = localStorage.getItem("communityStoreUser");
+    const supabaseUrl =
+        "https://olnqufovakusfjlaablt.supabase.co";
 
-    if (!savedUser) {
-        // No registered user found
-        window.location.href = "login.html";
+    const supabaseKey =
+        "sb_publishable_B-iTGT_tnwSpMSEQR1h-2Q_lAqhLkXA";
+
+    const supabaseClient =
+        window.supabase.createClient(
+            supabaseUrl,
+            supabaseKey
+        );
+
+
+    // =========================
+    // GET LOGGED-IN USER
+    // =========================
+
+    async function loadUser() {
+
+        try {
+
+            const {
+                data: { user },
+                error
+            } = await supabaseClient.auth.getUser();
+
+
+            if (error) {
+                throw error;
+            }
+
+
+            if (!user) {
+
+                window.location.href =
+                    "login.html";
+
+                return null;
+            }
+
+
+            // =========================
+            // GET PROFILE
+            // =========================
+
+            let profile = null;
+
+
+            const {
+                data: profileData,
+                error: profileError
+            } = await supabaseClient
+                .from("profiles")
+                .select("full_name, user_type")
+                .eq("id", user.id)
+                .maybeSingle();
+
+
+            if (profileError) {
+
+                console.error(
+                    "Profile loading error:",
+                    profileError
+                );
+
+            } else {
+
+                profile = profileData;
+
+            }
+
+
+            // =========================
+            // USER NAME
+            // =========================
+
+            const fullName =
+                profile?.full_name ||
+                user.user_metadata?.full_name ||
+                user.user_metadata?.name ||
+                getNameFromEmail(user.email) ||
+                "User";
+
+
+            // =========================
+            // USER TYPE
+            // =========================
+
+            const userType =
+                profile?.user_type ||
+                user.user_metadata?.user_type ||
+                "Account";
+
+
+            // =========================
+            // USER EMAIL
+            // =========================
+
+            const email =
+                user.email || "Not provided";
+
+
+            return {
+                id: user.id,
+                fullName: fullName,
+                userType: userType,
+                email: email
+            };
+
+
+        } catch (error) {
+
+            console.error(
+                "Error loading logged-in user:",
+                error
+            );
+
+
+            window.location.href =
+                "login.html";
+
+
+            return null;
+        }
+    }
+
+
+    const user = await loadUser();
+
+
+    if (!user) {
         return;
     }
 
-    const user = JSON.parse(savedUser);
+
+    console.log(
+        "Profile page user:",
+        user
+    );
 
 
     // =========================
@@ -24,29 +150,62 @@ document.addEventListener("DOMContentLoaded", function () {
     // =========================
 
     function formatUserType(type) {
+
         if (!type) {
             return "Account";
         }
 
-        return type.charAt(0).toUpperCase() + type.slice(1);
+
+        return String(type)
+            .charAt(0)
+            .toUpperCase() +
+            String(type).slice(1);
     }
 
-    const displayUserType = formatUserType(user.userType);
+
+    const displayUserType =
+        formatUserType(user.userType);
 
 
     // =========================
     // TOP PROFILE
     // =========================
 
-    const userName = document.getElementById("userName");
-    const userType = document.getElementById("userType");
+    const userName =
+        document.getElementById("userName");
+
+    const userType =
+        document.getElementById("userType");
+
 
     if (userName) {
-        userName.textContent = user.fullName;
+
+        userName.textContent =
+            user.fullName;
     }
 
+
     if (userType) {
-        userType.textContent = displayUserType;
+
+        userType.textContent =
+            displayUserType;
+    }
+
+
+    // =========================
+    // TOP PROFILE AVATAR
+    // =========================
+
+    const topAvatar =
+        document.querySelector(
+            "#profileButton .profile-avatar span"
+        );
+
+
+    if (topAvatar) {
+
+        topAvatar.textContent =
+            getInitials(user.fullName);
     }
 
 
@@ -54,20 +213,51 @@ document.addEventListener("DOMContentLoaded", function () {
     // PROFILE DETAILS
     // =========================
 
-    const profileName = document.getElementById("profileName");
-    const profileUserType = document.getElementById("profileUserType");
-    const profileEmail = document.getElementById("profileEmail");
+    const profileName =
+        document.getElementById("profileName");
+
+    const profileUserType =
+        document.getElementById("profileUserType");
+
+    const profileEmail =
+        document.getElementById("profileEmail");
+
 
     if (profileName) {
-        profileName.textContent = user.fullName;
+
+        profileName.textContent =
+            user.fullName;
     }
+
 
     if (profileUserType) {
-        profileUserType.textContent = displayUserType;
+
+        profileUserType.textContent =
+            displayUserType;
     }
 
+
     if (profileEmail) {
-        profileEmail.textContent = user.email;
+
+        profileEmail.textContent =
+            user.email;
+    }
+
+
+    // =========================
+    // LARGE PROFILE AVATAR
+    // =========================
+
+    const largeAvatar =
+        document.querySelector(
+            ".large-profile-avatar span"
+        );
+
+
+    if (largeAvatar) {
+
+        largeAvatar.textContent =
+            getInitials(user.fullName);
     }
 
 
@@ -75,20 +265,34 @@ document.addEventListener("DOMContentLoaded", function () {
     // ACCOUNT INFORMATION
     // =========================
 
-    const accountName = document.getElementById("accountName");
-    const accountEmail = document.getElementById("accountEmail");
-    const accountUserType = document.getElementById("accountUserType");
+    const accountName =
+        document.getElementById("accountName");
+
+    const accountEmail =
+        document.getElementById("accountEmail");
+
+    const accountUserType =
+        document.getElementById("accountUserType");
+
 
     if (accountName) {
-        accountName.textContent = user.fullName;
+
+        accountName.textContent =
+            user.fullName;
     }
+
 
     if (accountEmail) {
-        accountEmail.textContent = user.email;
+
+        accountEmail.textContent =
+            user.email;
     }
 
+
     if (accountUserType) {
-        accountUserType.textContent = displayUserType;
+
+        accountUserType.textContent =
+            displayUserType;
     }
 
 
@@ -96,12 +300,21 @@ document.addEventListener("DOMContentLoaded", function () {
     // PROFILE BUTTON
     // =========================
 
-    const profileButton = document.getElementById("profileButton");
+    const profileButton =
+        document.getElementById("profileButton");
+
 
     if (profileButton) {
-        profileButton.addEventListener("click", function () {
-            window.location.href = "profile.html";
-        });
+
+        profileButton.addEventListener(
+            "click",
+            function () {
+
+                window.location.href =
+                    "profile.html";
+
+            }
+        );
     }
 
 
@@ -109,19 +322,111 @@ document.addEventListener("DOMContentLoaded", function () {
     // LOGOUT
     // =========================
 
-    const logoutButton = document.getElementById("logoutButton");
+    const logoutButton =
+        document.getElementById("logoutButton");
+
 
     if (logoutButton) {
-        logoutButton.addEventListener("click", function (event) {
 
-            event.preventDefault();
+        logoutButton.addEventListener(
+            "click",
+            async function (event) {
 
-            // Remove current login session
-            sessionStorage.removeItem("communityStoreCurrentUser");
+                event.preventDefault();
 
-            // Send user back to login
-            window.location.href = "login.html";
-        });
+
+                try {
+
+                    const {
+                        error
+                    } = await supabaseClient.auth.signOut();
+
+
+                    if (error) {
+                        throw error;
+                    }
+
+
+                    window.location.href =
+                        "login.html";
+
+
+                } catch (error) {
+
+                    console.error(
+                        "Logout error:",
+                        error
+                    );
+
+
+                    alert(
+                        "Unable to log out. Please try again."
+                    );
+                }
+
+            }
+        );
+    }
+
+
+    // =========================
+    // SEARCH
+    // =========================
+
+    const profileSearch =
+        document.getElementById("profileSearch");
+
+
+    if (profileSearch) {
+
+        profileSearch.addEventListener(
+            "keydown",
+            function (event) {
+
+                if (event.key !== "Enter") {
+                    return;
+                }
+
+
+                const query =
+                    profileSearch.value.trim();
+
+
+                if (!query) {
+                    return;
+                }
+
+
+                window.location.href =
+                    `search.html?q=${encodeURIComponent(query)}`;
+
+            }
+        );
+    }
+
+
+    // =========================
+    // NOTIFICATIONS
+    // =========================
+
+    const notificationButton =
+        document.getElementById(
+            "notificationButton"
+        );
+
+
+    if (notificationButton) {
+
+        notificationButton.addEventListener(
+            "click",
+            function () {
+
+                console.log(
+                    "Notifications clicked."
+                );
+
+            }
+        );
     }
 
 
@@ -129,12 +434,23 @@ document.addEventListener("DOMContentLoaded", function () {
     // BROWSE MARKETPLACE
     // =========================
 
-    const browseButton = document.getElementById("browseButton");
+    const browseButton =
+        document.getElementById(
+            "browseButton"
+        );
+
 
     if (browseButton) {
-        browseButton.addEventListener("click", function () {
-            window.location.href = "home.html";
-        });
+
+        browseButton.addEventListener(
+            "click",
+            function () {
+
+                window.location.href =
+                    "home.html";
+
+            }
+        );
     }
 
 
@@ -143,12 +459,23 @@ document.addEventListener("DOMContentLoaded", function () {
     // =========================
 
     const createListingButton =
-        document.getElementById("createListingButton");
+        document.getElementById(
+            "createListingButton"
+        );
+
 
     if (createListingButton) {
-        createListingButton.addEventListener("click", function () {
-            alert("The Sell an Item page will be connected soon.");
-        });
+
+        createListingButton.addEventListener(
+            "click",
+            function () {
+
+                alert(
+                    "The Sell an Item page will be connected soon."
+                );
+
+            }
+        );
     }
 
 
@@ -157,12 +484,23 @@ document.addEventListener("DOMContentLoaded", function () {
     // =========================
 
     const viewListingsButton =
-        document.getElementById("viewListingsButton");
+        document.getElementById(
+            "viewListingsButton"
+        );
+
 
     if (viewListingsButton) {
-        viewListingsButton.addEventListener("click", function () {
-            alert("Your listings page will be connected soon.");
-        });
+
+        viewListingsButton.addEventListener(
+            "click",
+            function () {
+
+                alert(
+                    "Your listings page will be connected soon."
+                );
+
+            }
+        );
     }
 
 
@@ -171,12 +509,23 @@ document.addEventListener("DOMContentLoaded", function () {
     // =========================
 
     const viewSavedButton =
-        document.getElementById("viewSavedButton");
+        document.getElementById(
+            "viewSavedButton"
+        );
+
 
     if (viewSavedButton) {
-        viewSavedButton.addEventListener("click", function () {
-            alert("Your saved items page will be connected soon.");
-        });
+
+        viewSavedButton.addEventListener(
+            "click",
+            function () {
+
+                alert(
+                    "Your saved items page will be connected soon."
+                );
+
+            }
+        );
     }
 
 
@@ -185,12 +534,22 @@ document.addEventListener("DOMContentLoaded", function () {
     // =========================
 
     const settingsButton =
-        document.getElementById("settingsButton");
+        document.getElementById(
+            "settingsButton"
+        );
+
 
     if (settingsButton) {
-        settingsButton.addEventListener("click", function () {
-            alert("Settings page will be connected soon.");
-        });
+
+        settingsButton.addEventListener(
+            "click",
+            function () {
+
+                window.location.href =
+                    "settings.html";
+
+            }
+        );
     }
 
 
@@ -199,12 +558,22 @@ document.addEventListener("DOMContentLoaded", function () {
     // =========================
 
     const chatButton =
-        document.getElementById("chatButton");
+        document.getElementById(
+            "chatButton"
+        );
+
 
     if (chatButton) {
-        chatButton.addEventListener("click", function () {
-            alert("Messages page will be connected soon.");
-        });
+
+        chatButton.addEventListener(
+            "click",
+            function () {
+
+                window.location.href =
+                    "chat.html";
+
+            }
+        );
     }
 
 
@@ -213,12 +582,22 @@ document.addEventListener("DOMContentLoaded", function () {
     // =========================
 
     const helpButton =
-        document.getElementById("helpButton");
+        document.getElementById(
+            "helpButton"
+        );
+
 
     if (helpButton) {
-        helpButton.addEventListener("click", function () {
-            alert("Help & Support page will be connected soon.");
-        });
+
+        helpButton.addEventListener(
+            "click",
+            function () {
+
+                window.location.href =
+                    "help.html";
+
+            }
+        );
     }
 
 
@@ -227,21 +606,93 @@ document.addEventListener("DOMContentLoaded", function () {
     // =========================
 
     const editProfileButton =
-        document.getElementById("editProfileButton");
+        document.getElementById(
+            "editProfileButton"
+        );
 
     const accountEditButton =
-        document.getElementById("accountEditButton");
+        document.getElementById(
+            "accountEditButton"
+        );
+
 
     function editProfile() {
-        alert("Profile editing will be connected soon.");
+
+        alert(
+            "Profile editing will be connected soon."
+        );
+
     }
+
 
     if (editProfileButton) {
-        editProfileButton.addEventListener("click", editProfile);
+
+        editProfileButton.addEventListener(
+            "click",
+            editProfile
+        );
     }
 
+
     if (accountEditButton) {
-        accountEditButton.addEventListener("click", editProfile);
+
+        accountEditButton.addEventListener(
+            "click",
+            editProfile
+        );
+    }
+
+
+    // =========================
+    // HELPERS
+    // =========================
+
+    function getInitials(name) {
+
+        const parts =
+            String(name)
+                .trim()
+                .split(/\s+/)
+                .filter(Boolean);
+
+
+        if (parts.length === 0) {
+            return "--";
+        }
+
+
+        if (parts.length === 1) {
+
+            return parts[0]
+                .substring(0, 2)
+                .toUpperCase();
+
+        }
+
+
+        return (
+            parts[0].charAt(0) +
+            parts[parts.length - 1].charAt(0)
+        ).toUpperCase();
+    }
+
+
+    function getNameFromEmail(email) {
+
+        if (!email) {
+            return "";
+        }
+
+
+        const username =
+            email.split("@")[0];
+
+
+        return username
+            .replace(/[._-]+/g, " ")
+            .replace(/\b\w/g, function (char) {
+                return char.toUpperCase();
+            });
     }
 
 });

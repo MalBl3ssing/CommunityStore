@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Checkout | Community Store</title>
+
+    <link rel="stylesheet" href="css/checkout.css">
+</head>
+
+<body>
+
+    <!-- =========================
+         CHECKOUT HEADER
+    ========================== -->
+
+    <header class="checkout-header">
+
+        <a
+            href="home.html"
+            class="checkout-logo"
+        >
+            Community Store
+        </a>
+
+        <div class="secure-checkout">
+            <span>🔒</span>
+            Secure checkout
+        </div>
+
+    </header>
+
+
+    <!-- =========================
+         MAIN CHECKOUT
+    ========================== -->
+
+    <main class="checkout-page">
+
+        <div class="checkout-top">
+
+            <a
+                href="orders.html"
+                class="back-link"
+            >
+                ← Back to Bookings
+            </a>
+
+            <div class="checkout-title">
+
+                <span class="section-label">
+                    CHECKOUT
+                </span>
+
+                <h1>
+                    Complete your booking
+                </h1>
+
+                <p>
+                    Review your booking details and complete your payment.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- =========================
+             CHECKOUT CONTAINER
+        ========================== -->
+
+        <div
+            class="checkout-container"
+            id="checkoutContainer"
+        >
+
+            <!-- =========================
+                 BOOKING DETAILS
+            ========================== -->
+
+            <section class="booking-details-card">
+
+                <div class="card-heading">
+
+                    <span class="section-label">
+                        BOOKING SUMMARY
+                    </span>
+
+                    <h2>
+                        Your booking
+                    </h2>
+
+                </div>
+
+
+                <div
+                    class="booking-preview"
+                    id="bookingPreview"
+                >
+
+                    <div class="loading-message">
+                        Loading booking...
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =========================
+                 PAYMENT
+            ========================== -->
+
+            <section class="payment-card">
+
+                <div class="card-heading">
+
+                    <span class="section-label">
+                        PAYMENT
+                    </span>
+
+                    <h2>
+                        Payment details
+                    </h2>
+
+                </div>
+
+
+                <div class="payment-method">
+
+                    <div class="payment-method-title">
+
+                        <span class="card-icon">
+                            💳
+                        </span>
+
+                        <div>
+                            <strong>
+                                Card payment
+                            </strong>
+
+                            <span>
+                                Visa / Mastercard
+                            </span>
+                        </div>
+
+                    </div>
+
+                    <span class="demo-badge">
+                        DEMO
+                    </span>
+
+                </div>
+
+
+                <div class="demo-notice">
+
+                    <div class="notice-icon">
+                        ✓
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            Demo payment
+                        </strong>
+
+                        <p>
+                            This is a demonstration checkout.
+                            No real money will be charged.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <form id="paymentForm">
+
+                    <div class="form-group">
+
+                        <label for="cardName">
+                            Name on card
+                        </label>
+
+                        <input
+                            type="text"
+                            id="cardName"
+                            placeholder="John Smith"
+                            autocomplete="cc-name"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="cardNumber">
+                            Card number
+                        </label>
+
+                        <div class="card-input-wrapper">
+
+                            <input
+                                type="text"
+                                id="cardNumber"
+                                placeholder="1234 5678 9012 3456"
+                                maxlength="19"
+                                inputmode="numeric"
+                                autocomplete="cc-number"
+                                required
+                            >
+
+                            <span class="card-input-icon">
+                                💳
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="form-row">
+
+                        <div class="form-group">
+
+                            <label for="expiry">
+                                Expiry date
+                            </label>
+
+                            <input
+                                type="text"
+                                id="expiry"
+                                placeholder="MM/YY"
+                                maxlength="5"
+                                inputmode="numeric"
+                                autocomplete="cc-exp"
+                                required
+                            >
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="cvv">
+                                CVV
+                            </label>
+
+                            <input
+                                type="password"
+                                id="cvv"
+                                placeholder="•••"
+                                maxlength="3"
+                                inputmode="numeric"
+                                autocomplete="cc-csc"
+                                required
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- TOTAL -->
+
+                    <div class="payment-total">
+
+                        <span>
+                            Total
+                        </span>
+
+                        <strong id="paymentTotal">
+                            R0.00
+                        </strong>
+
+                    </div>
+
+
+                    <button
+                        type="submit"
+                        class="pay-button"
+                        id="payButton"
+                    >
+                        <span>
+                            🔒
+                        </span>
+
+                        Complete Demo Payment
+                    </button>
+
+
+                    <p class="payment-disclaimer">
+                        By completing this payment, you agree to the
+                        Community Store booking terms.
+                    </p>
+
+                </form>
+
+            </section>
+
+        </div>
+
+
+        <!-- =========================
+             SUCCESS
+        ========================== -->
+
+        <div
+            class="payment-success"
+            id="paymentSuccess"
+            style="display: none;"
+        >
+
+            <div class="success-icon">
+                ✓
+            </div>
+
+            <span class="section-label">
+                PAYMENT COMPLETE
+            </span>
+
+            <h2>
+                Booking confirmed
+            </h2>
+
+            <p>
+                Your booking has been successfully confirmed.
+            </p>
+
+            <a
+                href="orders.html"
+                class="return-button"
+            >
+                View My Bookings
+            </a>
+
+        </div>
+
+
+        <!-- =========================
+             ERROR
+        ========================== -->
+
+        <div
+            class="checkout-error"
+            id="checkoutError"
+            style="display: none;"
+        >
+
+            <div class="error-icon">
+                !
+            </div>
+
+            <h2>
+                Booking unavailable
+            </h2>
+
+            <p id="checkoutErrorMessage">
+                We couldn't load this booking.
+            </p>
+
+            <a
+                href="orders.html"
+                class="return-button"
+            >
+                Back to Bookings
+            </a>
+
+        </div>
+
+    </main>
+
+
+    <!-- =========================
+         FOOTER
+    ========================== -->
+
+    <footer class="checkout-footer">
+
+        <span>
+            🔒 Secure demo checkout
+        </span>
+
+        <span>
+            © Community Store
+        </span>
+
+    </footer>
+
+
+    <!-- SUPABASE -->
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script src="js/checkout.js"></script>
+
+</body>
+</html>

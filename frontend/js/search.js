@@ -2,120 +2,96 @@
    SEARCH PAGE
 ========================= */
 
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", async function () {
+
+    /* =========================
+       SUPABASE
+    ========================== */
+
+    const SUPABASE_URL =
+        "https://olnqufovakusfjlaablt.supabase.co";
+
+    const SUPABASE_ANON_KEY =
+        "sb_publishable_B-iTGT_tnwSpMSEQR1h-2Q_lAqhLkXA";
+
+    const supabaseClient =
+        window.supabase.createClient(
+            SUPABASE_URL,
+            SUPABASE_ANON_KEY
+        );
+
 
     /* =========================
        ELEMENTS
     ========================== */
 
-    const searchInput = document.getElementById("searchInput");
-    const productSearchInput = document.getElementById("productSearchInput");
+    const searchInput =
+        document.getElementById("searchInput");
 
-    const categoryFilter = document.getElementById("categoryFilter");
-    const sortFilter = document.getElementById("sortFilter");
+    const productSearchInput =
+        document.getElementById("productSearchInput");
 
-    const clearSearchButton = document.getElementById("clearSearchButton");
-    const resetSearchButton = document.getElementById("resetSearchButton");
+    const categoryFilter =
+        document.getElementById("categoryFilter");
 
-    const productGrid = document.getElementById("productGrid");
+    const sortFilter =
+        document.getElementById("sortFilter");
 
-    const loadingState = document.getElementById("loadingState");
-    const emptyState = document.getElementById("emptyState");
+    const clearSearchButton =
+        document.getElementById("clearSearchButton");
 
-    const resultsCount = document.getElementById("resultsCount");
+    const resetSearchButton =
+        document.getElementById("resetSearchButton");
 
-    const profileButton = document.getElementById("profileButton");
-    const notificationButton = document.getElementById("notificationButton");
-    const logoutButton = document.getElementById("logoutButton");
+    const productGrid =
+        document.getElementById("productGrid");
+
+    const loadingState =
+        document.getElementById("loadingState");
+
+    const emptyState =
+        document.getElementById("emptyState");
+
+    const resultsCount =
+        document.getElementById("resultsCount");
+
+    const profileButton =
+        document.getElementById("profileButton");
+
+    const notificationButton =
+        document.getElementById("notificationButton");
+
+    const logoutButton =
+        document.getElementById("logoutButton");
+
+    const userName =
+        document.getElementById("userName");
+
+    const userType =
+        document.getElementById("userType");
+
+    const profileAvatar =
+        document.querySelector(".profile-avatar");
 
 
     /* =========================
-       TEMPORARY PRODUCT DATA
-       
-       This structure is designed
-       to be replaced by backend/API
-       data later.
+       CURRENT USER
     ========================== */
 
-    let products = [
+    let currentUser = null;
 
-        {
-            id: 1,
-            name: "Introduction to Java Programming",
-            category: "books",
-            categoryName: "Books",
-            price: 250,
-            seller: "Student Seller",
-            location: "Cape Town",
-            image: null,
-            createdAt: "2026-09-24"
-        },
-
-        {
-            id: 2,
-            name: "Wireless Bluetooth Headphones",
-            category: "accessories",
-            categoryName: "Accessories",
-            price: 450,
-            seller: "Community Seller",
-            location: "Cape Town",
-            image: null,
-            createdAt: "2026-09-23"
-        },
-
-        {
-            id: 3,
-            name: "Laptop Stand",
-            category: "electronics",
-            categoryName: "Electronics",
-            price: 300,
-            seller: "Campus Seller",
-            location: "Cape Town",
-            image: null,
-            createdAt: "2026-09-22"
-        },
-
-        {
-            id: 4,
-            name: "Nike Sports Jacket",
-            category: "fashion",
-            categoryName: "Fashion",
-            price: 550,
-            seller: "Student Seller",
-            location: "Cape Town",
-            image: null,
-            createdAt: "2026-09-21"
-        },
-
-        {
-            id: 5,
-            name: "Football Boots",
-            category: "sports",
-            categoryName: "Sports",
-            price: 700,
-            seller: "Community Seller",
-            location: "Cape Town",
-            image: null,
-            createdAt: "2026-09-20"
-        },
-
-        {
-            id: 6,
-            name: "Desk Lamp",
-            category: "home-living",
-            categoryName: "Home & Living",
-            price: 180,
-            seller: "Campus Seller",
-            location: "Cape Town",
-            image: null,
-            createdAt: "2026-09-19"
-        }
-
-    ];
+    let currentProfile = null;
 
 
     /* =========================
-       CURRENT FILTER STATE
+       PRODUCTS
+    ========================== */
+
+    let products = [];
+
+
+    /* =========================
+       FILTER STATE
     ========================== */
 
     let currentSearch = "";
@@ -126,43 +102,469 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
     /* =========================
-       LOAD PRODUCTS
-       
-       BACKEND CONNECTION POINT
-       
-       Later this function can
-       fetch products from your API.
+       URL PARAMETERS
+    ========================== */
+
+    const urlParams =
+        new URLSearchParams(
+            window.location.search
+        );
+
+    const urlSearch =
+        urlParams.get("q");
+
+    const urlCategory =
+        urlParams.get("category");
+
+
+    /* =========================
+       LOAD CURRENT USER
+    ========================== */
+
+    async function loadCurrentUser() {
+
+        try {
+
+            const {
+                data: { user },
+                error: authError
+            } = await supabaseClient.auth.getUser();
+
+
+            if (authError) {
+
+                console.error(
+                    "Unable to get current user:",
+                    authError
+                );
+
+                return;
+
+            }
+
+
+            if (!user) {
+
+                console.warn(
+                    "No logged-in user found."
+                );
+
+                return;
+
+            }
+
+
+            currentUser = user;
+
+
+            const {
+                data: profile,
+                error: profileError
+            } = await supabaseClient
+
+                .from("profiles")
+
+                .select(
+                    "id, full_name, user_type"
+                )
+
+                .eq(
+                    "id",
+                    user.id
+                )
+
+                .maybeSingle();
+
+
+            if (profileError) {
+
+                console.error(
+                    "Unable to load user profile:",
+                    profileError
+                );
+
+                updateCurrentUser();
+
+                return;
+
+            }
+
+
+            currentProfile = profile;
+
+            updateCurrentUser();
+
+
+        } catch (error) {
+
+            console.error(
+                "Unexpected user loading error:",
+                error
+            );
+
+        }
+
+    }
+
+
+    /* =========================
+       UPDATE CURRENT USER UI
+    ========================== */
+
+    function updateCurrentUser() {
+
+        const fullName =
+
+            currentProfile
+                ?.full_name
+                ?.trim()
+
+            ||
+
+            currentUser
+                ?.user_metadata
+                ?.full_name
+                ?.trim()
+
+            ||
+
+            currentUser
+                ?.user_metadata
+                ?.name
+                ?.trim()
+
+            ||
+
+            currentUser
+                ?.email
+                ?.split("@")[0]
+
+            ||
+
+            "User";
+
+
+        const type =
+
+            currentProfile
+                ?.user_type
+                ?.trim()
+
+            ||
+
+            currentUser
+                ?.user_metadata
+                ?.user_type
+                ?.trim()
+
+            ||
+
+            "Member";
+
+
+        if (userName) {
+
+            userName.textContent =
+                fullName;
+
+        }
+
+
+        if (userType) {
+
+            userType.textContent =
+                type;
+
+        }
+
+
+        if (profileAvatar) {
+
+            profileAvatar.textContent =
+                getInitials(fullName);
+
+        }
+
+    }
+
+
+    /* =========================
+       GET INITIALS
+    ========================== */
+
+    function getInitials(name) {
+
+        if (!name) {
+            return "U";
+        }
+
+
+        const words =
+            name
+                .trim()
+                .split(/\s+/)
+                .filter(Boolean);
+
+
+        if (words.length === 1) {
+
+            return words[0]
+                .substring(0, 2)
+                .toUpperCase();
+
+        }
+
+
+        return (
+
+            words[0].charAt(0) +
+
+            words[
+                words.length - 1
+            ].charAt(0)
+
+        ).toUpperCase();
+
+    }
+
+
+    /* =========================
+       LOAD POSTS
     ========================== */
 
     async function loadProducts() {
 
         showLoading();
 
+
         try {
 
-            /*
-             * Example future backend:
-             *
-             * const response = await fetch(
-             *     `/api/products?search=${encodeURIComponent(currentSearch)}`
-             * );
-             *
-             * products = await response.json();
-             */
+            const {
+                data: posts,
+                error: postsError
+            } = await supabaseClient
 
-            await new Promise(function (resolve) {
-                setTimeout(resolve, 400);
-            });
+                .from("posts")
+
+                .select("*")
+
+                .order(
+                    "created_at",
+                    {
+                        ascending: false
+                    }
+                );
+
+
+            if (postsError) {
+
+                throw postsError;
+
+            }
+
+
+            if (!posts || posts.length === 0) {
+
+                products = [];
+
+                renderProducts();
+
+                return;
+
+            }
+
+
+            /* =========================
+               GET USER IDS
+            ========================== */
+
+            const userIds = [
+
+                ...new Set(
+
+                    posts
+
+                        .map(
+                            post => post.user_id
+                        )
+
+                        .filter(Boolean)
+
+                )
+
+            ];
+
+
+            let profileMap = {};
+
+
+            if (userIds.length > 0) {
+
+                const {
+                    data: profiles,
+                    error: profilesError
+                } = await supabaseClient
+
+                    .from("profiles")
+
+                    .select(
+                        "id, full_name, user_type, phone_number"
+                    )
+
+                    .in(
+                        "id",
+                        userIds
+                    );
+
+
+                if (profilesError) {
+
+                    console.error(
+                        "Unable to load seller profiles:",
+                        profilesError
+                    );
+
+                } else {
+
+                    profileMap =
+                        Object.fromEntries(
+
+                            (profiles || [])
+                                .map(profile => [
+                                    String(profile.id),
+                                    profile
+                                ])
+
+                        );
+
+                }
+
+            }
+
+
+            /* =========================
+               CONVERT POSTS
+            ========================== */
+
+            products =
+                posts.map(function (post) {
+
+                    const profile =
+                        profileMap[
+                            String(post.user_id)
+                        ] || null;
+
+
+                    const sellerName =
+
+                        profile
+                            ?.full_name
+                            ?.trim()
+
+                        ||
+
+                        "Community member";
+
+
+                    return {
+
+                        id: post.id,
+
+                        name:
+                            post.title ||
+                            "Untitled listing",
+
+                        description:
+                            post.description ||
+                            "",
+
+                        category:
+                            normaliseCategory(
+                                post.category
+                            ),
+
+                        categoryName:
+                            formatCategory(
+                                post.category
+                            ),
+
+                        price:
+                            post.price !== null &&
+                            post.price !== undefined
+
+                                ? Number(post.price)
+
+                                : 0,
+
+                        seller:
+                            sellerName,
+
+                        sellerId:
+                            post.user_id,
+
+                        sellerPhone:
+                            profile
+                                ?.phone_number ||
+                            "",
+
+                        location:
+                            post.location ||
+                            "Location not specified",
+
+                        image:
+                            post.image_url ||
+                            null,
+
+                        postType:
+                            post.post_type ||
+                            "product",
+
+                        createdAt:
+                            post.created_at ||
+                            null
+
+                    };
+
+                });
+
 
             renderProducts();
+
 
         } catch (error) {
 
-            console.error("Unable to load products:", error);
+            console.error(
+                "Unable to load products:",
+                error
+            );
+
 
             products = [];
 
-            renderProducts();
+
+            productGrid.innerHTML = "";
+
+
+            if (loadingState) {
+                loadingState.hidden = true;
+            }
+
+
+            if (emptyState) {
+
+                emptyState.hidden = false;
+
+                const message =
+                    emptyState.querySelector("p");
+
+                if (message) {
+
+                    message.textContent =
+                        "Unable to load listings right now.";
+
+                }
+
+            }
 
         }
 
@@ -175,83 +577,155 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function getFilteredProducts() {
 
-        let filteredProducts = [...products];
+        let filteredProducts =
+            [...products];
 
 
-        /* Search */
+        /* =========================
+           SEARCH
+        ========================== */
 
         if (currentSearch) {
 
-            const searchTerm = currentSearch.toLowerCase();
+            const searchTerm =
+                currentSearch
+                    .toLowerCase()
+                    .trim();
 
-            filteredProducts = filteredProducts.filter(function (product) {
 
-                return (
+            filteredProducts =
+                filteredProducts.filter(
+                    function (product) {
 
-                    product.name.toLowerCase().includes(searchTerm)
+                        const searchableText = [
 
-                    ||
+                            product.name,
 
-                    product.categoryName
-                        .toLowerCase()
-                        .includes(searchTerm)
+                            product.description,
 
-                    ||
+                            product.categoryName,
 
-                    product.seller
-                        .toLowerCase()
-                        .includes(searchTerm)
+                            product.category,
 
+                            product.seller,
+
+                            product.location,
+
+                            product.postType
+
+                        ]
+
+                            .filter(Boolean)
+
+                            .join(" ")
+
+                            .toLowerCase();
+
+
+                        return searchableText
+                            .includes(searchTerm);
+
+                    }
                 );
 
-            });
+        }
+
+
+        /* =========================
+           CATEGORY
+        ========================== */
+
+        if (
+            currentCategory &&
+            currentCategory !== "all"
+        ) {
+
+            const selectedCategory =
+                normaliseCategory(
+                    currentCategory
+                );
+
+
+            filteredProducts =
+                filteredProducts.filter(
+                    function (product) {
+
+                        return (
+
+                            product.category ===
+                            selectedCategory
+
+                            ||
+
+                            normaliseCategory(
+                                product.categoryName
+                            ) ===
+                            selectedCategory
+
+                        );
+
+                    }
+                );
 
         }
 
 
-        /* Category */
+        /* =========================
+           SORT
+        ========================== */
 
-        if (currentCategory !== "all") {
+        filteredProducts.sort(
+            function (a, b) {
 
-            filteredProducts = filteredProducts.filter(function (product) {
+                switch (currentSort) {
 
-                return product.category === currentCategory;
+                    case "oldest":
 
-            });
+                        return (
+                            new Date(
+                                a.createdAt || 0
+                            ) -
 
-        }
-
-
-        /* Sort */
-
-        filteredProducts.sort(function (a, b) {
-
-            switch (currentSort) {
-
-                case "oldest":
-
-                    return new Date(a.createdAt) - new Date(b.createdAt);
+                            new Date(
+                                b.createdAt || 0
+                            )
+                        );
 
 
-                case "price-low":
+                    case "price-low":
 
-                    return a.price - b.price;
-
-
-                case "price-high":
-
-                    return b.price - a.price;
+                        return (
+                            Number(a.price || 0) -
+                            Number(b.price || 0)
+                        );
 
 
-                case "newest":
+                    case "price-high":
 
-                default:
+                        return (
+                            Number(b.price || 0) -
+                            Number(a.price || 0)
+                        );
 
-                    return new Date(b.createdAt) - new Date(a.createdAt);
+
+                    case "newest":
+
+                    default:
+
+                        return (
+                            new Date(
+                                b.createdAt || 0
+                            ) -
+
+                            new Date(
+                                a.createdAt || 0
+                            )
+                        );
+
+                }
 
             }
-
-        });
+        );
 
 
         return filteredProducts;
@@ -265,22 +739,43 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function renderProducts() {
 
-        const filteredProducts = getFilteredProducts();
+        if (!productGrid) {
+            return;
+        }
+
+
+        const filteredProducts =
+            getFilteredProducts();
 
 
         productGrid.innerHTML = "";
 
 
-        updateResultsCount(filteredProducts.length);
+        updateResultsCount(
+            filteredProducts.length
+        );
 
 
-        if (filteredProducts.length === 0) {
+        if (
+            filteredProducts.length === 0
+        ) {
 
             productGrid.hidden = true;
 
-            emptyState.hidden = false;
 
-            loadingState.hidden = true;
+            if (emptyState) {
+
+                emptyState.hidden = false;
+
+            }
+
+
+            if (loadingState) {
+
+                loadingState.hidden = true;
+
+            }
+
 
             return;
 
@@ -289,18 +784,39 @@ document.addEventListener("DOMContentLoaded", function () {
 
         productGrid.hidden = false;
 
-        emptyState.hidden = true;
 
-        loadingState.hidden = true;
+        if (emptyState) {
+
+            emptyState.hidden = true;
+
+        }
 
 
-        filteredProducts.forEach(function (product) {
+        if (loadingState) {
 
-            const card = createProductCard(product);
+            loadingState.hidden = true;
 
-            productGrid.appendChild(card);
+        }
 
-        });
+
+        filteredProducts.forEach(
+            function (product) {
+
+                const card =
+                    createProductCard(
+                        product
+                    );
+
+
+                productGrid.appendChild(
+                    card
+                );
+
+            }
+        );
+
+
+        restoreSavedState();
 
     }
 
@@ -311,42 +827,53 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function createProductCard(product) {
 
-        const card = document.createElement("article");
-
-        card.className = "product-card";
-
-        /*
-         * Product ID is stored on the card
-         * so it can later be used to open
-         * product details or connect to
-         * backend records.
-         */
-
-        card.dataset.productId = product.id;
+        const card =
+            document.createElement(
+                "article"
+            );
 
 
-        /* Product image */
+        card.className =
+            "product-card";
+
+
+        card.dataset.productId =
+            product.id;
+
 
         let imageContent = "";
+
 
         if (product.image) {
 
             imageContent = `
+
                 <img
-                    src="${escapeHtml(product.image)}"
-                    alt="${escapeHtml(product.name)}"
+                    src="${escapeHtml(
+                        product.image
+                    )}"
+                    alt="${escapeHtml(
+                        product.name
+                    )}"
                 >
+
             `;
 
         } else {
 
             imageContent = `
+
                 <div class="product-image-placeholder">
                     ◈
                 </div>
+
             `;
 
         }
+
+
+        const price =
+            Number(product.price || 0);
 
 
         card.innerHTML = `
@@ -358,8 +885,12 @@ document.addEventListener("DOMContentLoaded", function () {
                 <button
                     type="button"
                     class="save-product"
-                    data-product-id="${product.id}"
-                    aria-label="Save ${escapeHtml(product.name)}"
+                    data-product-id="${escapeHtml(
+                        String(product.id)
+                    )}"
+                    aria-label="Save ${escapeHtml(
+                        product.name
+                    )}"
                 >
                     ♡
                 </button>
@@ -370,28 +901,45 @@ document.addEventListener("DOMContentLoaded", function () {
             <div class="product-details">
 
                 <span class="product-category">
-                    ${escapeHtml(product.categoryName)}
+                    ${escapeHtml(
+                        product.categoryName
+                    )}
                 </span>
 
 
                 <h3 class="product-name">
-                    ${escapeHtml(product.name)}
+                    ${escapeHtml(
+                        product.name
+                    )}
                 </h3>
 
 
                 <div class="product-price">
-                    R${Number(product.price).toLocaleString("en-ZA")}
+
+                    R${price.toLocaleString(
+                        "en-ZA"
+                    )}
+
                 </div>
 
 
                 <div class="product-meta">
 
                     <span class="product-seller">
-                        ${escapeHtml(product.seller)}
+
+                        ${escapeHtml(
+                            product.seller
+                        )}
+
                     </span>
 
+
                     <span class="product-location">
-                        ${escapeHtml(product.location)}
+
+                        ${escapeHtml(
+                            product.location
+                        )}
+
                     </span>
 
                 </div>
@@ -401,32 +949,53 @@ document.addEventListener("DOMContentLoaded", function () {
         `;
 
 
-        /* Open product */
+        card.addEventListener(
+            "click",
+            function (event) {
 
-        card.addEventListener("click", function (event) {
+                if (
+                    event.target.closest(
+                        ".save-product"
+                    )
+                ) {
 
-            if (
-                event.target.closest(".save-product")
-            ) {
-                return;
+                    return;
+
+                }
+
+
+                openProduct(
+                    product.id
+                );
+
             }
-
-            openProduct(product.id);
-
-        });
+        );
 
 
-        /* Save product */
+        const saveButton =
+            card.querySelector(
+                ".save-product"
+            );
 
-        const saveButton = card.querySelector(".save-product");
 
-        saveButton.addEventListener("click", function (event) {
+        if (saveButton) {
 
-            event.stopPropagation();
+            saveButton.addEventListener(
+                "click",
+                function (event) {
 
-            toggleSavedProduct(product.id, saveButton);
+                    event.stopPropagation();
 
-        });
+
+                    toggleSavedProduct(
+                        product.id,
+                        saveButton
+                    );
+
+                }
+            );
+
+        }
 
 
         return card;
@@ -436,60 +1005,85 @@ document.addEventListener("DOMContentLoaded", function () {
 
     /* =========================
        OPEN PRODUCT
-       
-       Future connection:
-       product-details.html?id=123
     ========================== */
 
     function openProduct(productId) {
 
         window.location.href =
-            `product-details.html?id=${encodeURIComponent(productId)}`;
+            `product-details.html?id=${encodeURIComponent(
+                productId
+            )}`;
 
     }
 
 
     /* =========================
        SAVE PRODUCT
-       
-       Temporary frontend behaviour.
-       Later this can call:
-       POST /api/saved-products
     ========================== */
 
-    function toggleSavedProduct(productId, button) {
+    function toggleSavedProduct(
+        productId,
+        button
+    ) {
 
         const savedProducts =
             JSON.parse(
-                localStorage.getItem("communityStoreSavedProducts")
+                localStorage.getItem(
+                    "communityStoreSavedProducts"
+                )
             ) || [];
 
 
-        const index = savedProducts.indexOf(productId);
+        const id =
+            String(productId);
+
+
+        const index =
+            savedProducts.findIndex(
+                savedId =>
+                    String(savedId) === id
+            );
 
 
         if (index === -1) {
 
-            savedProducts.push(productId);
+            savedProducts.push(
+                productId
+            );
 
-            button.classList.add("saved");
 
-            button.textContent = "♥";
+            button.classList.add(
+                "saved"
+            );
+
+
+            button.textContent =
+                "♥";
 
         } else {
 
-            savedProducts.splice(index, 1);
+            savedProducts.splice(
+                index,
+                1
+            );
 
-            button.classList.remove("saved");
 
-            button.textContent = "♡";
+            button.classList.remove(
+                "saved"
+            );
+
+
+            button.textContent =
+                "♡";
 
         }
 
 
         localStorage.setItem(
             "communityStoreSavedProducts",
-            JSON.stringify(savedProducts)
+            JSON.stringify(
+                savedProducts
+            )
         );
 
     }
@@ -503,27 +1097,48 @@ document.addEventListener("DOMContentLoaded", function () {
 
         const savedProducts =
             JSON.parse(
-                localStorage.getItem("communityStoreSavedProducts")
+                localStorage.getItem(
+                    "communityStoreSavedProducts"
+                )
             ) || [];
 
 
         document
-            .querySelectorAll(".save-product")
-            .forEach(function (button) {
+            .querySelectorAll(
+                ".save-product"
+            )
+            .forEach(
+                function (button) {
 
-                const productId =
-                    Number(button.dataset.productId);
+                    const productId =
+                        String(
+                            button.dataset.productId
+                        );
 
 
-                if (savedProducts.includes(productId)) {
+                    const isSaved =
+                        savedProducts.some(
+                            savedId =>
+                                String(
+                                    savedId
+                                ) === productId
+                        );
 
-                    button.classList.add("saved");
 
-                    button.textContent = "♥";
+                    if (isSaved) {
+
+                        button.classList.add(
+                            "saved"
+                        );
+
+
+                        button.textContent =
+                            "♥";
+
+                    }
 
                 }
-
-            });
+            );
 
     }
 
@@ -534,11 +1149,24 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function performSearch(value) {
 
-        currentSearch = value.trim();
+        currentSearch =
+            value.trim();
 
-        productSearchInput.value = currentSearch;
 
-        searchInput.value = currentSearch;
+        if (productSearchInput) {
+
+            productSearchInput.value =
+                currentSearch;
+
+        }
+
+
+        if (searchInput) {
+
+            searchInput.value =
+                currentSearch;
+
+        }
 
 
         updateClearButton();
@@ -549,7 +1177,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
     /* =========================
-       SEARCH INPUT
+       PRODUCT SEARCH INPUT
     ========================== */
 
     if (productSearchInput) {
@@ -558,9 +1186,17 @@ document.addEventListener("DOMContentLoaded", function () {
             "input",
             function () {
 
-                currentSearch = this.value.trim();
+                currentSearch =
+                    this.value.trim();
 
-                searchInput.value = this.value;
+
+                if (searchInput) {
+
+                    searchInput.value =
+                        this.value;
+
+                }
+
 
                 updateClearButton();
 
@@ -582,9 +1218,17 @@ document.addEventListener("DOMContentLoaded", function () {
             "input",
             function () {
 
-                productSearchInput.value = this.value;
+                if (productSearchInput) {
 
-                currentSearch = this.value.trim();
+                    productSearchInput.value =
+                        this.value;
+
+                }
+
+
+                currentSearch =
+                    this.value.trim();
+
 
                 updateClearButton();
 
@@ -600,7 +1244,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 if (event.key === "Enter") {
 
-                    performSearch(this.value);
+                    performSearch(
+                        this.value
+                    );
 
                 }
 
@@ -620,7 +1266,9 @@ document.addEventListener("DOMContentLoaded", function () {
             "change",
             function () {
 
-                currentCategory = this.value;
+                currentCategory =
+                    this.value;
+
 
                 renderProducts();
 
@@ -640,7 +1288,9 @@ document.addEventListener("DOMContentLoaded", function () {
             "change",
             function () {
 
-                currentSort = this.value;
+                currentSort =
+                    this.value;
+
 
                 renderProducts();
 
@@ -680,13 +1330,30 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 clearSearch();
 
-                categoryFilter.value = "all";
 
-                sortFilter.value = "newest";
+                currentCategory =
+                    "all";
 
-                currentCategory = "all";
 
-                currentSort = "newest";
+                currentSort =
+                    "newest";
+
+
+                if (categoryFilter) {
+
+                    categoryFilter.value =
+                        "all";
+
+                }
+
+
+                if (sortFilter) {
+
+                    sortFilter.value =
+                        "newest";
+
+                }
+
 
                 renderProducts();
 
@@ -704,9 +1371,22 @@ document.addEventListener("DOMContentLoaded", function () {
 
         currentSearch = "";
 
-        searchInput.value = "";
 
-        productSearchInput.value = "";
+        if (searchInput) {
+
+            searchInput.value =
+                "";
+
+        }
+
+
+        if (productSearchInput) {
+
+            productSearchInput.value =
+                "";
+
+        }
+
 
         updateClearButton();
 
@@ -728,11 +1408,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (currentSearch) {
 
-            clearSearchButton.classList.add("visible");
+            clearSearchButton.classList.add(
+                "visible"
+            );
 
         } else {
 
-            clearSearchButton.classList.remove("visible");
+            clearSearchButton.classList.remove(
+                "visible"
+            );
 
         }
 
@@ -751,7 +1435,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
         resultsCount.textContent =
-            `${count} ${count === 1 ? "item" : "items"}`;
+            `${count} ${
+                count === 1
+                    ? "item"
+                    : "items"
+            }`;
 
     }
 
@@ -762,11 +1450,28 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function showLoading() {
 
-        productGrid.hidden = true;
+        if (productGrid) {
 
-        emptyState.hidden = true;
+            productGrid.hidden =
+                true;
 
-        loadingState.hidden = false;
+        }
+
+
+        if (emptyState) {
+
+            emptyState.hidden =
+                true;
+
+        }
+
+
+        if (loadingState) {
+
+            loadingState.hidden =
+                false;
+
+        }
 
     }
 
@@ -801,7 +1506,8 @@ document.addEventListener("DOMContentLoaded", function () {
             "click",
             function () {
 
-                window.location.href = "profile.html";
+                window.location.href =
+                    "profile.html";
 
             }
         );
@@ -817,15 +1523,50 @@ document.addEventListener("DOMContentLoaded", function () {
 
         logoutButton.addEventListener(
             "click",
-            function (event) {
+            async function (event) {
 
                 event.preventDefault();
 
-                sessionStorage.removeItem(
-                    "communityStoreCurrentUser"
-                );
 
-                window.location.href = "login.html";
+                try {
+
+                    const {
+                        error
+                    } =
+                        await supabaseClient
+                            .auth
+                            .signOut();
+
+
+                    if (error) {
+
+                        console.error(
+                            "Logout failed:",
+                            error
+                        );
+
+                        return;
+
+                    }
+
+
+                    sessionStorage.removeItem(
+                        "communityStoreCurrentUser"
+                    );
+
+
+                    window.location.href =
+                        "login.html";
+
+
+                } catch (error) {
+
+                    console.error(
+                        "Unexpected logout error:",
+                        error
+                    );
+
+                }
 
             }
         );
@@ -834,26 +1575,261 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
     /* =========================
+       CATEGORY NORMALISATION
+    ========================== */
+
+    function normaliseCategory(
+        category
+    ) {
+
+        if (!category) {
+            return "";
+        }
+
+
+        return String(category)
+
+            .toLowerCase()
+
+            .trim()
+
+            .replace(
+                /&/g,
+                "and"
+            )
+
+            .replace(
+                /[_-]+/g,
+                " "
+            )
+
+            .replace(
+                /\s+/g,
+                " "
+            );
+
+    }
+
+
+    /* =========================
+       FORMAT CATEGORY
+    ========================== */
+
+    function formatCategory(
+        category
+    ) {
+
+        if (!category) {
+
+            return "Other";
+
+        }
+
+
+        const value =
+            String(category)
+                .trim();
+
+
+        const categoryMap = {
+
+            "books":
+                "Books",
+
+            "book":
+                "Books",
+
+            "electronics":
+                "Electronics",
+
+            "electronic":
+                "Electronics",
+
+            "fashion":
+                "Fashion",
+
+            "clothing":
+                "Fashion",
+
+            "sports":
+                "Sports",
+
+            "sport":
+                "Sports",
+
+            "home-living":
+                "Home & Living",
+
+            "home living":
+                "Home & Living",
+
+            "home_and_living":
+                "Home & Living",
+
+            "accessories":
+                "Accessories",
+
+            "services":
+                "Services",
+
+            "service":
+                "Services"
+
+        };
+
+
+        const normalised =
+            normaliseCategory(
+                value
+            );
+
+
+        return (
+            categoryMap[
+                normalised
+            ]
+
+            ||
+
+            value
+                .split(" ")
+                .map(
+                    word =>
+                        word.charAt(0)
+                            .toUpperCase() +
+                        word.slice(1)
+                )
+                .join(" ")
+        );
+
+    }
+
+
+    /* =========================
        ESCAPE HTML
-       
-       Protects dynamically rendered
-       content when backend data
-       is eventually used.
     ========================== */
 
     function escapeHtml(value) {
 
         return String(value)
 
-            .replace(/&/g, "&amp;")
+            .replace(
+                /&/g,
+                "&amp;"
+            )
 
-            .replace(/</g, "&lt;")
+            .replace(
+                /</g,
+                "&lt;"
+            )
 
-            .replace(/>/g, "&gt;")
+            .replace(
+                />/g,
+                "&gt;"
+            )
 
-            .replace(/"/g, "&quot;")
+            .replace(
+                /"/g,
+                "&quot;"
+            )
 
-            .replace(/'/g, "&#039;");
+            .replace(
+                /'/g,
+                "&#039;"
+            );
+
+    }
+
+
+    /* =========================
+       APPLY URL SEARCH
+    ========================== */
+
+    function applyUrlFilters() {
+
+        if (urlSearch) {
+
+            currentSearch =
+                urlSearch.trim();
+
+
+            if (searchInput) {
+
+                searchInput.value =
+                    currentSearch;
+
+            }
+
+
+            if (productSearchInput) {
+
+                productSearchInput.value =
+                    currentSearch;
+
+            }
+
+        }
+
+
+        if (urlCategory) {
+
+            const normalisedUrlCategory =
+                normaliseCategory(
+                    urlCategory
+                );
+
+
+            const matchingOption =
+                categoryFilter
+                    ? Array.from(
+                        categoryFilter.options
+                    ).find(
+                        option => {
+
+                            return (
+                                option.value ===
+                                urlCategory
+
+                                ||
+
+                                normaliseCategory(
+                                    option.value
+                                ) ===
+                                normalisedUrlCategory
+
+                                ||
+
+                                normaliseCategory(
+                                    option.textContent
+                                ) ===
+                                normalisedUrlCategory
+                            );
+
+                        }
+                    )
+                    : null;
+
+
+            if (matchingOption) {
+
+                currentCategory =
+                    matchingOption.value;
+
+
+                categoryFilter.value =
+                    matchingOption.value;
+
+            } else {
+
+                currentCategory =
+                    urlCategory;
+
+            }
+
+        }
+
+
+        updateClearButton();
 
     }
 
@@ -862,6 +1838,10 @@ document.addEventListener("DOMContentLoaded", function () {
        INITIALISE PAGE
     ========================== */
 
-    loadProducts();
+    await loadCurrentUser();
+
+    applyUrlFilters();
+
+    await loadProducts();
 
 });

@@ -23,13 +23,12 @@
 
     <div class="dashboard">
 
+
         <!-- =========================
              SIDEBAR
         ========================== -->
 
         <aside class="sidebar">
-
-            <!-- Brand -->
 
             <div class="brand">
 
@@ -48,120 +47,83 @@
             </div>
 
 
-            <!-- Main Navigation -->
-
             <nav class="main-nav">
-
-                <!-- Home -->
 
                 <a
                     href="home.html"
                     class="nav-item"
                 >
-
                     <span class="nav-icon">⌂</span>
                     <span>Home</span>
-
                 </a>
 
-
-                <!-- Search -->
 
                 <a
                     href="search.html"
                     class="nav-item active"
                 >
-
                     <span class="nav-icon">⌕</span>
                     <span>Search</span>
-
                 </a>
 
 
-                <!-- Saved -->
-
                 <a
-                    href="#"
+                    href="saved.html"
                     class="nav-item"
                 >
-
                     <span class="nav-icon">♡</span>
                     <span>Saved</span>
-
                 </a>
 
 
-                <!-- Chat -->
-
                 <a
-                    href="#"
+                    href="chat.html"
                     class="nav-item"
                 >
-
                     <span class="nav-icon">◌</span>
                     <span>Chat</span>
-
                     <span class="notification-dot"></span>
-
                 </a>
 
 
-                <!-- Orders -->
-
                 <a
-                    href="#"
+                    href="community-board.html"
                     class="nav-item"
                 >
-
                     <span class="nav-icon">▣</span>
-                    <span>Orders</span>
-
+                    <span>Community Board</span>
                 </a>
 
             </nav>
 
 
-            <!-- Sidebar Bottom -->
-
             <div class="sidebar-bottom">
 
-                <!-- Help -->
-
                 <a
-                    href="#"
+                    href="help.html"
                     class="nav-item"
                 >
-
                     <span class="nav-icon">?</span>
                     <span>Help & Support</span>
-
                 </a>
 
-
-                <!-- Settings -->
 
                 <a
-                    href="#"
+                    href="settings.html"
                     class="nav-item"
                 >
-
                     <span class="nav-icon">⚙</span>
                     <span>Settings</span>
-
                 </a>
 
-
-                <!-- Logout -->
 
                 <a
                     href="login.html"
                     class="nav-item logout"
                     id="logoutButton"
                 >
-
                     <span class="nav-icon">↪</span>
                     <span>Log out</span>
-
                 </a>
 
             </div>
@@ -182,8 +144,6 @@
 
             <header class="top-bar">
 
-                <!-- Search -->
-
                 <div class="search-box">
 
                     <span class="search-icon">
@@ -200,11 +160,7 @@
                 </div>
 
 
-                <!-- Top Actions -->
-
                 <div class="top-actions">
-
-                    <!-- Notifications -->
 
                     <button
                         class="icon-button notification-button"
@@ -221,8 +177,6 @@
                     </button>
 
 
-                    <!-- Profile -->
-
                     <button
                         class="profile-button"
                         id="profileButton"
@@ -230,9 +184,7 @@
                     >
 
                         <div class="profile-avatar">
-
                             <span>👤</span>
-
                         </div>
 
 
@@ -273,7 +225,7 @@
 
                 <section class="page-header">
 
-                    <div>
+                    <div class="page-header-box">
 
                         <span class="section-label">
                             COMMUNITY MARKETPLACE
@@ -297,8 +249,6 @@
                 ========================== -->
 
                 <section class="search-controls">
-
-                    <!-- Search Field -->
 
                     <div class="main-search">
 
@@ -324,8 +274,6 @@
 
                     </div>
 
-
-                    <!-- Category -->
 
                     <div class="filter-group">
 
@@ -367,8 +315,6 @@
 
                     </div>
 
-
-                    <!-- Sort -->
 
                     <div class="filter-group">
 
@@ -438,9 +384,6 @@
                     class="product-grid"
                     id="productGrid"
                 >
-
-                    <!-- Products will be rendered here -->
-
                 </section>
 
 
@@ -508,7 +451,7 @@
     </div>
 
 
-    <!-- Search JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <script src="js/search.js"></script>
 

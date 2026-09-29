@@ -104,6 +104,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     const bookingContent =
         document.getElementById("bookingContent");
 
+    const bookingSuccess =
+        document.getElementById("bookingSuccess");
+
     const bookingImageContainer =
         document.getElementById("bookingImageContainer");
 
@@ -113,20 +116,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     const bookingDescription =
         document.getElementById("bookingDescription");
 
-    const bookingCategoryRow =
-        document.getElementById("bookingCategoryRow");
-
     const bookingCategory =
         document.getElementById("bookingCategory");
 
-    const bookingLocationRow =
-        document.getElementById("bookingLocationRow");
-
     const bookingLocation =
         document.getElementById("bookingLocation");
-
-    const bookingDateRow =
-        document.getElementById("bookingDateRow");
 
     const bookingDate =
         document.getElementById("bookingDate");
@@ -134,8 +128,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     const bookingPrice =
         document.getElementById("bookingPrice");
 
-    const bookingSuccess =
-        document.getElementById("bookingSuccess");
+    const bookingCategoryRow =
+        document.getElementById("bookingCategoryRow");
+
+    const bookingLocationRow =
+        document.getElementById("bookingLocationRow");
+
+    const bookingDateRow =
+        document.getElementById("bookingDateRow");
 
 
     let selectedPostType = "product";
@@ -149,8 +149,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     let currentUser = null;
 
-    let currentUserProfile = null;
-
 
     /* =========================
        SAVED POSTS
@@ -160,7 +158,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 
     /* =========================
-       CURRENT USER PROFILE
+       PROFILE
     ========================= */
 
     async function loadCurrentUserProfile() {
@@ -175,26 +173,8 @@ document.addEventListener("DOMContentLoaded", async () => {
             } = await supabase.auth.getUser();
 
 
-            if (userError) {
-
-                console.error(
-                    "User loading error:",
-                    userError
-                );
-
+            if (userError || !user) {
                 return;
-
-            }
-
-
-            if (!user) {
-
-                console.warn(
-                    "No logged-in user found."
-                );
-
-                return;
-
             }
 
 
@@ -204,15 +184,11 @@ document.addEventListener("DOMContentLoaded", async () => {
             const {
                 data: profile,
                 error: profileError
-            } =
-                await supabase
-                    .from("profiles")
-                    .select("*")
-                    .eq(
-                        "id",
-                        user.id
-                    )
-                    .maybeSingle();
+            } = await supabase
+                .from("profiles")
+                .select("full_name, user_type")
+                .eq("id", user.id)
+                .maybeSingle();
 
 
             if (profileError) {
@@ -223,92 +199,47 @@ document.addEventListener("DOMContentLoaded", async () => {
                 );
 
                 return;
-
             }
 
 
-            currentUserProfile =
-                profile || null;
+            if (profile) {
+
+                if (userName) {
+
+                    userName.textContent =
+                        profile.full_name ||
+                        "My Profile";
+
+                }
 
 
-            /*
-             * Get the user's name.
-             *
-             * The profile table is the main source.
-             * The auth metadata is only used as a
-             * fallback if the profile name is missing.
-             */
+                if (userType) {
 
-            const profileName =
-                profile?.full_name?.trim();
+                    userType.textContent =
+                        profile.user_type ||
+                        "Account";
+
+                }
 
 
-            const metadataName =
-                user.user_metadata?.full_name?.trim() ||
-                user.user_metadata?.name?.trim();
+                if (welcomeMessage) {
+
+                    const firstName =
+                        (profile.full_name || "")
+                            .trim()
+                            .split(" ")[0];
 
 
-            const emailName =
-                user.email
-                    ? user.email
-                        .split("@")[0]
-                        .replace(/[._-]/g, " ")
-                        .replace(/\b\w/g, letter =>
-                            letter.toUpperCase()
-                        )
-                    : "";
+                    if (firstName) {
 
+                        welcomeMessage.textContent =
+                            `Welcome back ${firstName} 👋`;
 
-            const displayName =
-                profileName ||
-                metadataName ||
-                emailName ||
-                "User";
+                    }
 
-
-            /*
-             * TOP RIGHT PROFILE NAME
-             */
-
-            if (userName) {
-
-                userName.textContent =
-                    displayName;
+                }
 
             }
-
-
-            /*
-             * USER TYPE
-             */
-
-            if (userType) {
-
-                userType.textContent =
-                    profile?.user_type ||
-                    user.user_metadata?.user_type ||
-                    "Member";
-
-            }
-
-
-            /*
-             * WELCOME MESSAGE
-             */
-
-            if (welcomeMessage) {
-
-                const firstName =
-                    displayName
-                        .trim()
-                        .split(/\s+/)[0];
-
-
-                welcomeMessage.textContent =
-                    `Welcome back ${firstName} 👋`;
-
-            }
-
 
         } catch (error) {
 
@@ -884,10 +815,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                     }
 
 
-                    currentUser =
-                        user;
-
-
                     let imageUrl =
                         null;
 
@@ -1010,7 +937,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 
                     alert(
-                        "Your post has been published successfully!"
+                        selectedPostType === "event"
+                            ? "Your event has been published successfully!"
+                            : "Your post has been published successfully!"
                     );
 
 
@@ -1120,12 +1049,16 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 
             const {
-                data: allPosts,
+                data: posts,
                 error
             } =
                 await supabase
                     .from("posts")
                     .select("*")
+                    .neq(
+                        "post_type",
+                        "event"
+                    )
                     .order(
                         "created_at",
                         {
@@ -1139,20 +1072,8 @@ document.addEventListener("DOMContentLoaded", async () => {
             }
 
 
-            /*
-             * Events belong on the Community Board.
-             */
-
-            const posts =
-                (allPosts || [])
-                    .filter(
-                        post =>
-                            post.post_type !==
-                            "event"
-                    );
-
-
             if (
+                !posts ||
                 posts.length === 0
             ) {
 
@@ -1235,25 +1156,19 @@ document.addEventListener("DOMContentLoaded", async () => {
                 new Map(
                     profiles.map(
                         profile => [
-                            String(profile.id),
+                            profile.id,
                             profile
                         ]
                     )
                 );
 
 
-            /*
-             * Attach the profile to each post.
-             */
-
             posts.forEach(
                 (post) => {
 
                     post.profile =
                         profileMap.get(
-                            String(
-                                post.user_id
-                            )
+                            post.user_id
                         ) || null;
 
                 }
@@ -1363,52 +1278,13 @@ document.addEventListener("DOMContentLoaded", async () => {
                             post.profile;
 
 
-                        /*
-                         * Use the poster's actual profile name.
-                         *
-                         * If the post belongs to the currently
-                         * logged-in user, use the already-loaded
-                         * current profile as an additional fallback.
-                         */
-
-                        let posterName =
-                            profile?.full_name?.trim();
-
-
-                        if (
-                            !posterName &&
-                            currentUser &&
-                            String(post.user_id) ===
-                            String(currentUser.id)
-                        ) {
-
-                            posterName =
-                                currentUserProfile
-                                    ?.full_name
-                                    ?.trim();
-
-                        }
-
-
-                        /*
-                         * Final fallback.
-                         */
-
-                        posterName =
-                            posterName ||
+                        const posterName =
+                            profile?.full_name ||
                             "Community member";
 
 
                         const posterPhone =
                             profile?.phone_number ||
-                            (
-                                currentUser &&
-                                String(post.user_id) ===
-                                String(currentUser.id)
-                                    ? currentUserProfile
-                                        ?.phone_number
-                                    : null
-                            ) ||
                             "Phone number not available";
 
 
@@ -1440,6 +1316,19 @@ document.addEventListener("DOMContentLoaded", async () => {
                                     </div>
                                 `;
 
+
+                        /*
+                         * PRODUCTS AND SERVICES:
+                         * MESSAGE
+                         *
+                         * TUTORING:
+                         * BOOK
+                         *
+                         * EVENTS:
+                         * EXCLUDED FROM HOME.
+                         * THEY BELONG ON THE
+                         * COMMUNITY BOARD.
+                         */
 
                         const actionButton =
                             post.post_type === "tutoring"
@@ -1483,6 +1372,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                                 <div class="product-image">
 
                                     ${image}
+
 
                                     <button
                                         type="button"
@@ -1671,6 +1561,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     function attachPostActions() {
 
+        /* =========================
+           BOOK BUTTONS
+        ========================= */
+
         const bookButtons =
             document.querySelectorAll(
                 '[data-action="book"]'
@@ -1682,7 +1576,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
                 button.addEventListener(
                     "click",
-                    () => {
+                    async () => {
 
                         const postId =
                             button.dataset.postId;
@@ -1693,10 +1587,9 @@ document.addEventListener("DOMContentLoaded", async () => {
                         }
 
 
-                        window.location.href =
-                            `checkout.html?postId=${encodeURIComponent(
-                                postId
-                            )}`;
+                        await openBookingModal(
+                            postId
+                        );
 
                     }
                 );
@@ -1704,6 +1597,10 @@ document.addEventListener("DOMContentLoaded", async () => {
             }
         );
 
+
+        /* =========================
+           MESSAGE BUTTONS
+        ========================= */
 
         const messageButtons =
             document.querySelectorAll(
@@ -1782,6 +1679,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         );
 
 
+        /* =========================
+           SAVE BUTTONS
+        ========================= */
+
         const saveButtons =
             document.querySelectorAll(
                 '[data-action="save"]'
@@ -1828,8 +1729,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     ========================= */
 
     async function openBookingModal(
-        postId,
-        button
+        postId
     ) {
 
         if (!currentUser) {
@@ -1844,29 +1744,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
 
 
-        if (!bookingModal) {
-
-            alert(
-                "The booking window could not be opened."
-            );
-
-
-            return;
-
-        }
-
-
-        if (button) {
-
-            button.disabled =
-                true;
-
-            button.textContent =
-                "Loading...";
-
-        }
-
-
         try {
 
             const {
@@ -1875,7 +1752,9 @@ document.addEventListener("DOMContentLoaded", async () => {
             } =
                 await supabase
                     .from("posts")
-                    .select("*")
+                    .select(
+                        "id, title, description, post_type, category, price, location, image_url, event_date"
+                    )
                     .eq(
                         "id",
                         Number(postId)
@@ -1888,52 +1767,22 @@ document.addEventListener("DOMContentLoaded", async () => {
             }
 
 
+            /*
+             * Only tutoring can be booked
+             * from Home.
+             *
+             * Events are handled by
+             * Community Board.
+             */
+
             if (
                 post.post_type !==
                 "tutoring"
             ) {
 
                 throw new Error(
-                    "Only tutoring posts can be booked from Home."
+                    "This post cannot be booked from Home."
                 );
-
-            }
-
-
-            const {
-                data: existingBookings,
-                error: existingError
-            } =
-                await supabase
-                    .from("bookings")
-                    .select("id, status")
-                    .eq(
-                        "user_id",
-                        currentUser.id
-                    )
-                    .eq(
-                        "post_id",
-                        Number(postId)
-                    )
-                    .limit(1);
-
-
-            if (existingError) {
-                throw existingError;
-            }
-
-
-            if (
-                existingBookings &&
-                existingBookings.length > 0
-            ) {
-
-                alert(
-                    "You have already booked this tutoring post."
-                );
-
-
-                return;
 
             }
 
@@ -1942,18 +1791,21 @@ document.addEventListener("DOMContentLoaded", async () => {
                 post;
 
 
-            populateBookingModal(
+            await prepareBookingModal(
                 post
             );
 
 
-            bookingModal.classList.add(
-                "active"
-            );
+            if (bookingModal) {
 
+                bookingModal.classList.add(
+                    "active"
+                );
 
-            document.body.style.overflow =
-                "hidden";
+                document.body.style.overflow =
+                    "hidden";
+
+            }
 
         } catch (error) {
 
@@ -1965,20 +1817,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
             alert(
                 error.message ||
-                "Unable to open the booking window."
+                "Unable to open the booking."
             );
-
-        } finally {
-
-            if (button) {
-
-                button.disabled =
-                    false;
-
-                button.textContent =
-                    "Book";
-
-            }
 
         }
 
@@ -1986,132 +1826,12 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 
     /* =========================
-       POPULATE BOOKING MODAL
+       PREPARE BOOKING MODAL
     ========================= */
 
-    function populateBookingModal(
+    async function prepareBookingModal(
         post
     ) {
-
-        if (!post) {
-            return;
-        }
-
-
-        if (bookingTitle) {
-
-            bookingTitle.textContent =
-                post.title ||
-                "Tutoring booking";
-
-        }
-
-
-        if (bookingDescription) {
-
-            bookingDescription.textContent =
-                post.description ||
-                "No description provided.";
-
-        }
-
-
-        if (bookingCategory) {
-
-            bookingCategory.textContent =
-                formatCategory(
-                    post.category
-                ) ||
-                "Tutoring";
-
-        }
-
-
-        if (bookingCategoryRow) {
-
-            bookingCategoryRow.style.display =
-                "flex";
-
-        }
-
-
-        if (bookingLocation) {
-
-            bookingLocation.textContent =
-                post.location ||
-                "Not specified";
-
-        }
-
-
-        if (bookingLocationRow) {
-
-            bookingLocationRow.style.display =
-                post.location
-                    ? "flex"
-                    : "none";
-
-        }
-
-
-        if (bookingDateRow) {
-
-            bookingDateRow.style.display =
-                "none";
-
-        }
-
-
-        if (bookingDate) {
-
-            bookingDate.textContent =
-                "";
-
-        }
-
-
-        const amount =
-            Number(
-                post.price || 0
-            );
-
-
-        if (bookingPrice) {
-
-            bookingPrice.textContent =
-                `R ${amount.toFixed(2)}`;
-
-        }
-
-
-        if (bookingImageContainer) {
-
-            if (post.image_url) {
-
-                bookingImageContainer.innerHTML = `
-                    <img
-                        src="${escapeHtml(
-                            post.image_url
-                        )}"
-                        alt="${escapeHtml(
-                            post.title ||
-                            "Tutoring post"
-                        )}"
-                    >
-                `;
-
-            } else {
-
-                bookingImageContainer.innerHTML = `
-                    <div class="booking-placeholder">
-                        📚
-                    </div>
-                `;
-
-            }
-
-        }
-
 
         if (bookingContent) {
 
@@ -2148,8 +1868,121 @@ document.addEventListener("DOMContentLoaded", async () => {
             cancelBookingButton.style.display =
                 "inline-flex";
 
-            cancelBookingButton.textContent =
-                "Cancel";
+        }
+
+
+        if (bookingTitle) {
+
+            bookingTitle.textContent =
+                post.title ||
+                "Tutoring";
+
+        }
+
+
+        if (bookingDescription) {
+
+            bookingDescription.textContent =
+                post.description ||
+                "No description provided.";
+
+        }
+
+
+        if (bookingCategory) {
+
+            bookingCategory.textContent =
+                formatCategory(
+                    post.category
+                );
+
+        }
+
+
+        if (bookingLocation) {
+
+            bookingLocation.textContent =
+                post.location ||
+                "Not specified";
+
+        }
+
+
+        if (bookingPrice) {
+
+            bookingPrice.textContent =
+                post.price !== null &&
+                post.price !== undefined
+                    ? `R ${Number(
+                        post.price
+                    ).toFixed(2)}`
+                    : "Free";
+
+        }
+
+
+        if (bookingCategoryRow) {
+
+            bookingCategoryRow.style.display =
+                post.category
+                    ? "flex"
+                    : "none";
+
+        }
+
+
+        if (bookingLocationRow) {
+
+            bookingLocationRow.style.display =
+                post.location
+                    ? "flex"
+                    : "none";
+
+        }
+
+
+        if (bookingDateRow) {
+
+            bookingDateRow.style.display =
+                "none";
+
+        }
+
+
+        if (bookingDate) {
+
+            bookingDate.textContent =
+                "";
+
+        }
+
+
+        if (bookingImageContainer) {
+
+            if (post.image_url) {
+
+                bookingImageContainer.innerHTML = `
+                    <img
+                        src="${escapeHtml(
+                            post.image_url
+                        )}"
+                        alt="${escapeHtml(
+                            post.title
+                        )}"
+                    >
+                `;
+
+            } else {
+
+                bookingImageContainer.innerHTML = `
+                    <div class="booking-placeholder">
+                        ${getPostIcon(
+                            post.post_type
+                        )}
+                    </div>
+                `;
+
+            }
 
         }
 
@@ -2160,16 +1993,15 @@ document.addEventListener("DOMContentLoaded", async () => {
        CLOSE BOOKING MODAL
     ========================= */
 
-    function closeBookingModalWindow() {
+    function closeBookingModalFunction() {
 
-        if (!bookingModal) {
-            return;
+        if (bookingModal) {
+
+            bookingModal.classList.remove(
+                "active"
+            );
+
         }
-
-
-        bookingModal.classList.remove(
-            "active"
-        );
 
 
         document.body.style.overflow =
@@ -2186,7 +2018,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         closeBookingModal.addEventListener(
             "click",
-            closeBookingModalWindow
+            closeBookingModalFunction
         );
 
     }
@@ -2196,7 +2028,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         cancelBookingButton.addEventListener(
             "click",
-            closeBookingModalWindow
+            closeBookingModalFunction
         );
 
     }
@@ -2213,7 +2045,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                     bookingModal
                 ) {
 
-                    closeBookingModalWindow();
+                    closeBookingModalFunction();
 
                 }
 
@@ -2258,7 +2090,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (!selectedBookingPost) {
 
             alert(
-                "No booking has been selected."
+                "No booking was selected."
             );
 
 
@@ -2280,14 +2112,13 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         try {
 
-            const postId =
-                Number(
-                    selectedBookingPost.id
-                );
-
+            /*
+             * Check whether the user already
+             * has a confirmed booking.
+             */
 
             const {
-                data: existingBookings,
+                data: existingBooking,
                 error: existingError
             } =
                 await supabase
@@ -2299,9 +2130,15 @@ document.addEventListener("DOMContentLoaded", async () => {
                     )
                     .eq(
                         "post_id",
-                        postId
+                        Number(
+                            selectedBookingPost.id
+                        )
                     )
-                    .limit(1);
+                    .eq(
+                        "status",
+                        "confirmed"
+                    )
+                    .maybeSingle();
 
 
             if (existingError) {
@@ -2309,13 +2146,10 @@ document.addEventListener("DOMContentLoaded", async () => {
             }
 
 
-            if (
-                existingBookings &&
-                existingBookings.length > 0
-            ) {
+            if (existingBooking) {
 
                 throw new Error(
-                    "You have already booked this tutoring post."
+                    "You have already booked this tutoring session."
                 );
 
             }
@@ -2344,7 +2178,9 @@ document.addEventListener("DOMContentLoaded", async () => {
                                 currentUser.id,
 
                             post_id:
-                                postId,
+                                Number(
+                                    selectedBookingPost.id
+                                ),
 
                             quantity:
                                 quantity,
@@ -2393,6 +2229,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                     "Close";
 
             }
+
 
         } catch (error) {
 

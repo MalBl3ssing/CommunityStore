@@ -1,134 +1,268 @@
 // =========================
-// PASSWORD VISIBILITY
+// WAIT FOR PAGE TO LOAD
 // =========================
 
-const passwordToggle =
-    document.getElementById("passwordToggle");
+document.addEventListener("DOMContentLoaded", function () {
 
-const password =
-    document.getElementById("password");
+    // =========================
+    // SUPABASE
+    // =========================
 
+    const supabaseUrl =
+        "https://olnqufovakusfjlaablt.supabase.co";
 
-passwordToggle.addEventListener("click", function () {
+    const supabaseKey =
+        "sb_publishable_B-iTGT_tnwSpMSEQR1h-2Q_lAqhLkXA";
 
-    if (password.type === "password") {
-
-        password.type = "text";
-
-        passwordToggle.textContent = "🙈";
-
-        passwordToggle.setAttribute(
-            "aria-label",
-            "Hide password"
+    const supabase =
+        window.supabase.createClient(
+            supabaseUrl,
+            supabaseKey
         );
 
-    } else {
 
-        password.type = "password";
+    // =========================
+    // PASSWORD VISIBILITY
+    // =========================
 
-        passwordToggle.textContent = "👁";
+    const passwordToggle =
+        document.getElementById("passwordToggle");
 
-        passwordToggle.setAttribute(
-            "aria-label",
-            "Show password"
+    const password =
+        document.getElementById("password");
+
+
+    if (passwordToggle && password) {
+
+        passwordToggle.addEventListener(
+            "click",
+            function () {
+
+                if (password.type === "password") {
+
+                    password.type = "text";
+
+                    passwordToggle.textContent = "🙈";
+
+                    passwordToggle.setAttribute(
+                        "aria-label",
+                        "Hide password"
+                    );
+
+                } else {
+
+                    password.type = "password";
+
+                    passwordToggle.textContent = "👁";
+
+                    passwordToggle.setAttribute(
+                        "aria-label",
+                        "Show password"
+                    );
+                }
+
+            }
         );
+
     }
 
-});
-
-
-// =========================
-// LOGIN FORM
-// =========================
-
-const loginForm =
-    document.getElementById("loginForm");
-
-
-loginForm.addEventListener("submit", function (event) {
-
-    // Prevent the page from refreshing
-    event.preventDefault();
-
-
-    // Get the values entered by the user
-    const email =
-        document.getElementById("email").value.trim();
-
-    const passwordValue =
-        document.getElementById("password").value;
-
 
     // =========================
-    // VALIDATION
+    // LOGIN FORM
     // =========================
 
-    if (!email) {
+    const loginForm =
+        document.getElementById("loginForm");
 
-        alert("Please enter your email address.");
 
+    if (!loginForm) {
         return;
     }
 
 
-    if (!passwordValue) {
+    loginForm.addEventListener(
+        "submit",
+        async function (event) {
 
-        alert("Please enter your password.");
+            // Prevent the page from refreshing
+            event.preventDefault();
 
-        return;
+
+            // =========================
+            // GET FORM VALUES
+            // =========================
+
+            const email =
+                document
+                    .getElementById("email")
+                    .value
+                    .trim();
+
+            const passwordValue =
+                document
+                    .getElementById("password")
+                    .value;
+
+
+            // =========================
+            // VALIDATION
+            // =========================
+
+            if (!email) {
+
+                alert(
+                    "Please enter your email address."
+                );
+
+                return;
+            }
+
+
+            if (!passwordValue) {
+
+                alert(
+                    "Please enter your password."
+                );
+
+                return;
+            }
+
+
+            // =========================
+            // SUPABASE LOGIN
+            // =========================
+
+            const {
+                data,
+                error
+            } = await supabase.auth.signInWithPassword({
+
+                email: email,
+
+                password: passwordValue
+            });
+
+
+            // =========================
+            // LOGIN ERROR
+            // =========================
+
+            if (error) {
+
+                alert(
+                    "User not registered or incorrect password. " +
+                    "Please check your email and password and try again."
+                );
+
+                return;
+            }
+
+
+            // =========================
+            // LOGIN SUCCESS
+            // =========================
+
+            alert(
+                "Login successful!"
+            );
+
+
+            // =========================
+            // GO TO HOME
+            // =========================
+
+            window.location.href =
+                "home.html";
+
+        }
+    );
+
+
+    // =========================
+    // GOOGLE LOGIN
+    // =========================
+
+    const googleButton =
+        document.getElementById("googleButton");
+
+
+    if (googleButton) {
+
+        googleButton.addEventListener(
+            "click",
+            async function () {
+
+                const {
+                    error
+                } = await supabase.auth.signInWithOAuth({
+
+                    provider: "google",
+
+                    options: {
+                        redirectTo:
+                            window.location.origin +
+                            "/home.html"
+                    }
+
+                });
+
+
+                if (error) {
+
+                    alert(
+                        "Google login failed: " +
+                        error.message
+                    );
+
+                }
+
+            }
+        );
+
     }
 
 
     // =========================
-    // TEMPORARY LOGIN
+    // APPLE LOGIN
     // =========================
 
-    /*
-        This is temporary.
-
-        Later, we will send the email
-        and password to the Java backend
-        to verify the user's account.
-    */
-
-    alert("Login successful!");
+    const appleButton =
+        document.getElementById("appleButton");
 
 
-    // Temporary navigation
-    window.location.href = "home.html";
+    if (appleButton) {
 
-});
+        appleButton.addEventListener(
+            "click",
+            async function () {
 
+                const {
+                    error
+                } = await supabase.auth.signInWithOAuth({
 
-// =========================
-// GOOGLE LOGIN
-// =========================
+                    provider: "apple",
 
-const googleButton =
-    document.getElementById("googleButton");
+                    options: {
+                        redirectTo:
+                            window.location.origin +
+                            "/home.html"
+                    }
 
-
-googleButton.addEventListener("click", function () {
-
-    alert(
-        "Google login will be connected later."
-    );
-
-});
+                });
 
 
-// =========================
-// APPLE LOGIN
-// =========================
+                if (error) {
 
-const appleButton =
-    document.getElementById("appleButton");
+                    alert(
+                        "Apple login failed: " +
+                        error.message
+                    );
 
+                }
 
-appleButton.addEventListener("click", function () {
+            }
+        );
 
-    alert(
-        "Apple login will be connected later."
-    );
+    }
 
 });

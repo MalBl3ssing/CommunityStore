@@ -1,21 +1,25 @@
 const API_BASE_URL = "/api";
-const USE_MOCK_DATA = true;
 
 
 /* =========================
-   MOCK DATA
+   SUPABASE
 ========================= */
 
-const MOCK_USER = {
-    userId: 1,
-    firstName: "Solomon",
-    lastName: "Machaule",
-    email: "solomonmachaule26@gmail.com",
-    accountType: "Student"
-};
+const supabaseUrl = "https://olnqufovakusfjlaablt.supabase.co";
+const supabaseKey = "sb_publishable_B-iTGT_tnwSpMSEQR1h-2Q_lAqhLkXA";
+
+const supabaseClient =
+    window.supabase.createClient(
+        supabaseUrl,
+        supabaseKey
+    );
 
 
-const MOCK_FAQS = [
+/* =========================
+   FAQ DATA
+========================= */
+
+const FAQS = [
     {
         id: 1,
         question: "How do I search for a product?",
@@ -48,15 +52,26 @@ const MOCK_FAQS = [
    ELEMENTS
 ========================= */
 
-const profileName = document.getElementById("profileName");
-const profileType = document.getElementById("profileType");
-const userInitials = document.getElementById("userInitials");
+const profileName =
+    document.getElementById("profileName");
 
-const searchInput = document.getElementById("searchInput");
-const profileArea = document.getElementById("profileArea");
-const notificationBtn = document.getElementById("notificationBtn");
+const profileType =
+    document.getElementById("profileType");
 
-const faqList = document.getElementById("faqList");
+const userInitials =
+    document.getElementById("userInitials");
+
+const searchInput =
+    document.getElementById("searchInput");
+
+const profileArea =
+    document.getElementById("profileArea");
+
+const notificationBtn =
+    document.getElementById("notificationBtn");
+
+const faqList =
+    document.getElementById("faqList");
 
 const contactSupportBtn =
     document.getElementById("contactSupportBtn");
@@ -72,55 +87,132 @@ const logoutBtn =
    INITIALISE
 ========================= */
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener(
+    "DOMContentLoaded",
+    async () => {
 
-    loadUser();
-    loadFAQs();
-    setupEvents();
+        await loadUser();
 
-});
+        loadFAQs();
+
+        setupEvents();
+
+    }
+);
 
 
 /* =========================
-   LOAD USER
+   LOAD CURRENT USER
 ========================= */
 
 async function loadUser() {
 
-    let user;
+    try {
 
-    if (USE_MOCK_DATA) {
-
-        user = MOCK_USER;
-
-    } else {
-
-        user = await fetchCurrentUser();
-
-    }
+        const {
+            data: { user },
+            error
+        } = await supabaseClient.auth.getUser();
 
 
-    if (!user) {
-        return;
-    }
+        if (error) {
+            throw error;
+        }
 
 
-    const name =
-        `${user.firstName} ${user.lastName}`;
+        if (!user) {
+
+            window.location.href =
+                "login.html";
+
+            return;
+        }
 
 
-    profileName.textContent =
-        name;
-
-    profileType.textContent =
-        user.accountType || "User";
+        let profile = null;
 
 
-    userInitials.textContent =
-        getInitials(
-            user.firstName,
-            user.lastName
+        const {
+            data: profileData,
+            error: profileError
+        } = await supabaseClient
+            .from("profiles")
+            .select("full_name, user_type")
+            .eq("id", user.id)
+            .maybeSingle();
+
+
+        if (profileError) {
+
+            console.error(
+                "Help profile loading error:",
+                profileError
+            );
+
+        } else {
+
+            profile = profileData;
+
+        }
+
+
+        /*
+         * Use the profile first.
+         * If no profile exists, use the
+         * information stored in Supabase Auth.
+         */
+
+        const fullName =
+            profile?.full_name ||
+            user.user_metadata?.full_name ||
+            user.user_metadata?.name ||
+            getNameFromEmail(user.email) ||
+            "User";
+
+
+        const accountType =
+            profile?.user_type ||
+            user.user_metadata?.user_type ||
+            "Member";
+
+
+        profileName.textContent =
+            fullName;
+
+
+        profileType.textContent =
+            accountType;
+
+
+        userInitials.textContent =
+            getInitials(fullName);
+
+
+        console.log(
+            "Help page user:",
+            fullName
         );
+
+        console.log(
+            "Help page user type:",
+            accountType
+        );
+
+        console.log(
+            "Help page profile:",
+            profile
+        );
+
+    } catch (error) {
+
+        console.error(
+            "Current user error:",
+            error
+        );
+
+        window.location.href =
+            "login.html";
+    }
 }
 
 
@@ -128,28 +220,17 @@ async function loadUser() {
    LOAD FAQS
 ========================= */
 
-async function loadFAQs() {
+function loadFAQs() {
 
-    let faqs;
-
-
-    if (USE_MOCK_DATA) {
-
-        faqs = MOCK_FAQS;
-
-    } else {
-
-        faqs = await fetchFAQs();
-
-    }
-
-
-    if (!faqs || faqs.length === 0) {
+    if (!FAQS || FAQS.length === 0) {
 
         faqList.innerHTML = `
             <div class="help-box">
+
                 <div class="help-row">
+
                     <div class="help-info">
+
                         <span class="help-title">
                             No FAQs available
                         </span>
@@ -157,8 +238,11 @@ async function loadFAQs() {
                         <span class="help-description">
                             There are currently no frequently asked questions available.
                         </span>
+
                     </div>
+
                 </div>
+
             </div>
         `;
 
@@ -166,7 +250,7 @@ async function loadFAQs() {
     }
 
 
-    renderFAQs(faqs);
+    renderFAQs(FAQS);
 }
 
 
@@ -183,6 +267,7 @@ function renderFAQs(faqs) {
 
         const faqItem =
             document.createElement("div");
+
 
         faqItem.className =
             "faq-item";
@@ -247,88 +332,106 @@ function renderFAQs(faqs) {
 
 function setupEvents() {
 
-    searchInput.addEventListener(
-        "keydown",
-        (event) => {
+    if (searchInput) {
 
-            if (event.key !== "Enter") {
-                return;
+        searchInput.addEventListener(
+            "keydown",
+            (event) => {
+
+                if (event.key !== "Enter") {
+                    return;
+                }
+
+
+                const query =
+                    searchInput.value.trim();
+
+
+                if (!query) {
+                    return;
+                }
+
+
+                window.location.href =
+                    `search.html?q=${encodeURIComponent(query)}`;
+
             }
+        );
+    }
 
 
-            const query =
-                searchInput.value.trim();
+    if (profileArea) {
 
+        profileArea.addEventListener(
+            "click",
+            () => {
 
-            if (!query) {
-                return;
+                window.location.href =
+                    "profile.html";
+
             }
+        );
+    }
 
 
-            window.location.href =
-                `search.html?q=${encodeURIComponent(query)}`;
+    if (notificationBtn) {
 
-        }
-    );
+        notificationBtn.addEventListener(
+            "click",
+            () => {
 
+                console.log(
+                    "Notifications clicked."
+                );
 
-    profileArea.addEventListener(
-        "click",
-        () => {
-
-            window.location.href =
-                "profile.html";
-
-        }
-    );
+            }
+        );
+    }
 
 
-    notificationBtn.addEventListener(
-        "click",
-        () => {
+    if (contactSupportBtn) {
 
-            console.log(
-                "Notifications clicked."
-            );
+        contactSupportBtn.addEventListener(
+            "click",
+            () => {
 
-        }
-    );
+                openSupportForm(
+                    "Support Request"
+                );
 
-
-    contactSupportBtn.addEventListener(
-        "click",
-        () => {
-
-            openSupportForm(
-                "Support Request"
-            );
-
-        }
-    );
+            }
+        );
+    }
 
 
-    reportProblemBtn.addEventListener(
-        "click",
-        () => {
+    if (reportProblemBtn) {
 
-            openSupportForm(
-                "Report a Problem"
-            );
+        reportProblemBtn.addEventListener(
+            "click",
+            () => {
 
-        }
-    );
+                openSupportForm(
+                    "Report a Problem"
+                );
+
+            }
+        );
+    }
 
 
-    logoutBtn.addEventListener(
-        "click",
-        (event) => {
+    if (logoutBtn) {
 
-            event.preventDefault();
+        logoutBtn.addEventListener(
+            "click",
+            async (event) => {
 
-            handleLogout();
+                event.preventDefault();
 
-        }
-    );
+                await handleLogout();
+
+            }
+        );
+    }
 }
 
 
@@ -337,21 +440,6 @@ function setupEvents() {
 ========================= */
 
 function openSupportForm(type) {
-
-    /*
-     * Backend integration placeholder.
-     *
-     * Future endpoint:
-     * POST /api/support/tickets
-     *
-     * Example request structure:
-     *
-     * {
-     *     subject: type,
-     *     message: "...",
-     *     category: "GENERAL"
-     * }
-     */
 
     alert(
         `${type}\n\nThe support request form will be connected to the backend.`
@@ -363,7 +451,7 @@ function openSupportForm(type) {
    LOGOUT
 ========================= */
 
-function handleLogout() {
+async function handleLogout() {
 
     const confirmed =
         confirm(
@@ -376,95 +464,31 @@ function handleLogout() {
     }
 
 
-    /*
-     * Backend integration placeholder.
-     *
-     * Future endpoint:
-     * POST /api/auth/logout
-     */
-
-    console.log(
-        "Logout requested."
-    );
-
-
-    window.location.href =
-        "login.html";
-}
-
-
-/* =========================
-   BACKEND: CURRENT USER
-========================= */
-
-async function fetchCurrentUser() {
-
     try {
 
-        const response =
-            await fetch(
-                `${API_BASE_URL}/users/me`
-            );
+        const {
+            error
+        } = await supabaseClient.auth.signOut();
 
 
-        if (!response.ok) {
-
-            throw new Error(
-                "Unable to load user information."
-            );
-
+        if (error) {
+            throw error;
         }
 
 
-        return await response.json();
+        window.location.href =
+            "login.html";
 
     } catch (error) {
 
         console.error(
-            "Error loading user:",
+            "Logout error:",
             error
         );
 
-
-        return null;
-    }
-}
-
-
-/* =========================
-   BACKEND: FAQS
-========================= */
-
-async function fetchFAQs() {
-
-    try {
-
-        const response =
-            await fetch(
-                `${API_BASE_URL}/help/faqs`
-            );
-
-
-        if (!response.ok) {
-
-            throw new Error(
-                "Unable to load FAQs."
-            );
-
-        }
-
-
-        return await response.json();
-
-    } catch (error) {
-
-        console.error(
-            "Error loading FAQs:",
-            error
+        alert(
+            "Unable to log out. Please try again."
         );
-
-
-        return [];
     }
 }
 
@@ -473,21 +497,52 @@ async function fetchFAQs() {
    HELPERS
 ========================= */
 
-function getInitials(firstName, lastName) {
+function getInitials(name) {
 
-    const first =
-        firstName
-            ? firstName.charAt(0).toUpperCase()
-            : "";
-
-
-    const last =
-        lastName
-            ? lastName.charAt(0).toUpperCase()
-            : "";
+    const parts =
+        String(name)
+            .trim()
+            .split(/\s+/)
+            .filter(Boolean);
 
 
-    return `${first}${last}`;
+    if (parts.length === 0) {
+        return "--";
+    }
+
+
+    if (parts.length === 1) {
+
+        return parts[0]
+            .substring(0, 2)
+            .toUpperCase();
+
+    }
+
+
+    return (
+        parts[0].charAt(0) +
+        parts[parts.length - 1].charAt(0)
+    ).toUpperCase();
+}
+
+
+function getNameFromEmail(email) {
+
+    if (!email) {
+        return "";
+    }
+
+
+    const username =
+        email.split("@")[0];
+
+
+    return username
+        .replace(/[._-]+/g, " ")
+        .replace(/\b\w/g, char =>
+            char.toUpperCase()
+        );
 }
 
 
@@ -496,8 +551,10 @@ function escapeHTML(value) {
     const div =
         document.createElement("div");
 
+
     div.textContent =
         value ?? "";
+
 
     return div.innerHTML;
 }

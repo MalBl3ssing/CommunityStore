@@ -1,13 +1,18 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap');
+
 :root {
     --deep-green: #4F6F52;
     --dark-green: #3F5F43;
     --soft-green: #EAF0E8;
     --cream: #F7F4EC;
     --white: #FFFFFF;
+
     --text-dark: #304F59;
     --text-medium: #667A78;
     --text-light: #91A09B;
+
     --border: #E2E6E0;
+
     --sidebar-width: 235px;
 }
 
@@ -17,19 +22,33 @@
     box-sizing: border-box;
 }
 
+html {
+    scroll-behavior: smooth;
+}
+
 body {
-    font-family: "DM Sans", sans-serif;
-    background: var(--cream);
+    min-height: 100vh;
+
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+
     color: var(--text-dark);
+
+    background: var(--cream);
 }
 
 button,
 input {
-    font-family: inherit;
+    font: inherit;
 }
 
 button {
     cursor: pointer;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
 }
 
 
@@ -48,42 +67,48 @@ button {
 
 .sidebar {
     position: fixed;
+
     top: 0;
     left: 0;
+
+    z-index: 100;
 
     width: var(--sidebar-width);
     height: 100vh;
 
     padding: 28px 18px;
 
-    background: rgba(255, 255, 255, 0.94);
-    border-right: 1px solid var(--border);
-
     display: flex;
     flex-direction: column;
 
-    z-index: 100;
+    background: rgba(255, 255, 255, .94);
+
+    border-right: 1px solid var(--border);
+
+    backdrop-filter: blur(12px);
 }
 
 
-/* BRAND */
+/* =========================
+   BRAND
+========================= */
 
 .brand {
     display: flex;
     align-items: center;
 
-    gap: 11px;
+    gap: 10px;
 
-    padding: 0 9px;
+    padding: 0 10px;
 
-    margin-bottom: 36px;
+    margin-bottom: 22px;
 }
 
 .brand-logo {
     width: 45px;
     height: 45px;
 
-    border-radius: 12px;
+    flex-shrink: 0;
 
     object-fit: contain;
 }
@@ -93,74 +118,91 @@ button {
     flex-direction: column;
 
     line-height: 1.05;
+
+    font-size: 15px;
+    font-weight: 600;
 }
 
 .brand-text span:first-child {
-    font-size: 14px;
-    font-weight: 700;
+    color: var(--deep-green);
 
-    color: var(--text-dark);
+    font-weight: 700;
 }
 
 .brand-text span:last-child {
-    font-size: 14px;
-    font-weight: 700;
+    color: var(--text-dark);
 
-    color: var(--deep-green);
+    font-weight: 600;
 }
 
 
-/* NAVIGATION */
+/* =========================
+   NAVIGATION
+========================= */
 
 .nav-menu {
     display: flex;
     flex-direction: column;
 
-    gap: 6px;
+    gap: 5px;
 }
 
 .nav-item {
     position: relative;
 
-    min-height: 45px;
-
-    padding: 0 13px;
-
-    border-radius: 12px;
+    width: 100%;
+    min-height: 44px;
 
     display: flex;
     align-items: center;
 
     gap: 13px;
 
-    text-decoration: none;
+    padding: 0 13px;
+
+    border: none;
+    border-radius: 12px;
+
+    background: transparent;
 
     color: var(--text-medium);
 
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 500;
 
-    transition: 0.2s ease;
+    text-decoration: none;
+
+    text-align: left;
+
+    transition:
+        background .2s ease,
+        color .2s ease;
 }
 
 .nav-item:hover {
     background: var(--soft-green);
+
     color: var(--dark-green);
 }
 
 .nav-item.active {
     background: var(--soft-green);
+
     color: var(--dark-green);
+
     font-weight: 600;
 }
 
 .nav-icon {
     width: 20px;
 
-    text-align: center;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
 
     font-size: 18px;
-    line-height: 1;
 }
 
 .nav-label {
@@ -168,10 +210,13 @@ button {
 }
 
 .notification-dot {
-    width: 7px;
-    height: 7px;
+    position: absolute;
 
-    margin-left: auto;
+    top: 10px;
+    left: 29px;
+
+    width: 6px;
+    height: 6px;
 
     border-radius: 50%;
 
@@ -179,19 +224,17 @@ button {
 }
 
 
-/* SIDEBAR BOTTOM */
+/* =========================
+   SIDEBAR BOTTOM
+========================= */
 
 .sidebar-bottom {
     margin-top: auto;
 
-    padding-top: 18px;
-
-    border-top: 1px solid var(--border);
-
     display: flex;
     flex-direction: column;
 
-    gap: 6px;
+    gap: 5px;
 }
 
 
@@ -200,39 +243,43 @@ button {
 ========================= */
 
 .main-content {
-    margin-left: var(--sidebar-width);
-
     min-height: 100vh;
+
+    margin-left: var(--sidebar-width);
 }
 
 
 /* =========================
-   TOPBAR
+   TOP BAR
 ========================= */
 
 .topbar {
     position: sticky;
+
     top: 0;
+
+    z-index: 90;
 
     height: 82px;
 
-    padding: 0 42px;
-
-    background: rgba(247, 244, 236, 0.92);
-
-    backdrop-filter: blur(12px);
-
     display: flex;
     align-items: center;
-    justify-content: space-between;
 
     gap: 25px;
 
-    z-index: 50;
+    padding: 0 42px;
+
+    background: rgba(247, 244, 236, .9);
+
+    border-bottom: 1px solid rgba(226, 230, 224, .7);
+
+    backdrop-filter: blur(12px);
 }
 
 
-/* SEARCH */
+/* =========================
+   SEARCH
+========================= */
 
 .search-box {
     width: 100%;
@@ -240,12 +287,12 @@ button {
 
     height: 43px;
 
-    padding: 0 15px;
-
     display: flex;
     align-items: center;
 
     gap: 10px;
+
+    padding: 0 14px;
 
     background: var(--white);
 
@@ -255,9 +302,9 @@ button {
 }
 
 .search-icon {
-    font-size: 21px;
-
     color: var(--text-light);
+
+    font-size: 17px;
 }
 
 .search-box input {
@@ -270,7 +317,7 @@ button {
 
     color: var(--text-dark);
 
-    font-size: 13px;
+    font-size: 12px;
 }
 
 .search-box input::placeholder {
@@ -278,31 +325,52 @@ button {
 }
 
 
-/* TOPBAR ACTIONS */
+/* =========================
+   TOP ACTIONS
+========================= */
 
 .topbar-actions {
+    margin-left: auto;
+
     display: flex;
     align-items: center;
 
-    gap: 20px;
+    gap: 13px;
 }
 
 
-/* NOTIFICATIONS */
+/* =========================
+   NOTIFICATIONS
+========================= */
 
 .notification-button {
     position: relative;
 
-    width: 35px;
-    height: 35px;
+    width: 38px;
+    height: 38px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
     border: none;
+    border-radius: 11px;
 
     background: transparent;
 
     color: var(--text-medium);
 
-    font-size: 22px;
+    font-size: 18px;
+
+    transition:
+        background .2s ease,
+        color .2s ease;
+}
+
+.notification-button:hover {
+    background: var(--soft-green);
+
+    color: var(--dark-green);
 }
 
 .notification-indicator {
@@ -311,8 +379,8 @@ button {
     top: 5px;
     right: 5px;
 
-    width: 6px;
-    height: 6px;
+    width: 7px;
+    height: 7px;
 
     border-radius: 50%;
 
@@ -320,7 +388,9 @@ button {
 }
 
 
-/* PROFILE */
+/* =========================
+   PROFILE
+========================= */
 
 .profile-area {
     display: flex;
@@ -329,21 +399,25 @@ button {
     gap: 10px;
 
     cursor: pointer;
+
+    padding: 4px 5px 4px 4px;
+
+    border-radius: 12px;
 }
 
 .profile-avatar {
     width: 38px;
     height: 38px;
 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
     border-radius: 50%;
 
     background: var(--soft-green);
 
     color: var(--dark-green);
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
 
     font-size: 12px;
     font-weight: 700;
@@ -353,20 +427,30 @@ button {
     display: flex;
     flex-direction: column;
 
-    gap: 2px;
+    align-items: flex-start;
 }
 
 .profile-name {
-    font-size: 13px;
-    font-weight: 600;
+    max-width: 150px;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
 
     color: var(--text-dark);
+
+    font-size: 11px;
+    font-weight: 600;
 }
 
 .profile-type {
-    font-size: 11px;
+    margin-top: 2px;
 
     color: var(--text-light);
+
+    font-size: 9px;
 }
 
 
@@ -402,27 +486,33 @@ button {
 
     color: var(--deep-green);
 
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 700;
 
-    letter-spacing: 0.9px;
+    letter-spacing: .12em;
 }
 
 .welcome-section h1 {
-    margin-bottom: 7px;
-
-    font-size: 30px;
-    line-height: 1.2;
-
-    font-weight: 700;
+    margin: 0 0 9px;
 
     color: var(--text-dark);
+
+    font-size: 30px;
+    font-weight: 700;
+
+    line-height: 1.15;
+
+    letter-spacing: -.7px;
 }
 
 .welcome-section p {
+    max-width: 590px;
+
+    margin: 0;
+
     color: var(--text-medium);
 
-    font-size: 14px;
+    font-size: 12px;
 
     line-height: 1.6;
 }
@@ -443,22 +533,23 @@ button {
 .section-label {
     display: block;
 
-    margin-bottom: 5px;
+    margin-bottom: 6px;
 
     color: var(--deep-green);
 
     font-size: 10px;
     font-weight: 700;
 
-    letter-spacing: 0.9px;
+    letter-spacing: .12em;
 }
 
 .section-heading h2 {
-    font-size: 19px;
-
-    font-weight: 600;
-
     color: var(--text-dark);
+
+    font-size: 17px;
+    font-weight: 700;
+
+    line-height: 1.2;
 }
 
 
@@ -474,19 +565,24 @@ button {
 }
 
 .faq-item {
+    overflow: hidden;
+
     background: var(--white);
 
     border: 1px solid var(--border);
 
     border-radius: 15px;
-
-    overflow: hidden;
 }
 
 .faq-question {
     width: 100%;
-
     min-height: 68px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 20px;
 
     padding: 0 24px;
 
@@ -496,15 +592,9 @@ button {
 
     color: var(--text-dark);
 
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    gap: 20px;
-
     text-align: left;
 
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 600;
 }
 
@@ -516,6 +606,10 @@ button {
     width: 28px;
     height: 28px;
 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
     flex-shrink: 0;
 
     border-radius: 8px;
@@ -524,13 +618,9 @@ button {
 
     color: var(--dark-green);
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
     font-size: 17px;
 
-    transition: 0.2s ease;
+    transition: transform .2s ease;
 }
 
 .faq-item.open .faq-icon {
@@ -581,6 +671,10 @@ button {
     width: 38px;
     height: 38px;
 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
     flex-shrink: 0;
 
     border-radius: 11px;
@@ -588,10 +682,6 @@ button {
     background: var(--soft-green);
 
     color: var(--deep-green);
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
 
     font-size: 11px;
     font-weight: 700;
@@ -607,7 +697,7 @@ button {
 .help-title {
     color: var(--text-dark);
 
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 600;
 }
 
@@ -633,6 +723,12 @@ button {
 .support-box {
     min-height: 105px;
 
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 25px;
+
     padding: 24px 30px;
 
     background: var(--white);
@@ -640,12 +736,6 @@ button {
     border: 1px solid var(--border);
 
     border-radius: 18px;
-
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    gap: 25px;
 }
 
 .support-content {
@@ -659,6 +749,10 @@ button {
     width: 42px;
     height: 42px;
 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
     flex-shrink: 0;
 
     border-radius: 12px;
@@ -666,10 +760,6 @@ button {
     background: var(--soft-green);
 
     color: var(--deep-green);
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
 
     font-size: 18px;
     font-weight: 700;
@@ -680,7 +770,7 @@ button {
 
     color: var(--text-dark);
 
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 600;
 }
 
@@ -701,18 +791,27 @@ button {
 
 .primary-button,
 .secondary-button {
-    height: 39px;
+    height: 44px;
 
-    padding: 0 17px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 8px;
 
     flex-shrink: 0;
 
-    border-radius: 10px;
+    padding: 0 17px;
+
+    border-radius: 13px;
 
     font-size: 12px;
     font-weight: 600;
 
-    transition: 0.2s ease;
+    transition:
+        background .2s ease,
+        border-color .2s ease,
+        color .2s ease;
 }
 
 .primary-button {
@@ -740,9 +839,9 @@ button {
 }
 
 .secondary-button:hover {
-    border-color: var(--deep-green);
-
     background: var(--soft-green);
+
+    border-color: var(--deep-green);
 
     color: var(--dark-green);
 }
@@ -754,12 +853,11 @@ button {
 
 @media (max-width: 1100px) {
 
-    .content {
-        padding-left: 30px;
-        padding-right: 30px;
+    .topbar {
+        padding: 0 30px;
     }
 
-    .topbar {
+    .content {
         padding-left: 30px;
         padding-right: 30px;
     }
@@ -773,7 +871,7 @@ button {
     }
 
     .sidebar {
-        padding: 28px 10px;
+        padding: 28px 12px;
     }
 
     .brand {
@@ -782,15 +880,8 @@ button {
         padding: 0;
     }
 
-    .brand-text,
-    .nav-label,
-    .profile-info {
+    .brand-text {
         display: none;
-    }
-
-    .brand-logo {
-        width: 45px;
-        height: 45px;
     }
 
     .nav-item {
@@ -799,27 +890,39 @@ button {
         padding: 0;
     }
 
-    .notification-dot {
-        position: absolute;
-
-        top: 10px;
-        right: 13px;
-
-        margin: 0;
+    .nav-label {
+        display: none;
     }
 
-    .sidebar-bottom {
-        border-top: none;
+    .notification-dot {
+        top: 10px;
+        right: 20px;
+        left: auto;
+    }
 
-        padding-top: 0;
+    .main-content {
+        margin-left: var(--sidebar-width);
+    }
+
+    .topbar {
+        padding: 0 22px;
+    }
+
+    .profile-info {
+        display: none;
     }
 
     .content {
         padding: 18px 22px 50px;
     }
 
-    .topbar {
-        padding: 0 22px;
+    .welcome-section {
+        padding: 30px;
+    }
+
+    .help-box {
+        padding-left: 24px;
+        padding-right: 24px;
     }
 
     .support-box {
@@ -837,10 +940,12 @@ button {
     }
 
     .topbar-actions {
-        gap: 8px;
+        gap: 4px;
     }
 
     .search-box {
+        height: 40px;
+
         max-width: none;
     }
 

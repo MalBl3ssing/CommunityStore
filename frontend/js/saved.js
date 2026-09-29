@@ -1,38 +1,18 @@
 /* =========================
-   TEMPORARY SAVED ITEMS
-
-   This data will later come
-   from the backend API.
+   SUPABASE
 ========================= */
 
-let savedItems = [
-    {
-        id: 1,
-        title: "Java Programming Book",
-        category: "Books",
-        price: 180,
-        seller: "Thabo M.",
-        image: null
-    },
+const supabaseUrl =
+    "https://olnqufovakusfjlaablt.supabase.co";
 
-    {
-        id: 2,
-        title: "Wireless Headphones",
-        category: "Electronics",
-        price: 450,
-        seller: "Lerato K.",
-        image: null
-    },
+const supabaseKey =
+    "sb_publishable_B-iTGT_tnwSpMSEQR1h-2Q_lAqhLkXA";
 
-    {
-        id: 3,
-        title: "Denim Jacket",
-        category: "Fashion",
-        price: 280,
-        seller: "Mpho S.",
-        image: null
-    }
-];
+const supabaseClient =
+    window.supabase.createClient(
+        supabaseUrl,
+        supabaseKey
+    );
 
 
 /* =========================
@@ -63,203 +43,755 @@ const logoutButton =
 const notificationButton =
     document.getElementById("notificationButton");
 
+const userName =
+    document.getElementById("userName");
+
+const userType =
+    document.getElementById("userType");
+
+const profileAvatar =
+    document.querySelector(".profile-avatar");
+
 
 /* =========================
-   LOAD
+   GLOBAL DATA
 ========================= */
 
-function loadSavedItems() {
+let currentUser = null;
+let currentProfile = null;
+let savedItems = [];
 
-    showLoading();
 
-    setTimeout(function () {
+/* =========================
+   LOAD CURRENT USER
+========================= */
 
-        renderSavedItems(savedItems);
+async function loadCurrentUser() {
 
-    }, 300);
+    try {
+
+        const {
+            data: {
+                user
+            },
+            error: authError
+        } = await supabaseClient.auth.getUser();
+
+
+        if (authError) {
+
+            console.error(
+                "Error getting logged-in user:",
+                authError
+            );
+
+            return false;
+        }
+
+
+        if (!user) {
+
+            window.location.href =
+                "login.html";
+
+            return false;
+        }
+
+
+        currentUser = user;
+
+
+        /* =========================
+           LOAD PROFILE
+        ========================== */
+
+        const {
+            data: profile,
+            error: profileError
+        } = await supabaseClient
+            .from("profiles")
+            .select("*")
+            .eq("id", user.id)
+            .maybeSingle();
+
+
+        if (profileError) {
+
+            console.error(
+                "Error loading profile:",
+                profileError
+            );
+
+            currentProfile = null;
+
+        } else {
+
+            currentProfile = profile;
+
+        }
+
+
+        updateUserProfile();
+
+        return true;
+
+
+    } catch (error) {
+
+        console.error(
+            "Unexpected user loading error:",
+            error
+        );
+
+        return false;
+    }
 }
 
 
 /* =========================
-   LOADING
+   UPDATE USER PROFILE
 ========================= */
 
-function showLoading() {
+function updateUserProfile() {
 
-    if (loadingState) {
-        loadingState.style.display = "flex";
+    let fullName = "";
+
+
+    /* Profile table */
+
+    if (
+        currentProfile &&
+        currentProfile.full_name
+    ) {
+
+        fullName =
+            String(
+                currentProfile.full_name
+            ).trim();
+
     }
 
-    if (emptyState) {
-        emptyState.style.display = "none";
+
+    /* Auth metadata fallback */
+
+    if (!fullName && currentUser) {
+
+        fullName =
+            currentUser.user_metadata?.full_name ||
+            currentUser.user_metadata?.name ||
+            "";
+
     }
+
+
+    /* Email fallback */
+
+    if (
+        !fullName &&
+        currentUser?.email
+    ) {
+
+        fullName =
+            currentUser.email.split("@")[0];
+
+    }
+
+
+    if (!fullName) {
+
+        fullName = "User";
+
+    }
+
+
+    /* =========================
+       USER TYPE
+    ========================== */
+
+    let type = "";
+
+
+    if (
+        currentProfile &&
+        currentProfile.user_type
+    ) {
+
+        type =
+            String(
+                currentProfile.user_type
+            ).trim();
+
+    }
+
+
+    if (!type && currentUser) {
+
+        type =
+            currentUser.user_metadata?.user_type ||
+            "";
+
+    }
+
+
+    if (!type) {
+
+        type = "Member";
+
+    }
+
+
+    /* =========================
+       UPDATE NAME
+    ========================== */
+
+    if (userName) {
+
+        userName.textContent =
+            fullName;
+
+    }
+
+
+    /* =========================
+       UPDATE TYPE
+    ========================== */
+
+    if (userType) {
+
+        userType.textContent =
+            type;
+
+    }
+
+
+    /* =========================
+       UPDATE AVATAR
+    ========================== */
+
+    if (profileAvatar) {
+
+        profileAvatar.innerHTML = "";
+
+        const avatar =
+            document.createElement("span");
+
+        avatar.textContent =
+            getInitials(fullName);
+
+        profileAvatar.appendChild(
+            avatar
+        );
+
+    }
+
+
+    console.log(
+        "Saved page user:",
+        fullName
+    );
+
+    console.log(
+        "Saved page user type:",
+        type
+    );
+
+    console.log(
+        "Saved page profile:",
+        currentProfile
+    );
 }
 
 
 /* =========================
-   RENDER
+   GET INITIALS
+========================= */
+
+function getInitials(name) {
+
+    if (!name) {
+
+        return "U";
+
+    }
+
+
+    const words =
+        name
+            .trim()
+            .split(/\s+/)
+            .filter(Boolean);
+
+
+    if (words.length === 1) {
+
+        return words[0]
+            .substring(0, 2)
+            .toUpperCase();
+
+    }
+
+
+    return (
+        words[0].charAt(0) +
+        words[words.length - 1].charAt(0)
+    ).toUpperCase();
+}
+
+
+/* =========================
+   LOAD SAVED ITEMS
+========================= */
+
+async function loadSavedItems() {
+
+    if (!currentUser) {
+
+        return;
+
+    }
+
+
+    loadingState.style.display =
+        "block";
+
+    emptyState.style.display =
+        "none";
+
+
+    const {
+        data: savedPosts,
+        error: savedError
+    } = await supabaseClient
+        .from("saved_posts")
+        .select(
+            "id, post_id, created_at"
+        )
+        .eq(
+            "user_id",
+            currentUser.id
+        )
+        .order(
+            "created_at",
+            {
+                ascending: false
+            }
+        );
+
+
+    if (savedError) {
+
+        console.error(
+            "Error loading saved posts:",
+            savedError
+        );
+
+        loadingState.textContent =
+            "Unable to load saved items.";
+
+        return;
+
+    }
+
+
+    if (
+        !savedPosts ||
+        savedPosts.length === 0
+    ) {
+
+        savedItems = [];
+
+        loadingState.style.display =
+            "none";
+
+        savedGrid.innerHTML = "";
+
+        savedCount.textContent =
+            "0 items";
+
+        emptyState.style.display =
+            "block";
+
+        return;
+
+    }
+
+
+    const postIds =
+        savedPosts.map(
+            item => item.post_id
+        );
+
+
+    const {
+        data: posts,
+        error: postsError
+    } = await supabaseClient
+        .from("posts")
+        .select("*")
+        .in(
+            "id",
+            postIds
+        );
+
+
+    if (postsError) {
+
+        console.error(
+            "Error loading posts:",
+            postsError
+        );
+
+        loadingState.textContent =
+            "Unable to load saved items.";
+
+        return;
+
+    }
+
+
+    if (!posts || posts.length === 0) {
+
+        savedItems = [];
+
+        loadingState.style.display =
+            "none";
+
+        savedGrid.innerHTML = "";
+
+        savedCount.textContent =
+            "0 items";
+
+        emptyState.style.display =
+            "block";
+
+        return;
+
+    }
+
+
+    /* =========================
+       LOAD SELLER PROFILES
+    ========================== */
+
+    const sellerIds = [
+        ...new Set(
+            posts
+                .map(
+                    post => post.user_id
+                )
+                .filter(Boolean)
+        )
+    ];
+
+
+    let profiles = [];
+
+
+    /*
+       Load each seller profile separately
+       instead of using .in()
+    */
+
+    for (const sellerId of sellerIds) {
+
+        const {
+            data: sellerProfile,
+            error: sellerError
+        } = await supabaseClient
+            .from("profiles")
+            .select(
+                "id, full_name, phone_number"
+            )
+            .eq(
+                "id",
+                sellerId
+            )
+            .maybeSingle();
+
+
+        if (sellerError) {
+
+            console.error(
+                "Error loading seller profile:",
+                sellerError
+            );
+
+            continue;
+
+        }
+
+
+        if (sellerProfile) {
+
+            profiles.push(
+                sellerProfile
+            );
+
+        }
+
+    }
+
+
+    /* =========================
+       BUILD SAVED ITEMS
+    ========================== */
+
+    savedItems =
+        savedPosts
+            .map(saved => {
+
+                const post =
+                    posts.find(
+                        item =>
+                            item.id ===
+                            saved.post_id
+                    );
+
+
+                if (!post) {
+
+                    return null;
+
+                }
+
+
+                const seller =
+                    profiles.find(
+                        profile =>
+                            profile.id ===
+                            post.user_id
+                    );
+
+
+                return {
+                    ...post,
+                    savedId: saved.id,
+                    savedAt: saved.created_at,
+                    seller:
+                        seller || null
+                };
+
+            })
+            .filter(Boolean);
+
+
+    loadingState.style.display =
+        "none";
+
+
+    renderSavedItems(
+        savedItems
+    );
+}
+
+
+/* =========================
+   RENDER SAVED ITEMS
 ========================= */
 
 function renderSavedItems(items) {
 
-    if (!savedGrid) {
-        return;
-    }
-
     savedGrid.innerHTML = "";
 
-    if (loadingState) {
-        loadingState.style.display = "none";
-    }
 
-
-    if (savedCount) {
-
-        savedCount.textContent =
-            `${items.length} ${
-                items.length === 1
-                    ? "item"
-                    : "items"
-            }`;
-
-    }
+    savedCount.textContent =
+        `${items.length} ${
+            items.length === 1
+                ? "item"
+                : "items"
+        }`;
 
 
     if (items.length === 0) {
 
-        if (emptyState) {
-            emptyState.style.display = "flex";
-        }
+        emptyState.style.display =
+            "block";
 
         return;
+
     }
 
 
-    if (emptyState) {
-        emptyState.style.display = "none";
-    }
+    emptyState.style.display =
+        "none";
 
 
-    items.forEach(function (item) {
+    items.forEach(item => {
 
         const card =
-            document.createElement("div");
-
-        card.className = "saved-card";
-
-        card.dataset.productId = item.id;
+            document.createElement(
+                "article"
+            );
 
 
-        /* =========================
-           IMAGE
-        ========================== */
-
-        const imageHTML = item.image
-
-            ? `
-                <div class="saved-card-image">
-
-                    <img
-                        src="${escapeHtml(item.image)}"
-                        alt="${escapeHtml(item.title)}"
-                    >
-
-                </div>
-            `
-
-            : `
-                <div class="saved-card-image">
-
-                    <span class="saved-card-placeholder">
-                        ◈
-                    </span>
-
-                </div>
-            `;
+        card.className =
+            "saved-card";
 
 
-        /* =========================
-           CARD
-        ========================== */
+        const sellerName =
+            item.seller?.full_name ||
+            "Community Member";
+
+
+        const phone =
+            item.seller?.phone_number ||
+            item.phone_number ||
+            "Not available";
+
+
+        const title =
+            item.title ||
+            "Untitled item";
+
+
+        const category =
+            item.category ||
+            "General";
+
+
+        const price =
+            item.price !== null &&
+            item.price !== undefined
+                ? `R${item.price}`
+                : "Price not listed";
+
+
+        const location =
+            item.location ||
+            "Location not specified";
+
 
         card.innerHTML = `
 
-            ${imageHTML}
-
             <div class="saved-card-content">
 
-                <span class="saved-card-category">
-                    ${escapeHtml(item.category)}
+                <span class="saved-category">
+                    ${escapeHtml(category)}
                 </span>
 
-                <h3 class="saved-card-title">
-                    ${escapeHtml(item.title)}
+                <h3>
+                    ${escapeHtml(title)}
                 </h3>
 
-                <div class="saved-card-price">
-                    R${Number(item.price).toFixed(2)}
-                </div>
+                <p class="saved-price">
+                    ${escapeHtml(price)}
+                </p>
 
-                <div class="saved-card-seller">
-                    ${escapeHtml(item.seller)}
+                <p class="saved-seller">
+                    Seller:
+                    ${escapeHtml(sellerName)}
+                </p>
+
+                <p class="saved-location">
+                    ${escapeHtml(location)}
+                </p>
+
+                <p class="saved-phone">
+                    ${escapeHtml(phone)}
+                </p>
+
+                <div class="saved-card-actions">
+
+                    <button
+                        type="button"
+                        class="message-button"
+                        data-seller-id="${item.user_id || ""}"
+                        data-seller-name="${escapeHtml(sellerName)}"
+                    >
+                        Message
+                    </button>
+
+                    <button
+                        type="button"
+                        class="remove-saved-button"
+                        data-saved-id="${item.savedId}"
+                    >
+                        Remove
+                    </button>
+
                 </div>
 
             </div>
 
-
-            <button
-                type="button"
-                class="remove-saved"
-                aria-label="Remove saved item"
-            >
-                ♡
-            </button>
-
         `;
 
 
-        /* =========================
-           CARD CLICK
-        ========================== */
-
-        card.addEventListener(
-            "click",
-            function () {
-
-                window.location.href =
-                    "product-details.html?id=" +
-                    encodeURIComponent(item.id);
-
-            }
+        savedGrid.appendChild(
+            card
         );
-
-
-        /* =========================
-           REMOVE BUTTON
-        ========================== */
-
-        const removeButton =
-            card.querySelector(".remove-saved");
-
-
-        removeButton.addEventListener(
-            "click",
-            function (event) {
-
-                event.preventDefault();
-
-                event.stopPropagation();
-
-                removeSavedItem(item.id);
-
-            }
-        );
-
-
-        savedGrid.appendChild(card);
 
     });
 
+
+    addSavedCardListeners();
+}
+
+
+/* =========================
+   SAVED CARD BUTTONS
+========================= */
+
+function addSavedCardListeners() {
+
+    document
+        .querySelectorAll(
+            ".remove-saved-button"
+        )
+        .forEach(button => {
+
+            button.addEventListener(
+                "click",
+                async () => {
+
+                    const savedId =
+                        button.dataset.savedId;
+
+
+                    await removeSavedItem(
+                        savedId
+                    );
+
+                }
+            );
+
+        });
+
+
+    document
+        .querySelectorAll(
+            ".message-button"
+        )
+        .forEach(button => {
+
+            button.addEventListener(
+                "click",
+                () => {
+
+                    const sellerId =
+                        button.dataset.sellerId;
+
+                    const sellerName =
+                        button.dataset.sellerName;
+
+
+                    if (!sellerId) {
+
+                        return;
+
+                    }
+
+
+                    window.location.href =
+                        `inbox.html?sellerId=${encodeURIComponent(
+                            sellerId
+                        )}&sellerName=${encodeURIComponent(
+                            sellerName
+                        )}`;
+
+                }
+            );
+
+        });
 }
 
 
@@ -267,97 +799,127 @@ function renderSavedItems(items) {
    REMOVE SAVED ITEM
 ========================= */
 
-function removeSavedItem(itemId) {
+async function removeSavedItem(
+    savedId
+) {
 
-    savedItems =
-        savedItems.filter(function (item) {
+    if (!currentUser) {
 
-            return item.id !== itemId;
-
-        });
-
-
-    saveSavedItems();
-
-    renderSavedItems(savedItems);
-}
-
-
-/* =========================
-   TEMPORARY STORAGE
-
-   Backend will replace this.
-========================= */
-
-function saveSavedItems() {
-
-    const savedIds =
-        savedItems.map(function (item) {
-
-            return item.id;
-
-        });
-
-
-    localStorage.setItem(
-        "communityStoreSavedProducts",
-        JSON.stringify(savedIds)
-    );
-}
-
-
-/* =========================
-   SEARCH
-========================= */
-
-function filterSavedItems() {
-
-    if (!savedSearch) {
         return;
+
     }
 
 
-    const query =
-        savedSearch.value
-            .trim()
-            .toLowerCase();
+    const {
+        error
+    } = await supabaseClient
+        .from("saved_posts")
+        .delete()
+        .eq(
+            "id",
+            savedId
+        )
+        .eq(
+            "user_id",
+            currentUser.id
+        );
 
 
-    if (!query) {
+    if (error) {
 
-        renderSavedItems(savedItems);
+        console.error(
+            "Error removing saved item:",
+            error
+        );
 
         return;
+
+    }
+
+
+    savedItems =
+        savedItems.filter(
+            item =>
+                item.savedId !==
+                savedId
+        );
+
+
+    applySavedSearch();
+}
+
+
+/* =========================
+   SEARCH SAVED ITEMS
+========================= */
+
+function applySavedSearch() {
+
+    const searchTerm =
+        savedSearch?.value
+            ?.trim()
+            .toLowerCase() || "";
+
+
+    if (!searchTerm) {
+
+        renderSavedItems(
+            savedItems
+        );
+
+        return;
+
     }
 
 
     const filteredItems =
-        savedItems.filter(function (item) {
+        savedItems.filter(
+            item => {
 
-            return (
+                const title =
+                    item.title
+                        ?.toLowerCase() ||
+                    "";
 
-                item.title
-                    .toLowerCase()
-                    .includes(query)
+                const category =
+                    item.category
+                        ?.toLowerCase() ||
+                    "";
 
-                ||
+                const seller =
+                    item.seller
+                        ?.full_name
+                        ?.toLowerCase() ||
+                    "";
 
-                item.category
-                    .toLowerCase()
-                    .includes(query)
-
-                ||
-
-                item.seller
-                    .toLowerCase()
-                    .includes(query)
-
-            );
-
-        });
+                const location =
+                    item.location
+                        ?.toLowerCase() ||
+                    "";
 
 
-    renderSavedItems(filteredItems);
+                return (
+                    title.includes(
+                        searchTerm
+                    ) ||
+                    category.includes(
+                        searchTerm
+                    ) ||
+                    seller.includes(
+                        searchTerm
+                    ) ||
+                    location.includes(
+                        searchTerm
+                    )
+                );
+
+            }
+        );
+
+
+    renderSavedItems(
+        filteredItems
+    );
 }
 
 
@@ -365,21 +927,21 @@ if (savedSearch) {
 
     savedSearch.addEventListener(
         "input",
-        filterSavedItems
+        applySavedSearch
     );
 
 }
 
 
 /* =========================
-   PROFILE
+   PROFILE BUTTON
 ========================= */
 
 if (profileButton) {
 
     profileButton.addEventListener(
         "click",
-        function () {
+        () => {
 
             window.location.href =
                 "profile.html";
@@ -398,11 +960,32 @@ if (logoutButton) {
 
     logoutButton.addEventListener(
         "click",
-        function () {
+        async event => {
 
-            sessionStorage.removeItem(
-                "communityStoreCurrentUser"
-            );
+            event.preventDefault();
+
+
+            const {
+                error
+            } = await supabaseClient
+                .auth
+                .signOut();
+
+
+            if (error) {
+
+                console.error(
+                    "Logout error:",
+                    error
+                );
+
+                return;
+
+            }
+
+
+            window.location.href =
+                "login.html";
 
         }
     );
@@ -418,10 +1001,10 @@ if (notificationButton) {
 
     notificationButton.addEventListener(
         "click",
-        function () {
+        () => {
 
-            alert(
-                "Notifications will be connected soon."
+            console.log(
+                "Notifications clicked"
             );
 
         }
@@ -431,18 +1014,42 @@ if (notificationButton) {
 
 
 /* =========================
-   HTML SECURITY
+   HTML ESCAPE
 ========================= */
 
 function escapeHtml(value) {
 
-    return String(value)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
+    if (
+        value === null ||
+        value === undefined
+    ) {
 
+        return "";
+
+    }
+
+
+    return String(value)
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+        .replace(
+            /</g,
+            "&lt;"
+        )
+        .replace(
+            />/g,
+            "&gt;"
+        )
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+        .replace(
+            /'/g,
+            "&#039;"
+        );
 }
 
 
@@ -450,4 +1057,22 @@ function escapeHtml(value) {
    START
 ========================= */
 
-loadSavedItems();
+async function init() {
+
+    const userLoaded =
+        await loadCurrentUser();
+
+
+    if (!userLoaded) {
+
+        return;
+
+    }
+
+
+    await loadSavedItems();
+
+}
+
+
+init();
