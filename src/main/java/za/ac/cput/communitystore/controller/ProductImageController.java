@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
         import org.springframework.web.server.ResponseStatusException;
 import za.ac.cput.communitystore.domain.ProductImage;
 import za.ac.cput.communitystore.factory.ProductImageFactory;
-import za.ac.cput.communitystore.service.ProductImageService;
+import za.ac.cput.communitystore.service.IProductImageService;
 
 import java.util.List;
 
@@ -15,10 +15,10 @@ import java.util.List;
 @RequestMapping("/api/productimages")
 public class ProductImageController {
 
-    private final ProductImageService productImageService;
+    private final IProductImageService productImageService;
 
     @Autowired
-    public ProductImageController(ProductImageService productImageService) {
+    public ProductImageController(IProductImageService productImageService) {
         this.productImageService = productImageService;
     }
 

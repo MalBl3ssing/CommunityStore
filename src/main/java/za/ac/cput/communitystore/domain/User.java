@@ -2,9 +2,8 @@ package za.ac.cput.communitystore.domain;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
-
-
-    import jakarta.persistence.Entity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -13,7 +12,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
-    @Table(name = "users")
+    @Table(name = "Users")
     public class User {
 
         @Id
@@ -70,9 +69,10 @@ import jakarta.persistence.Table;
             return email;
         }
 
-        public String getPasswordHash() {
-            return passwordHash;
-        }
+    @JsonIgnore
+    public String getPasswordHash() {
+        return passwordHash;
+    }
 
         public String getPhoneNumber() {
             return phoneNumber;

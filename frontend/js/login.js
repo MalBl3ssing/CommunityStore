@@ -1,268 +1,77 @@
-// =========================
-// WAIT FOR PAGE TO LOAD
-// =========================
 
-document.addEventListener("DOMContentLoaded", function () {
-
-    // =========================
-    // SUPABASE
-    // =========================
-
-    const supabaseUrl =
-        "https://olnqufovakusfjlaablt.supabase.co";
-
-    const supabaseKey =
-        "sb_publishable_B-iTGT_tnwSpMSEQR1h-2Q_lAqhLkXA";
-
-    const supabase =
-        window.supabase.createClient(
-            supabaseUrl,
-            supabaseKey
-        );
-
-
-    // =========================
-    // PASSWORD VISIBILITY
-    // =========================
+document.addEventListener("DOMContentLoaded", () => {
 
     const passwordToggle =
         document.getElementById("passwordToggle");
-
     const password =
         document.getElementById("password");
 
-
     if (passwordToggle && password) {
+        passwordToggle.addEventListener("click", () => {
+            password.type = password.type === "password"
+                ? "text" : "password";
 
-        passwordToggle.addEventListener(
-            "click",
-            function () {
+            passwordToggle.textContent =
+                password.type === "password" ? "👁" : "🙈";
+        });
+    }
 
-                if (password.type === "password") {
+    const form = document.getElementById("loginForm");
+    if (!form) return;
 
-                    password.type = "text";
+    form.addEventListener("submit", async (event) => {
+        event.preventDefault();
 
-                    passwordToggle.textContent = "🙈";
+        const email =
+            document.getElementById("email").value.trim();
+        const passwordValue =
+            document.getElementById("password").value;
 
-                    passwordToggle.setAttribute(
-                        "aria-label",
-                        "Hide password"
-                    );
+        if (!email || !passwordValue) {
+            alert("Enter your email and password.");
+            return;
+        }
 
-                } else {
-
-                    password.type = "password";
-
-                    passwordToggle.textContent = "👁";
-
-                    passwordToggle.setAttribute(
-                        "aria-label",
-                        "Show password"
-                    );
+        try {
+            const response = await fetch(
+                "http://localhost:8080/api/auth/login",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        email,
+                        password: passwordValue
+                    })
                 }
-
-            }
-        );
-
-    }
-
-
-    // =========================
-    // LOGIN FORM
-    // =========================
-
-    const loginForm =
-        document.getElementById("loginForm");
-
-
-    if (!loginForm) {
-        return;
-    }
-
-
-    loginForm.addEventListener(
-        "submit",
-        async function (event) {
-
-            // Prevent the page from refreshing
-            event.preventDefault();
-
-
-            // =========================
-            // GET FORM VALUES
-            // =========================
-
-            const email =
-                document
-                    .getElementById("email")
-                    .value
-                    .trim();
-
-            const passwordValue =
-                document
-                    .getElementById("password")
-                    .value;
-
-
-            // =========================
-            // VALIDATION
-            // =========================
-
-            if (!email) {
-
-                alert(
-                    "Please enter your email address."
-                );
-
-                return;
-            }
-
-
-            if (!passwordValue) {
-
-                alert(
-                    "Please enter your password."
-                );
-
-                return;
-            }
-
-
-            // =========================
-            // SUPABASE LOGIN
-            // =========================
-
-            const {
-                data,
-                error
-            } = await supabase.auth.signInWithPassword({
-
-                email: email,
-
-                password: passwordValue
-            });
-
-
-            // =========================
-            // LOGIN ERROR
-            // =========================
-
-            if (error) {
-
-                alert(
-                    "User not registered or incorrect password. " +
-                    "Please check your email and password and try again."
-                );
-
-                return;
-            }
-
-
-            // =========================
-            // LOGIN SUCCESS
-            // =========================
-
-            alert(
-                "Login successful!"
             );
 
+            const result = await response.json();
 
-            // =========================
-            // GO TO HOME
-            // =========================
+            if (!response.ok) {
+                throw new Error(
+                    result.message || "Login failed"
+                );
+            }
 
-            window.location.href =
-                "home.html";
+            alert("Login successful!");
+            window.location.href = "home.html";
 
+        } catch (error) {
+            console.error("Login error:", error);
+            alert(error.message);
         }
-    );
+    });
 
-
-    // =========================
-    // GOOGLE LOGIN
-    // =========================
-
-    const googleButton =
-        document.getElementById("googleButton");
-
-
-    if (googleButton) {
-
-        googleButton.addEventListener(
-            "click",
-            async function () {
-
-                const {
-                    error
-                } = await supabase.auth.signInWithOAuth({
-
-                    provider: "google",
-
-                    options: {
-                        redirectTo:
-                            window.location.origin +
-                            "/home.html"
-                    }
-
-                });
-
-
-                if (error) {
-
-                    alert(
-                        "Google login failed: " +
-                        error.message
-                    );
-
-                }
-
-            }
-        );
-
-    }
-
-
-    // =========================
-    // APPLE LOGIN
-    // =========================
-
-    const appleButton =
-        document.getElementById("appleButton");
-
-
-    if (appleButton) {
-
-        appleButton.addEventListener(
-            "click",
-            async function () {
-
-                const {
-                    error
-                } = await supabase.auth.signInWithOAuth({
-
-                    provider: "apple",
-
-                    options: {
-                        redirectTo:
-                            window.location.origin +
-                            "/home.html"
-                    }
-
-                });
-
-
-                if (error) {
-
-                    alert(
-                        "Apple login failed: " +
-                        error.message
-                    );
-
-                }
-
-            }
-        );
-
-    }
-
+    // Social login requires separate backend integration.
+    ["googleButton", "appleButton"].forEach(id => {
+        const button = document.getElementById(id);
+        if (button) {
+            button.addEventListener("click", event => {
+                event.preventDefault();
+                alert("Social login is not configured yet.");
+            });
+        }
+    });
 });
