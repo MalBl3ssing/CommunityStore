@@ -118,6 +118,8 @@
                     <span>Log out</span>
                 </a>
 
+                <a href="cart.html">🛒 &nbsp; My Cart</a>
+
             </div>
 
         </aside>
@@ -959,6 +961,156 @@
 
 
     <script src="js/home.js"></script>
+
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const API = "http://localhost:8080/api";
+            let products = [];
+
+            const safe = value =>
+                String(value ?? "").replace(/[&<>"']/g, c => ({
+                    "&": "&amp;", "<": "&lt;", ">": "&gt;",
+                    '"': "&quot;", "'": "&#39;"
+                }[c]));
+
+            const money = value =>
+                "R " + Number(value || 0).toFixed(2);
+
+            function addToCart(product) {
+                const cart = JSON.parse(
+                    localStorage.getItem("communityStoreCart") || "[]"
+                );
+
+                const existing = cart.find(
+                    item => item.productID === product.productID
+                );
+
+                if (existing) {
+                    if (existing.quantity >= product.quantity) {
+                        alert("No more stock available.");
+                        return;
+                    }
+                    existing.quantity++;
+                } else {
+                    cart.push({
+                        productID: product.productID,
+                        productName: product.productName,
+                        price: Number(product.price),
+                        quantity: 1
+                    });
+                }
+
+                localStorage.setItem(
+                    "communityStoreCart",
+                    JSON.stringify(cart)
+                );
+
+                alert(product.productName + " added to cart!");
+            }
+
+            function card(product) {
+                const article = document.createElement("article");
+                article.className = "product-card";
+
+                article.innerHTML = `
+            <div class="product-image" style="
+                min-height:140px;background:#f3f4f6;
+                display:flex;align-items:center;
+                justify-content:center;font-size:44px">
+                📦
+            </div>
+            <div class="product-info" style="padding:14px">
+                <small>${safe(product.category?.categoryName)}</small>
+                <h3>${safe(product.productName)}</h3>
+                <p>${safe(product.description)}</p>
+                <h3>${money(product.price)}</h3>
+                <p>Condition: ${safe(product.condition)}</p>
+                <p>Seller: ${safe(product.seller?.firstName)}
+                    ${safe(product.seller?.lastName)}</p>
+                <button type="button" class="add-cart-btn"
+                    style="background:#4e7155;color:white;
+                    border:0;border-radius:9px;
+                    padding:12px 18px;cursor:pointer">
+                    🛒 Add to Cart
+                </button>
+            </div>
+        `;
+
+                article.querySelector(".add-cart-btn")
+                    .addEventListener("click", () => addToCart(product));
+
+                return article;
+            }
+
+            function showProducts(items) {
+                const featured =
+                    document.getElementById("featuredProducts");
+                const recent =
+                    document.getElementById("recentProducts");
+
+                [featured, recent].forEach(container => {
+                    if (!container) return;
+                    container.innerHTML = "";
+
+                    if (!items.length) {
+                        container.innerHTML =
+                            '<p>No products in this category yet.</p>';
+                        return;
+                    }
+
+                    items.forEach(p => container.appendChild(card(p)));
+                });
+            }
+
+            document.querySelectorAll(".category-card")
+                .forEach(tile => {
+                    tile.style.cursor = "pointer";
+
+                    tile.addEventListener("click", () => {
+                        const category = tile.dataset.category;
+
+                        const filtered = products.filter(p => {
+                            const name = (
+                                p.category?.categoryName || ""
+                            ).toLowerCase()
+                                .replace(/[^a-z0-9]+/g, "-")
+                                .replace(/^-|-$/g, "");
+
+                            return name === category;
+                        });
+
+                        showProducts(filtered);
+
+                        document.getElementById("featuredProducts")
+                            ?.scrollIntoView({
+                                behavior: "smooth",
+                                block: "start"
+                            });
+                    });
+                });
+
+            // Load from MySQL through Spring Boot.
+            fetch(API + "/products/getAll")
+                .then(response => {
+                    if (!response.ok) throw Error(response.status);
+                    return response.json();
+                })
+                .then(data => {
+                    products = data.filter(
+                        p => p.status === "Available"
+                    );
+                    showProducts(products);
+                })
+                .catch(error => {
+                    console.error("Marketplace error:", error);
+                });
+
+            // Optional: clicking the logo/Home menu restores all
+            // products when the page is reloaded.
+        });
+    </script>
+
 
 </body>
 

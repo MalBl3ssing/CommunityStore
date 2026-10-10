@@ -1,0 +1,127 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+    <title>My Cart | CommunityStore</title>
+    <link rel="stylesheet" href="css/cart.css">
+</head>
+<body>
+
+<div class="layout">
+    <aside class="sidebar">
+        <div class="brand">
+            <span class="brand-icon">🛍️</span>
+            <span>Community<br>Store</span>
+        </div>
+
+        <nav>
+            <a href="home.html">⌂ &nbsp; Home</a>
+            <a href="search.html">⌕ &nbsp; Search</a>
+            <a href="saved.html">♡ &nbsp; Saved</a>
+            <a href="cart.html" class="active">
+                🛒 &nbsp; My Cart
+            </a>
+            <a href="chat.html">☏ &nbsp; Chat</a>
+            <a href="community-board.html">
+                ▣ &nbsp; Community Board
+            </a>
+        </nav>
+
+        <div class="sidebar-bottom">
+            <a href="help.html">? &nbsp; Help & Support</a>
+            <a href="settings.html">⚙ &nbsp; Settings</a>
+        </div>
+    </aside>
+
+    <main class="main">
+        <header class="topbar">
+            <h3>Community Marketplace</h3>
+            <a href="cart.html" class="cart-link">
+                🛒 Cart <span id="cartBadge">0</span>
+            </a>
+        </header>
+
+        <div class="content">
+            <div class="page-heading">
+                <div>
+                    <p class="eyebrow">YOUR SHOPPING BAG</p>
+                    <h1>My Cart 🛒</h1>
+                    <p class="subtitle">
+                        Review your items before checkout.
+                    </p>
+                </div>
+                <a href="search.html" class="continue-btn">
+                    ← Continue shopping
+                </a>
+            </div>
+
+            <div class="cart-layout">
+                <section class="items-panel">
+                    <div class="panel-heading">
+                        <h2>Shopping cart</h2>
+                        <span id="itemCount">0 items</span>
+                    </div>
+
+                    <div id="cartItems"></div>
+
+                    <div id="emptyCart" class="empty-cart"
+                         hidden>
+                        <div class="empty-icon">🛒</div>
+                        <h2>Your cart is empty</h2>
+                        <p>
+                            Discover something you love
+                            in our marketplace!
+                        </p>
+                        <a href="search.html"
+                           class="primary-btn">
+                            Browse products
+                        </a>
+                    </div>
+                </section>
+
+                <aside class="summary-panel">
+                    <h2>Order Summary</h2>
+
+                    <div class="summary-line">
+                        <span>Subtotal</span>
+                        <strong id="subtotal">R 0.00</strong>
+                    </div>
+
+                    <div class="summary-line">
+                        <span>Delivery</span>
+                        <span>Not calculated</span>
+                    </div>
+
+                    <hr>
+
+                    <div class="summary-line total">
+                        <span>Total</span>
+                        <strong id="cartTotal">R 0.00</strong>
+                    </div>
+
+                    <button id="checkoutBtn"
+                            class="checkout-btn">
+                        Proceed to Checkout →
+                    </button>
+
+                    <button id="clearCartBtn"
+                            class="clear-btn">
+                        Clear Cart
+                    </button>
+
+                    <p class="checkout-note">
+                        Payments and order placement
+                        are not yet available.
+                    </p>
+                </aside>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script src="js/cart.js"></script>
+</body>
+</html>
